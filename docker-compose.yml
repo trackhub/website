@@ -1,0 +1,19 @@
+version: "3"
+services:
+  web:
+    restart: unless-stopped
+    build: docker/web
+    volumes:
+    - ./:/var/www
+    environment:
+    - WEB_UID=${WEB_UID}
+  sql:
+    restart: unless-stopped
+    image: mariadb:10.3
+    environment:
+      MYSQL_ROOT_PASSWORD: 1
+      MYSQL_USER: gps
+      MYSQL_PASSWORD: 1
+      MYSQL_DATABASE: gps
+    volumes:
+    - ./docker/var/sql:/var/lib/mysql

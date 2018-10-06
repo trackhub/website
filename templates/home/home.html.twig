@@ -1,0 +1,32 @@
+{% extends "base.html.twig" %}
+
+{% block content %}
+    asdad
+    <div style="height: 800px; width: 1000px;" id="map"></div>
+
+    <script>
+        var map = L.map('map').setView([42.9, 24.45], 8);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+
+        L.marker([42.15, 24.75]).addTo(map)
+            .bindPopup('Plovdiv <br> da!')
+        // .openPopup();
+
+        {% for gpx in p %}
+            var latlngs = [];
+            {%  for point in gpx %}
+                latlngs.push([
+                    {{ point.getLat }},
+                    {{ point.getLon }}
+                ]);
+            {% endfor %}
+
+            var polyline = L.polyline(latlngs, {color: 'red'}).addTo(map);
+        {% endfor %}
+
+
+
+    </script>
+{% endblock %}

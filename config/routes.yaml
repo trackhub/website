@@ -1,0 +1,7 @@
+index:
+  path: /
+  controller: App\Controller\Home::home
+
+gps-new:
+  path: /gps/new
+  controller: App\Controller\Gps::New
