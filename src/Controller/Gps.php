@@ -37,29 +37,29 @@ class Gps extends AbstractController
             }
 
             $gps = new \App\Entity\Gps();
+            $gps->setType($form->get('type')->getData());
 
-            $track = $xml->trk;
+            foreach ($xml->trk as $track) {
+                $order = 0;
+                foreach ($track->trkseg as $tragSegment) {
+                    foreach ($tragSegment->trkpt as $point) {
+                        $attributes = $point->attributes();
+                        $lat = (float)$attributes['lat'];
+                        $lon = (float)$attributes['lon'];
 
-            $order = 0;
-            foreach ($track->trkseg as $tragSegment) {
-                foreach ($tragSegment->trkpt as $point) {
-                    $attributes = $point->attributes();
-                    $lat = (float)$attributes['lat'];
-                    $lon = (float)$attributes['lon'];
+                        $point = new Point(
+                            $gps,
+                            $order,
+                            $lat,
+                            $lon
+                        );
 
-                    $point = new Point(
-                        $gps,
-                        $order,
-                        $lat,
-                        $lon
-                    );
-
-                    $this->getDoctrine()->getManager()
-                        ->persist($point);
-                    $order++;
+                        $this->getDoctrine()->getManager()
+                            ->persist($point);
+                        $order++;
+                    }
                 }
             }
-
             $gpsFile = new GpsFile($gps, $c);
             $this->getDoctrine()->getManager()
                 ->persist($gps);
