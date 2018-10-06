@@ -8,9 +8,14 @@ RUN apt-get update && \
 # will alllow files editing w/o sudo
 RUN usermod -u 1000 www-data
 
-RUN a2enmod proxy proxy_fcgi rewrite
+RUN a2enmod proxy proxy_fcgi rewrite ssl
 
 COPY virtualhost.conf /etc/apache2/sites-enabled/000-default.conf
+COPY virtualhost-ssl.conf /etc/apache2/sites-available/000-default-ssl.conf
+COPY cert/server.key /etc/ssl/private/apache-selfsigned.key
+COPY cert/server.crt /etc/ssl/certs/apache-selfsigned.crt
+
+RUN a2ensite 000-default-ssl
 
 # SURY
 RUN apt-get update && \

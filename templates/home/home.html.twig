@@ -4,14 +4,10 @@
     <div style="height: 800px; width: 1000px;" id="map"></div>
 
     <script>
-        var map = L.map('map').setView([42.9, 24.45], 8);
+        var map = L.map('map').setView([42.15, 24.75], 8);
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         }).addTo(map);
-
-        L.marker([42.15, 24.75]).addTo(map)
-            .bindPopup('Plovdiv <br> da!')
-        // .openPopup();
 
         {% for gps in gpsCollection %}
             var latlngs = [];
@@ -26,7 +22,10 @@
             polyline.bindPopup('<a href="{{ path('gps-view', {id: gps.id}) }}">view details</a>');
         {% endfor %}
 
-
-
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(function(position) {
+                map.panTo(new L.LatLng(position.coords.latitude, position.coords.longitude));
+            });
+        }
     </script>
 {% endblock %}
