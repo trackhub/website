@@ -1,7 +1,6 @@
 {% extends "base.html.twig" %}
 
 {% block content %}
-    asdad
     <div style="height: 800px; width: 1000px;" id="map"></div>
 
     <script>
@@ -14,16 +13,17 @@
             .bindPopup('Plovdiv <br> da!')
         // .openPopup();
 
-        {% for gpx in p %}
+        {% for gps in gpsCollection %}
             var latlngs = [];
-            {%  for point in gpx %}
+            {%  for point in gps.points %}
                 latlngs.push([
-                    {{ point.getLat }},
-                    {{ point.getLon }}
+                    {{ point.lat }},
+                    {{ point.lon }}
                 ]);
             {% endfor %}
 
             var polyline = L.polyline(latlngs, {color: 'red'}).addTo(map);
+            polyline.bindPopup('<a href="{{ path('gps-view', {id: gps.id}) }}">view details</a>');
         {% endfor %}
 
 

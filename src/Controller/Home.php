@@ -15,16 +15,10 @@ class Home extends AbstractController
         $em = $doctrine->getRepository(\App\Entity\Gps::class);
         $gpsCollection = $em->findAll();
 
-
-        $points = [];
-        foreach ($gpsCollection as $gps) {
-            $points[] = $gps->getPoints();
-        }
-
         return $this->render(
             'home/home.html.twig',
             [
-                'p' => $points,
+                'gpsCollection' => $gpsCollection,
             ]
         );
     }

@@ -6,12 +6,14 @@ use App\Entity\Gps\Point;
 use App\Entity\GpsFile;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 
 class Gps extends AbstractController
 {
-    public function New(Request $request)
+    public function new(Request $request)
     {
         $form = $this->createForm(\App\Form\Type\Gps::class);
         $form->add('submit', SubmitType::class);
@@ -75,5 +77,42 @@ class Gps extends AbstractController
                 'form' => $form->createView(),
             ]
         );
+    }
+
+    public function view($id)
+    {
+        $repo = $this->getDoctrine()
+            ->getManager()
+                ->getRepository(\App\Entity\Gps::class);
+
+        $gps = $repo->findOneBy(['id' => $id]);
+
+
+        return $this->render(
+            'gps/view.html.twig',
+            [
+                'gps' => $gps,
+            ]
+        );
+    }
+
+    public function download($id)
+    {
+        $repo = $this->getDoctrine()
+            ->getManager()
+            ->getRepository(\App\Entity\GpsFile::class);
+
+        $gps = $repo->findOneBy(['id' => $id]);
+        $gps->getFileContent();
+
+        $response = new \Symfony\Component\HttpFoundation\Response(
+            $gps->getFileContent(),
+            200,
+            [
+                'Content-Disposition' => ResponseHeaderBag::DISPOSITION_ATTACHMENT . '; filename="track.gpx";',
+            ]
+        );
+
+        return $response;
     }
 }

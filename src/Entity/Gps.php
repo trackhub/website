@@ -11,6 +11,14 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Gps
 {
+    const TYPE_CYCLING = 1;
+    const TYPE_HIKING = 2;
+
+    const VALID_TYPES = [
+        self::TYPE_CYCLING => self::TYPE_CYCLING,
+        self::TYPE_HIKING => self::TYPE_HIKING,
+    ];
+
     /**
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="UUID")
@@ -28,9 +36,27 @@ class Gps
      */
     private $points;
 
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $type;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\GpsFile", mappedBy="gps")
+     */
+    private $files;
+
     public function __construct()
     {
         $this->lastCheck = new DateTime();
+    }
+
+    /**
+     * @return string
+     */
+    public function getId()
+    {
+        return $this->id;
     }
 
     /**
@@ -39,5 +65,29 @@ class Gps
     public function getPoints()
     {
         return $this->points;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getType()
+    {
+        return $this->type;
+    }
+
+    /**
+     * @param int $type
+     */
+    public function setType(int $type): void
+    {
+        $this->type = $type;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getFiles()
+    {
+        return $this->files;
     }
 }

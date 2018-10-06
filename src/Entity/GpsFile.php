@@ -37,4 +37,20 @@ class GpsFile
         $this->fileContent = $fileContent;
         $this->createdAt = new \DateTime();
     }
+
+    /**
+     * @return mixed
+     */
+    public function getFileContent()
+    {
+        return $this->fileContent;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
 }
