@@ -51,7 +51,7 @@ class Home extends AbstractController
                     $gpsArrayData['id'] = $gps->getId();
                     foreach ($gps->getPoints() as $point) {
                         /* @var $point Point */
-                        $gpsArrayData['pints'][] = [
+                        $gpsArrayData['points'][] = [
                             'lat' => $point->getLat(),
                             'lon' => $point->getLon(),
                         ];

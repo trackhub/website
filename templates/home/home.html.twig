@@ -22,9 +22,46 @@
             polyline.bindPopup('<a href="{{ path('gps-view', {id: gps.id}) }}">view details</a>');
         {% endfor %}
 
+        var loadedTracks = {};
+
         map.on('moveend', function() {
-            // @TODO load tracks!
-            console.log(map.getBounds());
+            var ajax = new XMLHttpRequest();
+            ajax.onreadystatechange = function() {
+                if (this.readyState != 4 || this.status != 200) {
+                    return;
+                }
+
+                responseAsJson = JSON.parse(this.responseText);
+                // console.log(responseAsJson);
+                for (var i =0; i < responseAsJson.length; i++) {
+                    var id = responseAsJson[i].id;
+
+                    if (loadedTracks[id]) {
+                        continue;
+                    }
+
+                    loadedTracks[id] = true;
+
+                    var points = responseAsJson[i].points;
+                    var pointsAsPolyline = [];
+                    for(var j=0; j < points.length; j++) {
+                        pointsAsPolyline.push([
+                            points[j].lat,
+                            points[j].lon
+                        ]);
+                    }
+
+                    var polyline = L.polyline(pointsAsPolyline, {color: 'red'}).addTo(map);
+                    polyline.bindPopup('<a href="#">view details</a>');
+                }
+            };
+            var url = '/gps/list';
+            url += '/' + map.getBounds().getNorthEast().lat;
+            url += '/' + map.getBounds().getNorthEast().lng;
+            url += '/' + map.getBounds().getSouthWest().lat;
+            url += '/' + map.getBounds().getSouthWest().lng;
+            ajax.open('GET', url);
+            ajax.send();
         });
 
         map.panTo(new L.LatLng(42.15, 24.75));
@@ -33,7 +70,5 @@
                 map.panTo(new L.LatLng(position.coords.latitude, position.coords.longitude));
             });
         }
-
-
     </script>
 {% endblock %}

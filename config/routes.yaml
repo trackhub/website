@@ -10,7 +10,7 @@ gps-view:
   path: /gps/view/{id}
   controller: App\Controller\Gps::view
 
-gps-find:
+gps-list:
   path: /gps/list/{neLat}/{neLon}/{swLat}/{swLon}/{size}
   defaults:
     size: 10
