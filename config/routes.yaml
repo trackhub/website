@@ -10,6 +10,12 @@ gps-view:
   path: /gps/view/{id}
   controller: App\Controller\Gps::view
 
+gps-find:
+  path: /gps/list/{neLat}/{neLon}/{swLat}/{swLon}/{size}
+  defaults:
+    size: 10
+  controller: App\Controller\Home::find
+
 gps-download:
   path: /gps/download/{id}
   controller: App\Controller\Gps::download
