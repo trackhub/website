@@ -33,7 +33,7 @@ class Point
     private $lng;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Gps")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Gps", inversedBy="points")
      */
     private $gps;
 

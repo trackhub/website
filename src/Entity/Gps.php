@@ -5,6 +5,7 @@ namespace App\Entity;
 
 use App\Entity\Gps\Point;
 use DateTime;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -38,24 +39,24 @@ class Gps
     private $points;
 
     /**
-     * @ORM\Column(type="decimal")
+     * @ORM\Column(type="float")
      */
-    private $pointNorthEastLat = 0;
+    private $pointNorthEastLat = -999;
 
     /**
-     * @ORM\Column(type="decimal")
+     * @ORM\Column(type="float")
      */
-    private $pointNorthEastLng = 999;
+    private $pointNorthEastLng = -999;
 
     /**
-     * @ORM\Column(type="decimal")
+     * @ORM\Column(type="float")
      */
     private $pointSouthWestLat = 999;
 
     /**
-     * @ORM\Column(type="decimal")
+     * @ORM\Column(type="float")
      */
-    private $pointSouthWestLng = -999;
+    private $pointSouthWestLng = 999;
 
     /**
      * @ORM\Column(type="integer")
@@ -70,6 +71,7 @@ class Gps
     public function __construct()
     {
         $this->lastCheck = new DateTime();
+        $this->points = new ArrayCollection();
     }
 
     /**
@@ -91,21 +93,21 @@ class Gps
     public function addPoint(Point $p)
     {
         $p->setGps($this);
-        $this->points[] = $p;
+        $this->points->add($p);
 
-        if ($this->pointNorthEastLat < $p->getLat()) {
+        if ($p->getLat() > $this->pointNorthEastLat) {
             $this->pointNorthEastLat = $p->getLat();
         }
 
-        if ($this->pointNorthEastLng > $p->getLng()) {
+        if ($p->getLng() > $this->pointNorthEastLng) {
             $this->pointNorthEastLng = $p->getLng();
         }
 
-        if ($this->pointSouthWestLat > $p->getLat()) {
+        if ($p->getLat() < $this->pointSouthWestLat) {
             $this->pointSouthWestLat = $p->getLat();
         }
 
-        if ($this->pointSouthWestLng < $p->getLng()) {
+        if ($p->getLng() < $this->pointSouthWestLng) {
             $this->pointSouthWestLng = $p->getLng();
         }
     }

@@ -36,6 +36,7 @@ RUN apt-get update && \
 RUN echo "xdebug.remote_connect_back=1" >> /etc/php/${PHP_V}/apache2/conf.d/20-xdebug.ini
 RUN echo "xdebug.remote_enable=1" >> /etc/php/${PHP_V}/apache2/conf.d/20-xdebug.ini
 RUN echo "xdebug.remote_log=/tmp/xdebug.log" >> /etc/php/${PHP_V}/apache2/conf.d/20-xdebug.ini
+RUN echo "xdebug.remote_autostart=1" >> /etc/php/${PHP_V}/apache2/conf.d/20-xdebug.ini
 
 WORKDIR /var/www
 
