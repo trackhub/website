@@ -29,6 +29,14 @@ class Home extends AbstractController
         for ($i = 0; $i < $size; $i++) {
             $qb = $em->createQueryBuilder('g');
             $qb->select('count(g.id)');
+            $qb->andWhere(
+                $qb->expr()->andX(
+                    $qb->expr()->lte('g.pointNorthEastLat', $neLat),
+                    $qb->expr()->gte('g.pointNorthEastLng', $neLon),
+                    $qb->expr()->gte('g.pointSouthWestLat', $swLat),
+                    $qb->expr()->lte('g.pointSouthWestLng', $swLon)
+                )
+            );
             $q = $qb->getQuery();
             $data = $q->getSingleResult();
             $count = current($data);
