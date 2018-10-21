@@ -3,6 +3,7 @@
 
 namespace App\Entity;
 
+use App\Entity\Gps\Point;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -32,9 +33,29 @@ class Gps
     private $lastCheck;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Gps\Point", mappedBy="gps")
+     * @ORM\OneToMany(targetEntity="App\Entity\Gps\Point", mappedBy="gps", cascade={"persist"})
      */
     private $points;
+
+    /**
+     * @ORM\Column(type="decimal")
+     */
+    private $pointNorthEastLat = 0;
+
+    /**
+     * @ORM\Column(type="decimal")
+     */
+    private $pointNorthEastLng = 999;
+
+    /**
+     * @ORM\Column(type="decimal")
+     */
+    private $pointSouthWestLat = 999;
+
+    /**
+     * @ORM\Column(type="decimal")
+     */
+    private $pointSouthWestLng = -999;
 
     /**
      * @ORM\Column(type="integer")
@@ -60,11 +81,33 @@ class Gps
     }
 
     /**
-     * @return mixed
+     * @return Point[]
      */
     public function getPoints()
     {
         return $this->points;
+    }
+
+    public function addPoint(Point $p)
+    {
+        $p->setGps($this);
+        $this->points[] = $p;
+
+        if ($this->pointNorthEastLat < $p->getLat()) {
+            $this->pointNorthEastLat = $p->getLat();
+        }
+
+        if ($this->pointNorthEastLng > $p->getLng()) {
+            $this->pointNorthEastLng = $p->getLng();
+        }
+
+        if ($this->pointSouthWestLat > $p->getLat()) {
+            $this->pointSouthWestLat = $p->getLat();
+        }
+
+        if ($this->pointSouthWestLng < $p->getLng()) {
+            $this->pointSouthWestLng = $p->getLng();
+        }
     }
 
     /**
@@ -89,5 +132,25 @@ class Gps
     public function getFiles()
     {
         return $this->files;
+    }
+    
+    private function calculateGetNorthEastLat()
+    {
+        $neLat = 0;
+        $neLng = 9999;
+        foreach ($this->getPoints() as $point) {
+            if ($point->getLng() > $neLng) {
+                $neLng = $point->getLng();
+            }
+
+            if ($point->getLat() < $neLat) {
+                $neLat = $point->getLat();
+            }
+        }
+
+        return [
+            'lat' => $neLat,
+            'lng' => $neLng,
+        ];
     }
 }

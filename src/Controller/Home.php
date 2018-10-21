@@ -12,15 +12,9 @@ class Home extends AbstractController
 {
     public function home()
     {
-        $doctrine = $this->getDoctrine();
-        $em = $doctrine->getRepository(\App\Entity\Gps::class);
-        $gpsCollection = $em->findAll();
-
         return $this->render(
             'home/home.html.twig',
-            [
-                'gpsCollection' => $gpsCollection,
-            ]
+            []
         );
     }
 
@@ -53,7 +47,7 @@ class Home extends AbstractController
                         /* @var $point Point */
                         $gpsArrayData['points'][] = [
                             'lat' => $point->getLat(),
-                            'lon' => $point->getLon(),
+                            'lng' => $point->getLng(),
                         ];
                     }
 

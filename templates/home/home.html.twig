@@ -4,23 +4,10 @@
     <div style="height: 800px; width: 1000px;" id="map"></div>
 
     <script>
-        var map = L.map('map').setView([42.15, 24.75], 8);
+        var map = L.map('map').setView([42.15, 24.75], 10);
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         }).addTo(map);
-
-        {% for gps in gpsCollection %}
-            var latlngs = [];
-            {%  for point in gps.points %}
-                latlngs.push([
-                    {{ point.lat }},
-                    {{ point.lon }}
-                ]);
-            {% endfor %}
-
-            var polyline = L.polyline(latlngs, {color: 'red'}).addTo(map);
-            polyline.bindPopup('<a href="{{ path('gps-view', {id: gps.id}) }}">view details</a>');
-        {% endfor %}
 
         var loadedTracks = {};
 
@@ -44,10 +31,10 @@
 
                     var points = responseAsJson[i].points;
                     var pointsAsPolyline = [];
-                    for(var j=0; j < points.length; j++) {
+                    for (var j=0; j < points.length; j++) {
                         pointsAsPolyline.push([
                             points[j].lat,
-                            points[j].lon
+                            points[j].lng
                         ]);
                     }
 

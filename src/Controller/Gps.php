@@ -6,7 +6,6 @@ use App\Entity\Gps\Point;
 use App\Entity\GpsFile;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
-use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
@@ -48,14 +47,12 @@ class Gps extends AbstractController
                         $lon = (float)$attributes['lon'];
 
                         $point = new Point(
-                            $gps,
                             $order,
                             $lat,
                             $lon
                         );
 
-                        $this->getDoctrine()->getManager()
-                            ->persist($point);
+                        $gps->addPoint($point);
                         $order++;
                     }
                 }

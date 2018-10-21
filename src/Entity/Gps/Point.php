@@ -30,7 +30,7 @@ class Point
     /**
      * @ORM\Column(type="float")
      */
-    private $lon;
+    private $lng;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Gps")
@@ -41,14 +41,21 @@ class Point
      * Point constructor.
      * @param $order
      * @param $lat
-     * @param $lon
+     * @param $lng
      */
-    public function __construct(Gps $gps, int $order, float $lat, float $lon)
+    public function __construct(int $order, float $lat, float $lng)
     {
-        $this->gps = $gps;
         $this->order = $order;
         $this->lat = $lat;
-        $this->lon = $lon;
+        $this->lng = $lng;
+    }
+
+    /**
+     * @param mixed $gps
+     */
+    public function setGps($gps): void
+    {
+        $this->gps = $gps;
     }
 
     /**
@@ -62,8 +69,8 @@ class Point
     /**
      * @return mixed
      */
-    public function getLon()
+    public function getLng()
     {
-        return $this->lon;
+        return $this->lng;
     }
 }
