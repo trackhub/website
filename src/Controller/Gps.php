@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Gps\OptimizedPoint;
 use App\Entity\Gps\Point;
 use App\Entity\GpsFile;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -40,6 +41,8 @@ class Gps extends AbstractController
 
             foreach ($xml->trk as $track) {
                 $order = 0;
+                $optimizedPointLat = 0;
+                $optimizedPointLon = 0;
                 foreach ($track->trkseg as $tragSegment) {
                     foreach ($tragSegment->trkpt as $point) {
                         $attributes = $point->attributes();
@@ -53,6 +56,22 @@ class Gps extends AbstractController
                         );
 
                         $gps->addPoint($point);
+
+                        $latDiff = $optimizedPointLat - $lat;
+                        $lonDiff = $optimizedPointLon - $lon;
+                        $diff = abs($latDiff) + abs($lonDiff);
+                        if ($diff > 0.003) {
+                            $optimizedPointLat = $lat;
+                            $optimizedPointLon = $lon;
+                            $optimizedPoint = new OptimizedPoint(
+                                $order,
+                                $lat,
+                                $lon
+                            );
+
+                            $gps->addOptimizedPoint($optimizedPoint);
+                        }
+
                         $order++;
                     }
                 }

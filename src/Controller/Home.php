@@ -51,7 +51,7 @@ class Home extends AbstractController
                 foreach($qResult as $gps) {
                     $gpsArrayData = [];
                     $gpsArrayData['id'] = $gps->getId();
-                    foreach ($gps->getPoints() as $point) {
+                    foreach ($gps->getOptimizedPoints() as $point) {
                         /* @var $point Point */
                         $gpsArrayData['points'][] = [
                             'lat' => $point->getLat(),
@@ -67,7 +67,11 @@ class Home extends AbstractController
 
 
         return new Response(
-            json_encode($responseData)
+            json_encode($responseData),
+            Response::HTTP_OK,
+            [
+                'Content-Type' => 'text/json',
+            ]
         );
     }
 }

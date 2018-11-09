@@ -3,6 +3,7 @@
 
 namespace App\Entity;
 
+use App\Entity\Gps\OptimizedPoint;
 use App\Entity\Gps\Point;
 use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -39,6 +40,11 @@ class Gps
     private $points;
 
     /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Gps\OptimizedPoint", mappedBy="gps", cascade={"persist"})
+     */
+    private $optimizedPoints;
+
+    /**
      * @ORM\Column(type="float")
      */
     private $pointNorthEastLat = -999;
@@ -72,6 +78,7 @@ class Gps
     {
         $this->lastCheck = new DateTime();
         $this->points = new ArrayCollection();
+        $this->optimizedPoints = new ArrayCollection();
     }
 
     /**
@@ -88,6 +95,14 @@ class Gps
     public function getPoints()
     {
         return $this->points;
+    }
+
+    /**
+     * @return OptimizedPoint[]
+     */
+    public function getOptimizedPoints()
+    {
+        return $this->optimizedPoints;
     }
 
     public function addPoint(Point $p)
@@ -110,6 +125,12 @@ class Gps
         if ($p->getLng() < $this->pointSouthWestLng) {
             $this->pointSouthWestLng = $p->getLng();
         }
+    }
+
+    public function addOptimizedPoint(OptimizedPoint $p)
+    {
+        $p->setGps($this);
+        $this->optimizedPoints->add($p);
     }
 
     /**
