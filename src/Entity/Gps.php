@@ -98,6 +98,38 @@ class Gps
     }
 
     /**
+     * @return mixed
+     */
+    public function getPointNorthEastLat()
+    {
+        return $this->pointNorthEastLat;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getPointNorthEastLng()
+    {
+        return $this->pointNorthEastLng;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getPointSouthWestLat()
+    {
+        return $this->pointSouthWestLat;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getPointSouthWestLng()
+    {
+        return $this->pointSouthWestLng;
+    }
+
+    /**
      * @return OptimizedPoint[]
      */
     public function getOptimizedPoints()

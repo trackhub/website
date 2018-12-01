@@ -9,7 +9,13 @@
     <div style="height: 800px; width: 1000px;" id="map"></div>
 
     <script>
-        var map = L.map('map').setView([42.9, 24.45], 12);
+        var map = L.map('map').setView(
+            [
+                ({{ gps.pointNorthEastLat }} + {{ gps.pointSouthWestLat }}) / 2,
+                ({{ gps.pointSouthWestLng + gps.pointNorthEastLng}}) / 2
+            ],
+            12
+        );
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         }).addTo(map);
@@ -17,15 +23,18 @@
         var latlngs = [];
         {%  for point in gps.points %}
 
-        {% if loop.index0 == 0 %}
-        L.marker([{{ point.lat }}, {{ point.lon }}]).addTo(map)
-            .bindPopup('Start');
-            // .openPopup();
-        {% endif %}
+            {% if loop.first %}
+                L.marker([{{ point.lat }}, {{ point.lng }}]).addTo(map)
+                    .bindPopup('Start');
+            {% endif %}
+            {% if loop.last %}
+                L.marker([{{ point.lat }}, {{ point.lng }}]).addTo(map)
+                    .bindPopup('End');
+            {% endif %}
 
             latlngs.push([
                 {{ point.lat }},
-                {{ point.lon }}
+                {{ point.lng }}
             ]);
         {% endfor %}
 
