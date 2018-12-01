@@ -27,9 +27,25 @@
                 }
 
                 responseAsJson = JSON.parse(this.responseText);
-                // console.log(responseAsJson);
-                for (var i =0; i < responseAsJson.length; i++) {
-                    var id = responseAsJson[i].id;
+
+                var responseStatus = responseAsJson.status;
+
+                if (responseStatus == 2) {
+                    // @FIXME
+                    // show error for too many tracks
+                    return;
+                }
+
+                if (responseStatus != 1) {
+                    // unknown error
+                    // @FIXME show error
+                    return;
+                }
+
+                var tracksData = responseAsJson.data;
+
+                for (var i =0; i < tracksData.length; i++) {
+                    var id = tracksData[i].id;
 
                     if (loadedTracks[id]) {
                         continue;
@@ -37,7 +53,7 @@
 
                     loadedTracks[id] = true;
 
-                    var points = responseAsJson[i].points;
+                    var points = tracksData[i].points;
                     var pointsAsPolyline = [];
                     for (var j=0; j < points.length; j++) {
                         pointsAsPolyline.push([
