@@ -72,8 +72,17 @@
             url += '/' + map.getBounds().getNorthEast().lng;
             url += '/' + map.getBounds().getSouthWest().lat;
             url += '/' + map.getBounds().getSouthWest().lng;
-            ajax.open('GET', url);
-            ajax.send();
+
+            var postData = new FormData();
+            var fetchedTracksIds = [];
+            for (var key in loadedTracks) {
+                fetchedTracksIds.push(key);
+            }
+
+            postData.append('skipTracks', fetchedTracksIds);
+
+            ajax.open('POST', url);
+            ajax.send(postData);
         });
 
         map.panTo(new L.LatLng(42.15, 24.75));

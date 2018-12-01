@@ -21,6 +21,9 @@ class Home extends AbstractController
 
     public function find($neLat, $neLon, $swLat, $swLon, Request $request)
     {
+        $skipTracks = $request->request->get('skipTracks', []);
+        $skipTracksAsArray = explode(',', $skipTracks);
+
         $doctrine = $this->getDoctrine();
         $em = $doctrine->getRepository(\App\Entity\Gps::class);
         /* @var $em EntityRepository */
@@ -36,6 +39,11 @@ class Home extends AbstractController
                 $qb->expr()->gte('g.pointSouthWestLng', $swLon)
             )
         );
+
+        $qb->andWhere(
+            $qb->expr()->notIn('g.id', $skipTracksAsArray)
+        );
+
         $q = $qb->getQuery();
         $data = $q->getSingleResult();
         $count = current($data);
@@ -61,6 +69,11 @@ class Home extends AbstractController
                     $qb->expr()->gte('g.pointSouthWestLng', $swLon)
                 )
             );
+            $qb->andWhere(
+                $qb->expr()->notIn('g.id', $skipTracksAsArray)
+            );
+
+
             $qb->select('g');
             $q = $qb->getQuery();
             $qResult = $q->getResult();
