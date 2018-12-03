@@ -90,7 +90,7 @@ class Gps
     }
 
     /**
-     * @return Point[]
+     * @return Point[]|ArrayCollection
      */
     public function getPoints()
     {
