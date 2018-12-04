@@ -29,9 +29,11 @@ class Gps extends AbstractController
              - only gps!
              */
 
+
+            $gps = new \App\Entity\Gps();
             // we should have service for gpx processing
             $processor = new Processor();
-            $gps = $processor->process($fileData->getRealPath());
+            $processor->process($c, $gps);
 
             $gps->setType($form->get('type')->getData());
 

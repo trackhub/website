@@ -8,21 +8,19 @@ use App\Entity\Gps\OptimizedPoint;
 
 class Processor
 {
-    public function process(string $filepath): Gps
+    public function process(string $source, Gps $gps): Gps
     {
-        $xml = simplexml_load_file($filepath);
+        $xml = simplexml_load_string($source);
         if ($xml === false) {
             throw new \RuntimeException("Xml load failed");
         }
-
-        $gps = new Gps();
 
         foreach ($xml->trk as $track) {
             $order = 0;
             $optimizedPointLat = 0;
             $optimizedPointLon = 0;
-            foreach ($track->trkseg as $tragSegment) {
-                foreach ($tragSegment->trkpt as $point) {
+            foreach ($track->trkseg as $trackSegment) {
+                foreach ($trackSegment->trkpt as $point) {
                     $attributes = $point->attributes();
                     $lat = (float)$attributes['lat'];
                     $lon = (float)$attributes['lon'];

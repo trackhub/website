@@ -7,6 +7,7 @@ use App\Entity\Gps\OptimizedPoint;
 use App\Entity\Gps\Point;
 use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -71,6 +72,7 @@ class Gps
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\GpsFile", mappedBy="gps")
+     * @ORM\OrderBy({"createdAt" = "DESC"})
      */
     private $files;
 
@@ -182,7 +184,7 @@ class Gps
     }
 
     /**
-     * @return mixed
+     * @return Collection
      */
     public function getFiles()
     {
