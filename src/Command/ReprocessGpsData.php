@@ -34,8 +34,7 @@ class ReprocessGpsData extends Command
             $output->writeln("Processing track {$track->getId()}", OutputInterface::VERBOSITY_VERBOSE);
 
             /* @var $track Gps */
-            $track->getPoints()->clear();
-            $track->getOptimizedPoints()->clear();
+            $track->prepareForRecalculation();
             $processor = new Processor();
             $processor->process(
                 $track->getFiles()->first()->getFileContent(),

@@ -36,12 +36,12 @@ class Gps
     private $lastCheck;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Gps\Point", mappedBy="gps", cascade={"persist"})
+     * @ORM\OneToMany(targetEntity="App\Entity\Gps\Point", mappedBy="gps", cascade={"persist", "remove"}, orphanRemoval=true))
      */
     private $points;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Gps\OptimizedPoint", mappedBy="gps", cascade={"persist"})
+     * @ORM\OneToMany(targetEntity="App\Entity\Gps\OptimizedPoint", mappedBy="gps", cascade={"persist", "remove"}, orphanRemoval=true))
      */
     private $optimizedPoints;
 
@@ -190,24 +190,15 @@ class Gps
     {
         return $this->files;
     }
-    
-    private function calculateGetNorthEastLat()
+
+    public function prepareForRecalculation()
     {
-        $neLat = 0;
-        $neLng = 9999;
-        foreach ($this->getPoints() as $point) {
-            if ($point->getLng() > $neLng) {
-                $neLng = $point->getLng();
-            }
+        $this->pointNorthEastLat = -999;
+        $this->pointNorthEastLng = -999;
+        $this->pointSouthWestLat = 999;
+        $this->pointSouthWestLng = 999;
 
-            if ($point->getLat() < $neLat) {
-                $neLat = $point->getLat();
-            }
-        }
-
-        return [
-            'lat' => $neLat,
-            'lng' => $neLng,
-        ];
+        $this->getPoints()->clear();
+        $this->getOptimizedPoints()->clear();
     }
 }

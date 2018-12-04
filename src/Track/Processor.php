@@ -36,7 +36,7 @@ class Processor
                     $latDiff = $optimizedPointLat - $lat;
                     $lonDiff = $optimizedPointLon - $lon;
                     $diff = abs($latDiff) + abs($lonDiff);
-                    if ($diff > 0.003) {
+                    if ($diff > 0.0020) {
                         $optimizedPointLat = $lat;
                         $optimizedPointLon = $lon;
                         $optimizedPoint = new OptimizedPoint(
