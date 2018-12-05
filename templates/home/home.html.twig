@@ -27,9 +27,25 @@
                 }
 
                 responseAsJson = JSON.parse(this.responseText);
-                // console.log(responseAsJson);
-                for (var i =0; i < responseAsJson.length; i++) {
-                    var id = responseAsJson[i].id;
+
+                var responseStatus = responseAsJson.status;
+
+                if (responseStatus == 2) {
+                    // @FIXME
+                    // show error for too many tracks
+                    return;
+                }
+
+                if (responseStatus != 1) {
+                    // unknown error
+                    // @FIXME show error
+                    return;
+                }
+
+                var tracksData = responseAsJson.data;
+
+                for (var i =0; i < tracksData.length; i++) {
+                    var id = tracksData[i].id;
 
                     if (loadedTracks[id]) {
                         continue;
@@ -37,7 +53,7 @@
 
                     loadedTracks[id] = true;
 
-                    var points = responseAsJson[i].points;
+                    var points = tracksData[i].points;
                     var pointsAsPolyline = [];
                     for (var j=0; j < points.length; j++) {
                         pointsAsPolyline.push([
@@ -48,7 +64,7 @@
 
                     var polelineColor = gpsColors[Math.floor(Math.random()*gpsColors.length)];
                     var polyline = L.polyline(pointsAsPolyline, {color: polelineColor}).addTo(map);
-                    polyline.bindPopup('<a href="#">view details</a>');
+                    polyline.bindPopup('<a href="/gps/view/' + id + '">view details</a>');
                 }
             };
             var url = '/gps/list';
@@ -56,8 +72,17 @@
             url += '/' + map.getBounds().getNorthEast().lng;
             url += '/' + map.getBounds().getSouthWest().lat;
             url += '/' + map.getBounds().getSouthWest().lng;
-            ajax.open('GET', url);
-            ajax.send();
+
+            var postData = new FormData();
+            var fetchedTracksIds = [];
+            for (var key in loadedTracks) {
+                fetchedTracksIds.push(key);
+            }
+
+            postData.append('skipTracks', fetchedTracksIds);
+
+            ajax.open('POST', url);
+            ajax.send(postData);
         });
 
         map.panTo(new L.LatLng(42.15, 24.75));

@@ -2,11 +2,11 @@
 
 namespace App\Controller;
 
-use App\Entity\Gps\OptimizedPoint;
-use App\Entity\Gps\Point;
 use App\Entity\GpsFile;
+use App\Track\Processor;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
@@ -24,67 +24,34 @@ class Gps extends AbstractController
             $fileData = $file->getData();
             /* @var $fileData UploadedFile */
             $c = file_get_contents($fileData->getRealPath());
-            $n = $fileData->getClientOriginalName();
 
             /* @FIXME
              - only gps!
              */
 
-            // we should have service for gpx processing
-            $xml = simplexml_load_file($fileData->getRealPath());
-            if ($xml === false) {
-                throw new \RuntimeException("Xml load failed");
-            }
 
             $gps = new \App\Entity\Gps();
+            // we should have service for gpx processing
+            $processor = new Processor();
+            $processor->process($c, $gps);
+
             $gps->setType($form->get('type')->getData());
 
-            foreach ($xml->trk as $track) {
-                $order = 0;
-                $optimizedPointLat = 0;
-                $optimizedPointLon = 0;
-                foreach ($track->trkseg as $tragSegment) {
-                    foreach ($tragSegment->trkpt as $point) {
-                        $attributes = $point->attributes();
-                        $lat = (float)$attributes['lat'];
-                        $lon = (float)$attributes['lon'];
+            if ($gps->getPoints()->isEmpty()) {
+                $form->get('file')->addError(
+                    new FormError('error') // @FIXME translate
+                );
+            } else {
+                $gpsFile = new GpsFile($gps, $c);
+                $this->getDoctrine()->getManager()
+                    ->persist($gps);
+                $this->getDoctrine()->getManager()
+                    ->persist($gpsFile);
+                $this->getDoctrine()->getManager()
+                    ->flush();
 
-                        $point = new Point(
-                            $order,
-                            $lat,
-                            $lon
-                        );
-
-                        $gps->addPoint($point);
-
-                        $latDiff = $optimizedPointLat - $lat;
-                        $lonDiff = $optimizedPointLon - $lon;
-                        $diff = abs($latDiff) + abs($lonDiff);
-                        if ($diff > 0.003) {
-                            $optimizedPointLat = $lat;
-                            $optimizedPointLon = $lon;
-                            $optimizedPoint = new OptimizedPoint(
-                                $order,
-                                $lat,
-                                $lon
-                            );
-
-                            $gps->addOptimizedPoint($optimizedPoint);
-                        }
-
-                        $order++;
-                    }
-                }
+                return $this->redirectToRoute('index');
             }
-            $gpsFile = new GpsFile($gps, $c);
-            $this->getDoctrine()->getManager()
-                ->persist($gps);
-            $this->getDoctrine()->getManager()
-                ->persist($gpsFile);
-            $this->getDoctrine()->getManager()
-                ->flush();
-
-            return $this->redirectToRoute('index');
         }
 
         return $this->render(
@@ -116,7 +83,7 @@ class Gps extends AbstractController
     {
         $repo = $this->getDoctrine()
             ->getManager()
-            ->getRepository(\App\Entity\GpsFile::class);
+                ->getRepository(\App\Entity\GpsFile::class);
 
         $gps = $repo->findOneBy(['id' => $id]);
         $gps->getFileContent();
