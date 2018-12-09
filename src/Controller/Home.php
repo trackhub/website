@@ -13,6 +13,8 @@ class Home extends AbstractController
 {
     public function home()
     {
+        @var_dump($_SESSION);
+
         return $this->render(
             'home/home.html.twig',
             []
