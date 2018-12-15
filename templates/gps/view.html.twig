@@ -2,6 +2,8 @@
 
 {% block content %}
 
+    <h1>{{ gps.name }}</h1>
+
     {% for file in gps.files %}
         <a href="{{ path('gps-download', {id: file.id}) }}">download</a>
     {% endfor %}

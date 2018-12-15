@@ -84,6 +84,7 @@ class Home extends AbstractController
             foreach($qResult as $gps) {
                 $gpsArrayData = [];
                 $gpsArrayData['id'] = $gps->getId();
+                $gpsArrayData['name'] = $gps->getName();
                 foreach ($gps->getOptimizedPoints() as $point) {
                     /* @var $point Point */
                     $gpsArrayData['points'][] = [

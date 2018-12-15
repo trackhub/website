@@ -31,8 +31,7 @@
                 var responseStatus = responseAsJson.status;
 
                 if (responseStatus == 2) {
-                    // @FIXME
-                    // show error for too many tracks
+                    appNotification.error('Too many track found, please zoom in');
                     return;
                 }
 
