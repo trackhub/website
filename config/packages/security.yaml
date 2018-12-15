@@ -1,5 +1,7 @@
 security:
   # https://symfony.com/doc/current/security.html#where-do-users-come-from-user-providers
+  encoders:
+    FOS\UserBundle\Model\UserInterface: bcrypt
   providers:
 #    in_memory: { memory: ~ }
     hwi:
@@ -19,7 +21,8 @@ security:
         failure_path:      /login
 
         oauth_user_provider:
-          service: hwi_oauth.user.provider
+#          service: hwi_oauth.user.provider
+          service: app.hwi_oauth.user.provider.fosub_bridge
 
       # activate different ways to authenticate
 

@@ -68,6 +68,9 @@
     "doctrine/reflection": {
         "version": "v1.0.0"
     },
+    "friendsofsymfony/user-bundle": {
+        "version": "v2.1.2"
+    },
     "guzzlehttp/guzzle": {
         "version": "6.3.3"
     },
@@ -263,6 +266,15 @@
     "symfony/templating": {
         "version": "v4.1.9"
     },
+    "symfony/translation": {
+        "version": "3.3",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "master",
+            "version": "3.3",
+            "ref": "1fb02a6e1c8f3d4232cce485c9afa868d63b115a"
+        }
+    },
     "symfony/twig-bridge": {
         "version": "v4.1.6"
     },
@@ -273,6 +285,15 @@
             "branch": "master",
             "version": "3.3",
             "ref": "369b5b29dc52b2c190002825ae7ec24ab6f962dd"
+        }
+    },
+    "symfony/validator": {
+        "version": "4.1",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "master",
+            "version": "4.1",
+            "ref": "0cdc982334f45d554957a6167e030482795bf9d7"
         }
     },
     "symfony/yaml": {

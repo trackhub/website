@@ -4,6 +4,7 @@
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
 parameters:
+    locale: 'en'
 
 services:
     # default configuration for services in *this* file
@@ -28,3 +29,8 @@ services:
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
+    app.hwi_oauth.user.provider.fosub_bridge:
+        class: HWI\Bundle\OAuthBundle\Security\Core\User\FOSUBUserProvider
+        arguments:
+            - '@fos_user.user_manager'
+            - facebook: facebookToken
