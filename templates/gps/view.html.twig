@@ -5,8 +5,10 @@
     <h1>{{ gps.name }}</h1>
 
     {% for file in gps.files %}
-        <a href="{{ path('gps-download', {id: file.id}) }}">download</a>
+        <a class="btn btn-success" href="{{ path('gps-download', {id: file.id}) }}">download, version {{ loop.revindex }}</a>
     {% endfor %}
+
+    <hr>
 
     <div style="height: 800px; width: 1000px;" id="map"></div>
 
