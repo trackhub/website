@@ -20,6 +20,15 @@
         <ul class="nav">
             <li class="nav-link"><a href="/">home</a></li>
             <li class="nav-link"><a href="{{ path('gps-new') }}">new</a></li>
+            <li class="nav-link">
+                {% if app.user %}
+                    {{ app.user }},
+                    <a href="{{ path('fos_user_security_logout') }}">logout</a>
+                {% else %}
+                    <a href="{{ path('fos_user_security_login') }}">login</a>
+                {% endif %}
+
+            </li>
         </ul>
     </div>
     <hr>

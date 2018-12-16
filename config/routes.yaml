@@ -19,3 +19,6 @@ gps-list:
 gps-download:
   path: /gps/download/{id}
   controller: App\Controller\Gps::download
+
+fos_user:
+  resource: "@FOSUserBundle/Resources/config/routing/all.xml"
