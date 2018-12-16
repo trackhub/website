@@ -20,5 +20,10 @@ gps-download:
   path: /gps/download/{id}
   controller: App\Controller\Gps::download
 
-fos_user:
-  resource: "@FOSUserBundle/Resources/config/routing/all.xml"
+fos_user_registration:
+  resource: "@FOSUserBundle/Resources/config/routing/registration.xml"
+  prefix: "user/register"
+fos_user_security:
+  resource: "@FOSUserBundle/Resources/config/routing/security.xml"
+
+
