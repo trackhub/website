@@ -31,6 +31,11 @@ class Gps
     private $id;
 
     /**
+     * @ORM\Column(type="string")
+     */
+    private $name;
+
+    /**
      * @ORM\Column(type="date")
      */
     private $lastCheck;
@@ -81,6 +86,22 @@ class Gps
         $this->lastCheck = new DateTime();
         $this->points = new ArrayCollection();
         $this->optimizedPoints = new ArrayCollection();
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    /**
+     * @param mixed $name
+     */
+    public function setName($name): void
+    {
+        $this->name = $name;
     }
 
     /**
