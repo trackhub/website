@@ -37,6 +37,8 @@ class Gps extends AbstractController
 
             $gps->setType($form->get('type')->getData());
             $gps->setName($form->get('name')->getData());
+            $gps->setUser($this->getUser());
+
 
             if ($gps->getPoints()->isEmpty()) {
                 $form->get('file')->addError(

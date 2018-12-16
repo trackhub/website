@@ -5,6 +5,7 @@ namespace App\Entity;
 
 use App\Entity\Gps\OptimizedPoint;
 use App\Entity\Gps\Point;
+use App\Entity\User\User;
 use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -76,6 +77,12 @@ class Gps
     private $type;
 
     /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\User\User")
+     * @ORM\JoinColumn(name="user_id", referencedColumnName="id")
+     */
+    private $user;
+
+    /**
      * @ORM\OneToMany(targetEntity="App\Entity\GpsFile", mappedBy="gps")
      * @ORM\OrderBy({"createdAt" = "DESC"})
      */
@@ -86,6 +93,22 @@ class Gps
         $this->lastCheck = new DateTime();
         $this->points = new ArrayCollection();
         $this->optimizedPoints = new ArrayCollection();
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getUser()
+    {
+        return $this->user;
+    }
+
+    /**
+     * @param mixed $user
+     */
+    public function setUser(User $user): void
+    {
+        $this->user = $user;
     }
 
     /**

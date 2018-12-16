@@ -3,9 +3,12 @@
 {% block content %}
 
     <h1>{{ gps.name }}</h1>
+    send by {{ gps.user.username }}
+
+    <hr>
 
     {% for file in gps.files %}
-        <a class="btn btn-success" href="{{ path('gps-download', {id: file.id}) }}">download, version {{ loop.revindex }}</a>
+        <a class="btn btn-success" href="{{ path('gps-download', {id: file.id}) }}">download, version {{ loop.revindex }}</a> by {{ file.user.username }}
     {% endfor %}
 
     <hr>
@@ -26,7 +29,6 @@
 
         var latlngs = [];
         {%  for point in gps.points %}
-
             {% if loop.first %}
                 L.marker([{{ point.lat }}, {{ point.lng }}]).addTo(map)
                     .bindPopup('Start');
