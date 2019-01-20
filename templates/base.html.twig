@@ -10,6 +10,10 @@
         <script src="https://unpkg.com/leaflet@1.3.4/dist/leaflet.js"
                 integrity="sha512-nMMmRyTVoLYqjP9hrbed9S+FzjZHW5gY1TWCHA5ckwXZBadntCNs8kEqAWdrb9O7rxbCaA4lKTIWjDXZxflOcA=="
                 crossorigin=""></script>
+
+        {{ encore_entry_link_tags('app') }}
+        {{ encore_entry_script_tags('app') }}
+
         {% block stylesheets %}{% endblock %}
     </head>
     <body>
@@ -18,8 +22,16 @@
             <li><a href="/">home</a></li>
             <li><a href="{{ path('gps-new') }}">new</a></li>
         </ul>
-        <hr>
-        {% block content %}{% endblock %}
-        {% block javascripts %}{% endblock %}
+        <div class="container-fluid">
+            <div class="row">
+                <ul class="nav">
+                    <li class="nav-link"><a href="/">home</a></li>
+                    <li class="nav-link"><a href="{{ path('gps-new') }}">new</a></li>
+                </ul>
+            </div>
+            <hr>
+            {% block content %}{% endblock %}
+        </div>
+    {% block javascripts %}{% endblock %}
     </body>
 </html>
