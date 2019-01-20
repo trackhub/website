@@ -1,6 +1,8 @@
 hwi_oauth:
     # list of names of the firewalls in which this bundle is active, this setting MUST be set
     firewall_names: [main]
+    connect: true
+#    fosub: true
 
     # https://github.com/hwi/HWIOAuthBundle/blob/master/Resources/doc/2-configuring_resource_owners.md
     resource_owners:
@@ -12,3 +14,6 @@ hwi_oauth:
             options:
 #                display: popup
                 csrf: true
+    fosub:
+        properties:
+            facebook: facebookId

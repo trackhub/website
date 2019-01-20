@@ -20,9 +20,30 @@ class User extends BaseUser
     protected $id;
 
     /**
-     * @ORM\Column(type="string")
+     * @ORM\Column(type="string", nullable=true)
      */
     private $facebookToken;
+
+    /**
+     * @ORM\Column(type="string", nullable=true)
+     */
+    private $facebookId;
+
+    /**
+     * @return mixed
+     */
+    public function getFacebookId()
+    {
+        return $this->facebookId;
+    }
+
+    /**
+     * @param mixed $facebookId
+     */
+    public function setFacebookId($facebookId): void
+    {
+        $this->facebookId = $facebookId;
+    }
 
     /**
      * @return mixed
