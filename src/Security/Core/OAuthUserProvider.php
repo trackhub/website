@@ -5,9 +5,7 @@ namespace App\Security\Core;
 
 use HWI\Bundle\OAuthBundle\OAuth\Response\UserResponseInterface;
 use HWI\Bundle\OAuthBundle\Security\Core\User\FOSUBUserProvider;
-use FOS\UserBundle\Model\UserManagerInterface;
 use HWI\Bundle\OAuthBundle\Security\Core\Exception\AccountNotLinkedException;
-use Symfony\Component\PropertyAccess\PropertyAccess;
 
 class OAuthUserProvider extends FOSUBUserProvider
 {
@@ -17,19 +15,6 @@ class OAuthUserProvider extends FOSUBUserProvider
     protected $properties = array(
         'identifier' => 'id',
     );
-
-    /**
-     * Constructor.
-     *
-     * @param UserManagerInterface $userManager fOSUB user provider
-     * @param array $properties property mapping
-     */
-    public function __construct(UserManagerInterface $userManager, array $properties)
-    {
-        $this->userManager = $userManager;
-        $this->properties = array_merge($this->properties, $properties);
-        $this->accessor = PropertyAccess::createPropertyAccessor();
-    }
 
     /**
      * {@inheritdoc}
