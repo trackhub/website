@@ -11,8 +11,4 @@ hwi_oauth:
             client_secret:       '%env(FB_SECRET)%'
             scope:               "email"
             options:
-#                display: popup
                 csrf: true
-    fosub:
-        properties:
-            facebook: facebookId
