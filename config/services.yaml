@@ -27,16 +27,9 @@ services:
         resource: '../src/Controller'
         tags: ['controller.service_arguments']
 
-    # add more service definitions when explicit configuration is needed
-    # please note that last definitions always *replace* previous ones
-    app.hwi_oauth.user.provider.fosub_bridge:
-        class: HWI\Bundle\OAuthBundle\Security\Core\User\FOSUBUserProvider
+    app.oauth.provider:
+        class: App\Security\Core\OAuthUserProvider
         arguments:
             - '@fos_user.user_manager'
-            - facebook: facebookToken
-    hwi_oauth.registration.form:
-        class: FrontBundle\Form\Type\SignupFormType
-        arguments: ['@translator.default', '@router']
-        tags:
-            - { name: form.type }
-        public: true
+            - '@doctrine.orm.entity_manager'
+            - facebook: facebookId

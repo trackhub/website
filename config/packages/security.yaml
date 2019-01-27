@@ -3,9 +3,8 @@ security:
   encoders:
     FOS\UserBundle\Model\UserInterface: bcrypt
   providers:
-#    in_memory: { memory: ~ }
-    hwi:
-      id: hwi_oauth.user.provider
+    app.user.provider:
+      id: app.oauth.provider
 
   firewalls:
     dev:
@@ -13,6 +12,8 @@ security:
       security: false
     main:
       anonymous: ~
+      logout:
+        path:   app_logout
       oauth:
         resource_owners:
           facebook: "/login/check-facebook"
@@ -21,8 +22,7 @@ security:
         failure_path:      /login
 
         oauth_user_provider:
-#          service: hwi_oauth.user.provider
-          service: app.hwi_oauth.user.provider.fosub_bridge
+          service: app.oauth.provider
 
       # activate different ways to authenticate
 

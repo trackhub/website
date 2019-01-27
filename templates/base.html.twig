@@ -18,11 +18,16 @@
     </head>
     <body>
         <ul>
-            <li><a href="{{ path("hwi_oauth_connect") }}">fb login</a></li>
-            <li><a href="{{ path("hwi_oauth_connect") }}">fb singup</a></li>
+            <li><a href="{{ path("hwi_oauth_connect") }}">login</a></li>
             <li><a href="/">home</a></li>
             <li><a href="{{ path('gps-new') }}">new</a></li>
         </ul>
+
+        {% if app.user %}
+            {{ app.user.username }},
+            <a href="{{ path('app_logout') }}">logout</a>
+        {% endif %}
+
         <div class="container-fluid">
             <div class="row">
                 <ul class="nav">

@@ -22,11 +22,6 @@ class User extends BaseUser
     /**
      * @ORM\Column(type="string", nullable=true)
      */
-    private $facebookToken;
-
-    /**
-     * @ORM\Column(type="string", nullable=true)
-     */
     private $facebookId;
 
     /**
@@ -43,21 +38,5 @@ class User extends BaseUser
     public function setFacebookId($facebookId): void
     {
         $this->facebookId = $facebookId;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getFacebookToken()
-    {
-        return $this->facebookToken;
-    }
-
-    /**
-     * @param mixed $facebookToken
-     */
-    public function setFacebookToken($facebookToken): void
-    {
-        $this->facebookToken = $facebookToken;
     }
 }
