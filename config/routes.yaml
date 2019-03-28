@@ -2,13 +2,17 @@ index:
   path: /
   controller: App\Controller\Home::home
 
+gps-new-version:
+  path: /gps/new-version/{id}
+  controller: App\Controller\Track::newVersion
+
 gps-new:
   path: /gps/new
-  controller: App\Controller\Gps::new
+  controller: App\Controller\Track::new
 
 gps-view:
   path: /gps/view/{id}
-  controller: App\Controller\Gps::view
+  controller: App\Controller\Track::view
 
 gps-list:
   path: /gps/list/{neLat}/{neLon}/{swLat}/{swLon}/{size}
@@ -18,7 +22,7 @@ gps-list:
 
 gps-download:
   path: /gps/download/{id}
-  controller: App\Controller\Gps::download
+  controller: App\Controller\Track::download
 
 app_logout:
   path: /logout

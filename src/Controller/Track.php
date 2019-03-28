@@ -2,7 +2,7 @@
 
 namespace App\Controller;
 
-use App\Entity\GpsFile;
+use App\Entity\File\TrackFile;
 use App\Track\Processor;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -11,7 +11,7 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 
-class Gps extends AbstractController
+class Track extends AbstractController
 {
     public function new(Request $request)
     {
@@ -30,7 +30,7 @@ class Gps extends AbstractController
              */
 
 
-            $gps = new \App\Entity\Gps();
+            $gps = new \App\Entity\Track();
             // we should have service for gpx processing
             $processor = new Processor();
             $processor->process($c, $gps);
@@ -43,7 +43,7 @@ class Gps extends AbstractController
                     new FormError('error') // @FIXME translate
                 );
             } else {
-                $gpsFile = new GpsFile($gps, $c);
+                $gpsFile = new TrackFile($gps, $c);
                 $this->getDoctrine()->getManager()
                     ->persist($gps);
                 $this->getDoctrine()->getManager()
@@ -63,11 +63,23 @@ class Gps extends AbstractController
         );
     }
 
+    public function newVersion(Request $request, string $id)
+    {
+        $gps = $this->getDoctrine()->getRepository(\App\Entity\Track::class)->findOneBy(['id' => $id]);
+
+        return $this->render(
+            'gps/newVersion.html.twig',
+            [
+                'gps' => $gps,
+            ]
+        );
+    }
+
     public function view($id)
     {
         $repo = $this->getDoctrine()
             ->getManager()
-                ->getRepository(\App\Entity\Gps::class);
+                ->getRepository(\App\Entity\Track::class);
 
         $gps = $repo->findOneBy(['id' => $id]);
 
@@ -75,7 +87,7 @@ class Gps extends AbstractController
         return $this->render(
             'gps/view.html.twig',
             [
-                'gps' => $gps,
+                'track' => $gps,
             ]
         );
     }
@@ -84,7 +96,7 @@ class Gps extends AbstractController
     {
         $repo = $this->getDoctrine()
             ->getManager()
-                ->getRepository(\App\Entity\GpsFile::class);
+                ->getRepository(TrackFile::class);
 
         $gps = $repo->findOneBy(['id' => $id]);
         $gps->getFileContent();

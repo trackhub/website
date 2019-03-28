@@ -2,13 +2,13 @@
 
 namespace App\Track;
 
-use App\Entity\Gps;
-use App\Entity\Gps\Point;
-use App\Entity\Gps\OptimizedPoint;
+use App\Entity\Track;
+use App\Entity\Track\Point;
+use App\Entity\Track\OptimizedPoint;
 
 class Processor
 {
-    public function process(string $source, Gps $gps): Gps
+    public function process(string $source, Track $gps): Track
     {
         $xml = simplexml_load_string($source);
         if ($xml === false) {

@@ -2,11 +2,15 @@
 
 {% block content %}
 
-    <h1>{{ gps.name }}</h1>
+    <h1>{{ track.name }}</h1>
 
-    {% for file in gps.files %}
+    {% for file in track.files %}
         <a class="btn btn-success" href="{{ path('gps-download', {id: file.id}) }}">download, version {{ loop.revindex }}</a>
     {% endfor %}
+
+    <div class="clearfix"></div>
+
+    <a href="{{ path('gps-new-version', {id:track.id}) }}">add new version</a>
 
     <hr>
 
@@ -15,8 +19,8 @@
     <script>
         var map = L.map('map').setView(
             [
-                ({{ gps.pointNorthEastLat }} + {{ gps.pointSouthWestLat }}) / 2,
-                ({{ gps.pointSouthWestLng + gps.pointNorthEastLng}}) / 2
+                ({{ track.pointNorthEastLat }} + {{ track.pointSouthWestLat }}) / 2,
+                ({{ track.pointSouthWestLng + track.pointNorthEastLng}}) / 2
             ],
             12
         );
@@ -25,7 +29,7 @@
         }).addTo(map);
 
         var latlngs = [];
-        {%  for point in gps.points %}
+        {%  for point in track.points %}
 
             {% if loop.first %}
                 L.marker([{{ point.lat }}, {{ point.lng }}]).addTo(map)

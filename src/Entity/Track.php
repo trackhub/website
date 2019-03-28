@@ -3,8 +3,8 @@
 
 namespace App\Entity;
 
-use App\Entity\Gps\OptimizedPoint;
-use App\Entity\Gps\Point;
+use App\Entity\Track\OptimizedPoint;
+use App\Entity\Track\Point;
 use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -13,7 +13,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * @ORM\Entity
  */
-class Gps
+class Track
 {
     const TYPE_CYCLING = 1;
     const TYPE_HIKING = 2;
@@ -41,12 +41,12 @@ class Gps
     private $lastCheck;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Gps\Point", mappedBy="gps", cascade={"persist", "remove"}, orphanRemoval=true))
+     * @ORM\OneToMany(targetEntity="App\Entity\Track\Point", mappedBy="gps", cascade={"persist", "remove"}, orphanRemoval=true))
      */
     private $points;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Gps\OptimizedPoint", mappedBy="gps", cascade={"persist", "remove"}, orphanRemoval=true))
+     * @ORM\OneToMany(targetEntity="App\Entity\Track\OptimizedPoint", mappedBy="gps", cascade={"persist", "remove"}, orphanRemoval=true))
      */
     private $optimizedPoints;
 
@@ -76,7 +76,7 @@ class Gps
     private $type;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\GpsFile", mappedBy="gps")
+     * @ORM\OneToMany(targetEntity="App\Entity\File\TrackFile", mappedBy="track")
      * @ORM\OrderBy({"createdAt" = "DESC"})
      */
     private $files;

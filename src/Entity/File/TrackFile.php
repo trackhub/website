@@ -1,13 +1,14 @@
 <?php
 
-namespace App\Entity;
+namespace App\Entity\File;
 
+use App\Entity\Track;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity
  */
-class GpsFile
+class TrackFile
 {
     /**
      * @ORM\Id
@@ -22,18 +23,18 @@ class GpsFile
     private $fileContent;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Gps")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Track")
      */
-    private $gps;
+    private $track;
 
     /**
      * @ORM\Column(type="datetime")
      */
     private $createdAt;
 
-    public function __construct($gps, $fileContent)
+    public function __construct(Track $track, string $fileContent)
     {
-        $this->gps = $gps;
+        $this->track = $track;
         $this->fileContent = $fileContent;
         $this->createdAt = new \DateTime();
     }
