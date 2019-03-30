@@ -34,7 +34,7 @@ class Point
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Track", inversedBy="points")
      */
-    private $gps;
+    private $track;
 
     /**
      * Point constructor.
@@ -50,11 +50,11 @@ class Point
     }
 
     /**
-     * @param mixed $gps
+     * @param mixed $track
      */
-    public function setGps($gps): void
+    public function setTrack($track): void
     {
-        $this->gps = $gps;
+        $this->track = $track;
     }
 
     /**

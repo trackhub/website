@@ -15,7 +15,7 @@ class Track extends AbstractController
 {
     public function new(Request $request)
     {
-        $form = $this->createForm(\App\Form\Type\Gps::class);
+        $form = $this->createForm(\App\Form\Type\Track::class);
         $form->add('submit', SubmitType::class);
 
         $form->handleRequest($request);

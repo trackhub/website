@@ -41,7 +41,7 @@ class Track
     private $lastCheck;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Track\Point", mappedBy="gps", cascade={"persist", "remove"}, orphanRemoval=true))
+     * @ORM\OneToMany(targetEntity="App\Entity\Track\Point", mappedBy="track", cascade={"persist", "remove"}, orphanRemoval=true))
      */
     private $points;
 
@@ -73,7 +73,7 @@ class Track
     /**
      * @ORM\Column(type="integer")
      */
-    private $type;
+    private $type = self::TYPE_CYCLING;
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\File\TrackFile", mappedBy="track")
@@ -88,26 +88,17 @@ class Track
         $this->optimizedPoints = new ArrayCollection();
     }
 
-    /**
-     * @return mixed
-     */
-    public function getName()
+    public function getName(): ?string
     {
         return $this->name;
     }
 
-    /**
-     * @param mixed $name
-     */
-    public function setName($name): void
+    public function setName(string $name): void
     {
         $this->name = $name;
     }
 
-    /**
-     * @return string
-     */
-    public function getId()
+    public function getId(): ?string
     {
         return $this->id;
     }
@@ -153,7 +144,7 @@ class Track
     }
 
     /**
-     * @return OptimizedPoint[]
+     * @return OptimizedPoint[]|ArrayCollection
      */
     public function getOptimizedPoints()
     {
@@ -162,7 +153,7 @@ class Track
 
     public function addPoint(Point $p)
     {
-        $p->setGps($this);
+        $p->setTrack($this);
         $this->points->add($p);
 
         if ($p->getLat() > $this->pointNorthEastLat) {
@@ -188,17 +179,11 @@ class Track
         $this->optimizedPoints->add($p);
     }
 
-    /**
-     * @return mixed
-     */
-    public function getType()
+    public function getType(): int
     {
         return $this->type;
     }
 
-    /**
-     * @param int $type
-     */
     public function setType(int $type): void
     {
         $this->type = $type;
