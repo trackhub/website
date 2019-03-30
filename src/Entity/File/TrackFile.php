@@ -2,8 +2,8 @@
 
 namespace App\Entity\File;
 
-use App\Entity\Track;
 use Doctrine\ORM\Mapping as ORM;
+use App\Entity\Track\Version;
 
 /**
  * @ORM\Entity
@@ -23,35 +23,34 @@ class TrackFile
     private $fileContent;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Track")
+     * @ORM\OneToOne(targetEntity="App\Entity\Track\Version")
      */
-    private $track;
+    private $version;
 
     /**
      * @ORM\Column(type="datetime")
      */
     private $createdAt;
 
-    public function __construct(Track $track, string $fileContent)
+    public function __construct(Version $version, string $fileContent)
     {
-        $this->track = $track;
+        $this->version = $version;
         $this->fileContent = $fileContent;
         $this->createdAt = new \DateTime();
     }
 
-    /**
-     * @return mixed
-     */
-    public function getFileContent()
+    public function getFileContent(): string
     {
         return $this->fileContent;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getId()
+    public function getId(): ?string
     {
         return $this->id;
+    }
+
+    public function setVersion(Version $version): void
+    {
+        $this->version = $version;
     }
 }

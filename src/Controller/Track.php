@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\File\TrackFile;
+use App\Entity\Track\Version;
 use App\Track\Processor;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -30,24 +31,34 @@ class Track extends AbstractController
              */
 
 
-            $gps = new \App\Entity\Track();
+            $track = new \App\Entity\Track();
             // we should have service for gpx processing
             $processor = new Processor();
-            $processor->process($c, $gps);
+            $trackVersion = new Version();
+            $processor->process($c, $trackVersion);
+            $optimizedPoints = $processor->generateOptimizedPoints($trackVersion);
+            foreach ($optimizedPoints as $optimizedPoint) {
+                $track->addOptimizedPoint($optimizedPoint);
+            }
 
-            $gps->setType($form->get('type')->getData());
-            $gps->setName($form->get('name')->getData());
+            $track->addVersion($trackVersion);
 
-            if ($gps->getPoints()->isEmpty()) {
+            $track->setType($form->get('type')->getData());
+            $track->setName($form->get('name')->getData());
+
+            if ($track->getOptimizedPoints()->isEmpty()) {
                 $form->get('file')->addError(
-                    new FormError('error') // @FIXME translate
+                    new FormError('error') // @FIXME translate and add specific error
                 );
             } else {
-                $gpsFile = new TrackFile($gps, $c);
+                $trackFile = new TrackFile($trackVersion, $c);
+                $trackVersion->setFile($trackFile);
+
+
                 $this->getDoctrine()->getManager()
-                    ->persist($gps);
+                    ->persist($track);
                 $this->getDoctrine()->getManager()
-                    ->persist($gpsFile);
+                    ->persist($trackFile);
                 $this->getDoctrine()->getManager()
                     ->flush();
 

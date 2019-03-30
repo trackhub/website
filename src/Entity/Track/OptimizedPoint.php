@@ -32,9 +32,9 @@ class OptimizedPoint
     private $lng;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Track", inversedBy="OptimizedPoints")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Track", inversedBy="optimizedPoints")
      */
-    private $gps;
+    private $track;
 
     /**
      * Point constructor.
@@ -50,11 +50,11 @@ class OptimizedPoint
     }
 
     /**
-     * @param mixed $gps
+     * @param mixed $track
      */
-    public function setGps($gps): void
+    public function setTrack($track): void
     {
-        $this->gps = $gps;
+        $this->track = $track;
     }
 
     /**

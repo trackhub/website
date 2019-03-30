@@ -4,8 +4,8 @@
 
     <h1>{{ track.name }}</h1>
 
-    {% for file in track.files %}
-        <a class="btn btn-success" href="{{ path('gps-download', {id: file.id}) }}">download, version {{ loop.revindex }}</a>
+    {% for version in track.versions %}
+        <a class="btn btn-success" href="{{ path('gps-download', {id: version.file.id}) }}">download, version {{ loop.revindex }}</a>
     {% endfor %}
 
     <div class="clearfix"></div>
@@ -29,21 +29,22 @@
         }).addTo(map);
 
         var latlngs = [];
-        {%  for point in track.points %}
+        {% for version in track.versions %}
+            {% for point in version.points %}
+                {% if loop.first %}
+                    L.marker([{{ point.lat }}, {{ point.lng }}]).addTo(map)
+                        .bindPopup('Start');
+                {% endif %}
+                {% if loop.last %}
+                    L.marker([{{ point.lat }}, {{ point.lng }}]).addTo(map)
+                        .bindPopup('End');
+                {% endif %}
 
-            {% if loop.first %}
-                L.marker([{{ point.lat }}, {{ point.lng }}]).addTo(map)
-                    .bindPopup('Start');
-            {% endif %}
-            {% if loop.last %}
-                L.marker([{{ point.lat }}, {{ point.lng }}]).addTo(map)
-                    .bindPopup('End');
-            {% endif %}
-
-            latlngs.push([
-                {{ point.lat }},
-                {{ point.lng }}
-            ]);
+                latlngs.push([
+                    {{ point.lat }},
+                    {{ point.lng }}
+                ]);
+            {% endfor %}
         {% endfor %}
 
         var polyline = L.polyline(latlngs, {color: 'red'}).addTo(map);

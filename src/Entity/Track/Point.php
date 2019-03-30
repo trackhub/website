@@ -32,12 +32,11 @@ class Point
     private $lng;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Track", inversedBy="points")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Track\Version", inversedBy="points")
      */
-    private $track;
+    private $version;
 
     /**
-     * Point constructor.
      * @param $order
      * @param $lat
      * @param $lng
@@ -50,11 +49,11 @@ class Point
     }
 
     /**
-     * @param mixed $track
+     * @param mixed $version
      */
-    public function setTrack($track): void
+    public function setVersion(Version $version): void
     {
-        $this->track = $track;
+        $this->version = $version;
     }
 
     /**

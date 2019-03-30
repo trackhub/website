@@ -33,7 +33,7 @@ class ReprocessGpsData extends Command
             /* @var $track Track */
             $track->prepareForRecalculation();
             $processor = new Processor();
-            $processor->process(
+            $processor->createTrack(
                 $track->getFiles()->first()->getFileContent(),
                 $track
             );

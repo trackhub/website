@@ -5,6 +5,7 @@ namespace App\Entity;
 
 use App\Entity\Track\OptimizedPoint;
 use App\Entity\Track\Point;
+use App\Entity\Track\Version;
 use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -41,12 +42,12 @@ class Track
     private $lastCheck;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Track\Point", mappedBy="track", cascade={"persist", "remove"}, orphanRemoval=true))
+     * @ORM\OneToMany(targetEntity="App\Entity\Track\Version", mappedBy="track", cascade={"persist", "remove"}, orphanRemoval=true)
      */
-    private $points;
+    private $versions;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Track\OptimizedPoint", mappedBy="gps", cascade={"persist", "remove"}, orphanRemoval=true))
+     * @ORM\OneToMany(targetEntity="App\Entity\Track\OptimizedPoint", mappedBy="track", cascade={"persist", "remove"}, orphanRemoval=true))
      */
     private $optimizedPoints;
 
@@ -75,17 +76,11 @@ class Track
      */
     private $type = self::TYPE_CYCLING;
 
-    /**
-     * @ORM\OneToMany(targetEntity="App\Entity\File\TrackFile", mappedBy="track")
-     * @ORM\OrderBy({"createdAt" = "DESC"})
-     */
-    private $files;
-
     public function __construct()
     {
         $this->lastCheck = new DateTime();
-        $this->points = new ArrayCollection();
         $this->optimizedPoints = new ArrayCollection();
+        $this->versions = new ArrayCollection();
     }
 
     public function getName(): ?string
@@ -103,42 +98,22 @@ class Track
         return $this->id;
     }
 
-    /**
-     * @return Point[]|ArrayCollection
-     */
-    public function getPoints()
-    {
-        return $this->points;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getPointNorthEastLat()
+    public function getPointNorthEastLat(): ?float
     {
         return $this->pointNorthEastLat;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getPointNorthEastLng()
+    public function getPointNorthEastLng(): ?float
     {
         return $this->pointNorthEastLng;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getPointSouthWestLat()
+    public function getPointSouthWestLat(): ?float
     {
         return $this->pointSouthWestLat;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getPointSouthWestLng()
+    public function getPointSouthWestLng(): ?float
     {
         return $this->pointSouthWestLng;
     }
@@ -151,31 +126,9 @@ class Track
         return $this->optimizedPoints;
     }
 
-    public function addPoint(Point $p)
-    {
-        $p->setTrack($this);
-        $this->points->add($p);
-
-        if ($p->getLat() > $this->pointNorthEastLat) {
-            $this->pointNorthEastLat = $p->getLat();
-        }
-
-        if ($p->getLng() > $this->pointNorthEastLng) {
-            $this->pointNorthEastLng = $p->getLng();
-        }
-
-        if ($p->getLat() < $this->pointSouthWestLat) {
-            $this->pointSouthWestLat = $p->getLat();
-        }
-
-        if ($p->getLng() < $this->pointSouthWestLng) {
-            $this->pointSouthWestLng = $p->getLng();
-        }
-    }
-
     public function addOptimizedPoint(OptimizedPoint $p)
     {
-        $p->setGps($this);
+        $p->setTrack($this);
         $this->optimizedPoints->add($p);
     }
 
@@ -189,14 +142,6 @@ class Track
         $this->type = $type;
     }
 
-    /**
-     * @return Collection
-     */
-    public function getFiles()
-    {
-        return $this->files;
-    }
-
     public function prepareForRecalculation()
     {
         $this->pointNorthEastLat = -999;
@@ -204,7 +149,27 @@ class Track
         $this->pointSouthWestLat = 999;
         $this->pointSouthWestLng = 999;
 
-        $this->getPoints()->clear();
+        // @FIXME clear version points!?
+
         $this->getOptimizedPoints()->clear();
+    }
+
+    public function addVersion(Version $version)
+    {
+        $version->setTrack($this);
+
+        if ($this->versions->isEmpty()) {
+            // @TODO calculate cached enpoints
+        }
+
+        $this->versions->add($version);
+    }
+
+    /**
+     * @return ArrayCollection|Version[]
+     */
+    public function getVersions()
+    {
+        return $this->versions;
     }
 }
