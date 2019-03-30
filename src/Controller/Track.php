@@ -37,6 +37,13 @@ class Track extends AbstractController
             $trackVersion = new Version();
             $processor->process($c, $trackVersion);
             $optimizedPoints = $processor->generateOptimizedPoints($trackVersion);
+
+
+
+            // @FIXME cache track borders
+
+
+
             foreach ($optimizedPoints as $optimizedPoint) {
                 $track->addOptimizedPoint($optimizedPoint);
             }

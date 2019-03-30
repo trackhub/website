@@ -28,26 +28,28 @@
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         }).addTo(map);
 
-        var latlngs = [];
         {% for version in track.versions %}
-            {% for point in version.points %}
-                {% if loop.first %}
+            (function() {
+                var latlngs = [];
+                {% for point in version.points %}
+                    {% if loop.first %}
                     L.marker([{{ point.lat }}, {{ point.lng }}]).addTo(map)
                         .bindPopup('Start');
-                {% endif %}
-                {% if loop.last %}
+                    {% endif %}
+                    {% if loop.last %}
                     L.marker([{{ point.lat }}, {{ point.lng }}]).addTo(map)
                         .bindPopup('End');
-                {% endif %}
+                    {% endif %}
 
-                latlngs.push([
-                    {{ point.lat }},
-                    {{ point.lng }}
-                ]);
-            {% endfor %}
+                    latlngs.push([
+                        {{ point.lat }},
+                        {{ point.lng }}
+                    ]);
+                {% endfor %}
+
+                // @TODO change colors for different track versions
+                var polyline = L.polyline(latlngs, {color: 'red'}).addTo(map);
+            })();
         {% endfor %}
-
-        var polyline = L.polyline(latlngs, {color: 'red'}).addTo(map);
-
     </script>
 {% endblock %}
