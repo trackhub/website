@@ -172,4 +172,30 @@ class Track
     {
         return $this->versions;
     }
+
+    public function recalculateEdgesCache()
+    {
+        $this->pointNorthEastLat = -999;
+        $this->pointNorthEastLng = -999;
+        $this->pointSouthWestLat = 999;
+        $this->pointSouthWestLng = 999;
+
+        foreach ($this->versions->first()->getPoints() as $p) {
+            if ($p->getLat() > $this->pointNorthEastLat) {
+                $this->pointNorthEastLat = $p->getLat();
+            }
+
+            if ($p->getLng() > $this->pointNorthEastLng) {
+                $this->pointNorthEastLng = $p->getLng();
+            }
+
+            if ($p->getLat() < $this->pointSouthWestLat) {
+                $this->pointSouthWestLat = $p->getLat();
+            }
+
+            if ($p->getLng() < $this->pointSouthWestLng) {
+                $this->pointSouthWestLng = $p->getLng();
+            }
+        }
+    }
 }
