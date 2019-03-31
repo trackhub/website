@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\File\TrackFile;
 use App\Entity\Track\Version;
+use App\Form\Type\TrackVersion;
 use App\Track\Processor;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -47,6 +48,7 @@ class Track extends AbstractController
             $track->setType($form->get('type')->getData());
             $track->setName($form->get('name')->getData());
 
+            // @TODO probably this should be done in post[persist|update] listener
             $track->recalculateEdgesCache();
 
             if ($track->getOptimizedPoints()->isEmpty()) {
@@ -60,8 +62,6 @@ class Track extends AbstractController
 
                 $this->getDoctrine()->getManager()
                     ->persist($track);
-                $this->getDoctrine()->getManager()
-                    ->persist($trackFile);
                 $this->getDoctrine()->getManager()
                     ->flush();
 
@@ -79,12 +79,52 @@ class Track extends AbstractController
 
     public function newVersion(Request $request, string $id)
     {
-        $gps = $this->getDoctrine()->getRepository(\App\Entity\Track::class)->findOneBy(['id' => $id]);
+        $track = $this->getDoctrine()->getRepository(\App\Entity\Track::class)->findOneBy(['id' => $id]);
+
+        $form = $this->createForm(TrackVersion::class);
+        $form->add('submit', SubmitType::class);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $file = $form->get('file');
+            $fileData = $file->getData();
+            /* @var $fileData UploadedFile */
+            $c = file_get_contents($fileData->getRealPath());
+
+            /* @FIXME
+            - only gps!
+             */
+
+            // we should have service for gpx processing
+            $processor = new Processor();
+            $trackVersion = new Version();
+            $processor->process($c, $trackVersion);
+
+            $trackFile = new TrackFile($trackVersion, $c);
+            $trackVersion->setFile($trackFile);
+
+            $track->addVersion($trackVersion);
+
+            if ($trackVersion->getPoints()->isEmpty()) {
+                $form->get('file')->addError(
+                    new FormError('error') // @FIXME translate and add specific error
+                );
+            } else {
+                $this->getDoctrine()->getManager()
+                    ->persist($track);
+                $this->getDoctrine()->getManager()
+                    ->flush();
+
+                // @FIXME return response!
+            }
+        }
 
         return $this->render(
             'gps/newVersion.html.twig',
             [
-                'gps' => $gps,
+                'track' => $track,
+                'form' => $form->createView(),
             ]
         );
     }

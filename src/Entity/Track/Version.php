@@ -26,7 +26,7 @@ class Version
     private $name;
 
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\File\TrackFile")
+     * @ORM\OneToOne(targetEntity="App\Entity\File\TrackFile", cascade={"persist", "remove"}, orphanRemoval=true)
      */
     private $file;
 
