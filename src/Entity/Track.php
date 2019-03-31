@@ -4,11 +4,9 @@
 namespace App\Entity;
 
 use App\Entity\Track\OptimizedPoint;
-use App\Entity\Track\Point;
 use App\Entity\Track\Version;
 use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -32,7 +30,7 @@ class Track
     private $id;
 
     /**
-     * @ORM\Column(type="string")
+     * @ORM\Column(type="string", nullable=true)
      */
     private $name;
 
@@ -88,7 +86,7 @@ class Track
         return $this->name;
     }
 
-    public function setName(string $name): void
+    public function setName(?string $name): void
     {
         $this->name = $name;
     }

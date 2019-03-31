@@ -7,6 +7,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\FormBuilderInterface;
+use \Symfony\Component\Form\Extension\Core\Type\TextType;
 
 class Track extends AbstractType
 {
@@ -15,7 +16,13 @@ class Track extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('name');
+        $builder->add(
+            'name',
+            TextType::class,
+            [
+                'required' => false,
+            ]
+        );
         $builder->add(
             'type',
             ChoiceType::class,
