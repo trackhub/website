@@ -20,14 +20,19 @@
         <div class="container-fluid">
             <div class="row">
                 <ul class="nav">
-                    <li class="nav-link"><a href="/">home</a></li>
-                    <li class="nav-link"><a href="{{ path('gps-new') }}">new</a></li>
+                    <li class="nav-link"><a href="{{ path('home') }}">{{ 'Home'|trans }}</a></li>
+                    <li class="nav-link"><a href="{{ path('gps-new') }}">{{ 'Add track'|trans }}</a></li>
                     {% if app.user %}
                         <li class="nav-link">{{ app.user.username }}
                         <li class="nav-link"><a href="{{ path('app_logout') }}">logout</a>
                     {% else %}
-                        <li class="nav-link"><a href="{{ path("hwi_oauth_connect") }}">login</a></li>
+                        <li class="nav-link"><a href="{{ path("hwi_oauth_connect") }}">{{ 'Log in'|trans }}</a></li>
                     {% endif %}
+                </ul>
+
+                <ul class="nav">
+                    <li class="nav-link"><a href="{{ path('home', { _locale: 'en' }) }}">en</a></li>
+                    <li class="nav-link"><a href="{{ path('home', { _locale: 'bg' }) }}">bg</a></li>
                 </ul>
             </div>
             <hr>

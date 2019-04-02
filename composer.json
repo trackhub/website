@@ -15,6 +15,7 @@
         "symfony/framework-bundle": "*",
         "symfony/monolog-bundle": "^3.3",
         "symfony/orm-pack": "^1.0",
+        "symfony/translation": "4.1.*",
         "symfony/twig-bundle": "*",
         "symfony/webpack-encore-bundle": "^1.0",
         "symfony/yaml": "*"
