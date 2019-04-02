@@ -2,7 +2,7 @@
 
 namespace App\Command;
 
-use App\Entity\Gps;
+use App\Entity\Track;
 use App\Track\Processor;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Command\Command;
@@ -15,9 +15,6 @@ class ReprocessGpsData extends Command
 
     private $em;
 
-    /**
-     * ReprocessGpsData constructor.
-     */
     public function __construct(EntityManagerInterface $em)
     {
         $this->em = $em;
@@ -27,16 +24,16 @@ class ReprocessGpsData extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        // @TODO use query and fetch track 1 by 1
-        $repo = $this->em->getRepository(Gps::class);
+        // @TODO use query and fetch tracks 1 by 1
+        $repo = $this->em->getRepository(Track::class);
         $trackCollection = $repo->findAll();
         foreach ($trackCollection as $track) {
             $output->writeln("Processing track {$track->getId()}", OutputInterface::VERBOSITY_VERBOSE);
 
-            /* @var $track Gps */
+            /* @var $track Track */
             $track->prepareForRecalculation();
             $processor = new Processor();
-            $processor->process(
+            $processor->createTrack(
                 $track->getFiles()->first()->getFileContent(),
                 $track
             );

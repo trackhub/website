@@ -2,11 +2,15 @@
 
 {% block content %}
 
-    <h1>{{ gps.name }}</h1>
+    <h1>{{ track.name }}</h1>
 
-    {% for file in gps.files %}
-        <a class="btn btn-success" href="{{ path('gps-download', {id: file.id}) }}">download, version {{ loop.revindex }}</a>
+    {% for version in track.versions %}
+        <a class="btn btn-success" href="{{ path('gps-download', {id: version.file.id}) }}">download, version {{ loop.revindex }}</a>
     {% endfor %}
+
+    <div class="clearfix"></div>
+
+    <a href="{{ path('gps-new-version', {id:track.id}) }}">add new version</a>
 
     <hr>
 
@@ -15,8 +19,8 @@
     <script>
         var map = L.map('map').setView(
             [
-                ({{ gps.pointNorthEastLat }} + {{ gps.pointSouthWestLat }}) / 2,
-                ({{ gps.pointSouthWestLng + gps.pointNorthEastLng}}) / 2
+                ({{ track.pointNorthEastLat }} + {{ track.pointSouthWestLat }}) / 2,
+                ({{ track.pointSouthWestLng + track.pointNorthEastLng}}) / 2
             ],
             12
         );
@@ -24,25 +28,28 @@
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         }).addTo(map);
 
-        var latlngs = [];
-        {%  for point in gps.points %}
+        {% for version in track.versions %}
+            (function() {
+                var latlngs = [];
+                {% for point in version.points %}
+                    {% if loop.first %}
+                    L.marker([{{ point.lat }}, {{ point.lng }}]).addTo(map)
+                        .bindPopup('Start');
+                    {% endif %}
+                    {% if loop.last %}
+                    L.marker([{{ point.lat }}, {{ point.lng }}]).addTo(map)
+                        .bindPopup('End');
+                    {% endif %}
 
-            {% if loop.first %}
-                L.marker([{{ point.lat }}, {{ point.lng }}]).addTo(map)
-                    .bindPopup('Start');
-            {% endif %}
-            {% if loop.last %}
-                L.marker([{{ point.lat }}, {{ point.lng }}]).addTo(map)
-                    .bindPopup('End');
-            {% endif %}
+                    latlngs.push([
+                        {{ point.lat }},
+                        {{ point.lng }}
+                    ]);
+                {% endfor %}
 
-            latlngs.push([
-                {{ point.lat }},
-                {{ point.lng }}
-            ]);
+                // @TODO change colors for different track versions
+                var polyline = L.polyline(latlngs, {color: 'red'}).addTo(map);
+            })();
         {% endfor %}
-
-        var polyline = L.polyline(latlngs, {color: 'red'}).addTo(map);
-
     </script>
 {% endblock %}

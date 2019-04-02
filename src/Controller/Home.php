@@ -2,7 +2,7 @@
 
 namespace App\Controller;
 
-use App\Entity\Gps\Point;
+use App\Entity\Track\Point;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -24,7 +24,7 @@ class Home extends AbstractController
         $skipTracksAsArray = explode(',', $skipTracks);
 
         $doctrine = $this->getDoctrine();
-        $em = $doctrine->getRepository(\App\Entity\Gps::class);
+        $em = $doctrine->getRepository(\App\Entity\Track::class);
         /* @var $em EntityRepository */
 
         $qb = $em->createQueryBuilder('g');
@@ -76,7 +76,7 @@ class Home extends AbstractController
             $qb->select('g');
             $q = $qb->getQuery();
             $qResult = $q->getResult();
-            /* @var $qResult \App\Entity\Gps[] */
+            /* @var $qResult \App\Entity\Track[] */
 
             $responseData = [];
 

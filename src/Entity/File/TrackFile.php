@@ -1,13 +1,14 @@
 <?php
 
-namespace App\Entity;
+namespace App\Entity\File;
 
 use Doctrine\ORM\Mapping as ORM;
+use App\Entity\Track\Version;
 
 /**
  * @ORM\Entity
  */
-class GpsFile
+class TrackFile
 {
     /**
      * @ORM\Id
@@ -22,35 +23,34 @@ class GpsFile
     private $fileContent;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Gps")
+     * @ORM\OneToOne(targetEntity="App\Entity\Track\Version")
      */
-    private $gps;
+    private $version;
 
     /**
      * @ORM\Column(type="datetime")
      */
     private $createdAt;
 
-    public function __construct($gps, $fileContent)
+    public function __construct(Version $version, string $fileContent)
     {
-        $this->gps = $gps;
+        $this->version = $version;
         $this->fileContent = $fileContent;
         $this->createdAt = new \DateTime();
     }
 
-    /**
-     * @return mixed
-     */
-    public function getFileContent()
+    public function getFileContent(): string
     {
         return $this->fileContent;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getId()
+    public function getId(): ?string
     {
         return $this->id;
+    }
+
+    public function setVersion(Version $version): void
+    {
+        $this->version = $version;
     }
 }

@@ -1,14 +1,13 @@
 <?php
 
-namespace App\Entity\Gps;
+namespace App\Entity\Track;
 
 use Doctrine\ORM\Mapping as ORM;
-use App\Entity\Gps;
 
 /**
  * @ORM\Entity
  */
-class OptimizedPoint
+class Point
 {
     /**
      * @ORM\Id
@@ -33,12 +32,11 @@ class OptimizedPoint
     private $lng;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Gps", inversedBy="OptimizedPoints")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Track\Version", inversedBy="points")
      */
-    private $gps;
+    private $version;
 
     /**
-     * Point constructor.
      * @param $order
      * @param $lat
      * @param $lng
@@ -51,11 +49,11 @@ class OptimizedPoint
     }
 
     /**
-     * @param mixed $gps
+     * @param mixed $version
      */
-    public function setGps($gps): void
+    public function setVersion(Version $version): void
     {
-        $this->gps = $gps;
+        $this->version = $version;
     }
 
     /**
