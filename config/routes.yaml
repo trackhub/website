@@ -5,6 +5,8 @@ indexWithoutLocale:
 home:
   path: /{_locale}
   controller: App\Controller\Home::home
+  requirements:
+    _locale: en|bg
 
 gps-new-version:
   path: /{_locale}/gps/new-version/{id}
