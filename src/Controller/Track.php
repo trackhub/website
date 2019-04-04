@@ -65,7 +65,7 @@ class Track extends AbstractController
                 $this->getDoctrine()->getManager()
                     ->flush();
 
-                return $this->redirectToRoute('index');
+                return $this->redirectToRoute('home');
             }
         }
 

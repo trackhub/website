@@ -1,0 +1,12 @@
+{% extends "base.html.twig" %}
+
+{% block content %}
+    {% if error is defined and error %}
+        <span>{{ error }}</span>
+    {% endif %}
+
+    Log in using <br>
+    {% for owner in hwi_oauth_resource_owners() %}
+    <a href="{{ hwi_oauth_login_url(owner) }}">{{ owner | trans({}, 'HWIOAuthBundle') }}</a> <br />
+    {% endfor %}
+{% endblock %}
