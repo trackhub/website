@@ -66,7 +66,7 @@
                     polyline.bindPopup('<a href="/gps/view/' + id + '">view details</a>');
                 }
             };
-            var url = '/gps/list';
+            var url = '/{{ app.request.locale }}/gps/list';
             url += '/' + map.getBounds().getNorthEast().lat;
             url += '/' + map.getBounds().getNorthEast().lng;
             url += '/' + map.getBounds().getSouthWest().lat;

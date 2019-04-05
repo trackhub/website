@@ -7,6 +7,8 @@ services:
     - ./:/var/www
     environment:
     - WEB_UID=${WEB_UID}
+    depends_on:
+      - sql
   sql:
     restart: unless-stopped
     image: mariadb:10.3
