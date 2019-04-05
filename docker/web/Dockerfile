@@ -1,7 +1,7 @@
 FROM debian:9
 
 RUN apt-get update && \
-    apt-get install -y apache2
+    apt-get install -y apache2 curl gnupg2
 
 # usually 1st user have id 1000
 # changing the www-data to be with id 1000
@@ -42,6 +42,18 @@ RUN update-alternatives --set php /usr/bin/php${PHP_V}
 
 RUN wget https://getcomposer.org/download/1.7.3/composer.phar -O /usr/local/bin/composer && \
     chmod +x /usr/local/bin/composer
+
+# js stuff
+# Using Debian, as root
+RUN curl -sL https://deb.nodesource.com/setup_11.x | bash -
+RUN apt-get update && apt-get install -y nodejs
+
+RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
+RUN echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends yarn
+
+# end js
 
 RUN echo "xdebug.remote_connect_back=1" >> /etc/php/${PHP_V}/apache2/conf.d/20-xdebug.ini
 RUN echo "xdebug.remote_enable=1" >> /etc/php/${PHP_V}/apache2/conf.d/20-xdebug.ini
