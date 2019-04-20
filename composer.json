@@ -17,7 +17,7 @@
         "symfony/orm-pack": "^1.0",
         "symfony/translation": "4.1.*",
         "symfony/twig-bundle": "*",
-        "symfony/webpack-encore-bundle": "^1.0",
+        "symfony/webpack-encore-bundle": "^1.4",
         "symfony/yaml": "*"
     },
     "require-dev": {
