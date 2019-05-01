@@ -130,6 +130,13 @@ class Track
         $this->optimizedPoints->add($p);
     }
 
+    public function addOptimizedPoints(iterable $collection)
+    {
+        foreach ($collection as $point) {
+            $this->addOptimizedPoint($point);
+        }
+    }
+
     public function getType(): int
     {
         return $this->type;

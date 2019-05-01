@@ -24,19 +24,28 @@ class ReprocessGpsData extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $processor = new Processor();
         // @TODO use query and fetch tracks 1 by 1
         $repo = $this->em->getRepository(Track::class);
         $trackCollection = $repo->findAll();
         foreach ($trackCollection as $track) {
+            /* @var $track Track */
             $output->writeln("Processing track {$track->getId()}", OutputInterface::VERBOSITY_VERBOSE);
 
-            /* @var $track Track */
             $track->prepareForRecalculation();
-            $processor = new Processor();
-            $processor->createTrack(
-                $track->getFiles()->first()->getFileContent(),
-                $track
-            );
+            foreach ($track->getVersions() as $versionIndex => $version) {
+                $output->writeln("Processing version {$versionIndex}");
+
+                $processor->process(
+                    $version->getFile()->getFileContent(),
+                    $version
+                );
+            }
+
+            $optimizedPointCollection = $processor->generateOptimizedPoints($track->getVersions()->first());
+            $track->addOptimizedPoints($optimizedPointCollection);
+
+            $processor->postProcess($track);
 
             $this->em->flush();
         }

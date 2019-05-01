@@ -63,7 +63,7 @@
 
                     var polelineColor = gpsColors[Math.floor(Math.random()*gpsColors.length)];
                     var polyline = L.polyline(pointsAsPolyline, {color: polelineColor}).addTo(map);
-                    polyline.bindPopup('<a href="/gps/view/' + id + '">view details</a>');
+                    polyline.bindPopup('<a href="/{{ app.request.locale }}/gps/view/' + id + '">view details</a>');
                 }
             };
             var url = '/{{ app.request.locale }}/gps/list';
