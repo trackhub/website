@@ -16,7 +16,9 @@
 
     <div style="height: 800px; width: 1000px;" id="map"></div>
 
-    <canvas id="elevation" width="400" height="400"></canvas>
+    <div class="chart-container" style="height: 300px;">
+        <canvas id="elevation" width="400" height="300"></canvas>
+    </div>
 
     <script>
         var map = L.map('map').setView(
@@ -81,6 +83,8 @@
                             }]
                         },
                         options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
                             scales: {
                                 yAxes: [{
                                     ticks: {
