@@ -39,9 +39,7 @@ class Track extends AbstractController
             $processor->process($c, $trackVersion);
 
             $optimizedPoints = $processor->generateOptimizedPoints($trackVersion);
-            foreach ($optimizedPoints as $optimizedPoint) {
-                $track->addOptimizedPoint($optimizedPoint);
-            }
+            $track->addOptimizedPoints($optimizedPoints);
 
             $track->addVersion($trackVersion);
 
