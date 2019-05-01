@@ -80,10 +80,7 @@ class Version
 //        }
     }
 
-    /**
-     * @return Collection
-     */
-    public function getFile()
+    public function getFile(): ?TrackFile
     {
         return $this->file;
     }

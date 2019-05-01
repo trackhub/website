@@ -2,6 +2,7 @@
 
 namespace App\Track;
 
+use App\Entity\Track;
 use App\Entity\Track\Point;
 use App\Entity\Track\OptimizedPoint;
 use App\Entity\Track\Version;
@@ -67,5 +68,10 @@ class Processor
         }
 
         return $optimizedPointCollection;
+    }
+
+    public function postProcess(Track $track)
+    {
+        $track->recalculateEdgesCache();
     }
 }

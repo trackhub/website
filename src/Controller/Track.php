@@ -39,17 +39,14 @@ class Track extends AbstractController
             $processor->process($c, $trackVersion);
 
             $optimizedPoints = $processor->generateOptimizedPoints($trackVersion);
-            foreach ($optimizedPoints as $optimizedPoint) {
-                $track->addOptimizedPoint($optimizedPoint);
-            }
+            $track->addOptimizedPoints($optimizedPoints);
 
             $track->addVersion($trackVersion);
 
             $track->setType($form->get('type')->getData());
             $track->setName($form->get('name')->getData());
 
-            // @TODO probably this should be done in post[persist|update] listener
-            $track->recalculateEdgesCache();
+            $processor->postProcess($track);
 
             if ($track->getOptimizedPoints()->isEmpty()) {
                 $form->get('file')->addError(
@@ -90,7 +87,7 @@ class Track extends AbstractController
             $file = $form->get('file');
             $fileData = $file->getData();
             /* @var $fileData UploadedFile */
-            $c = file_get_contents($fileData->getRealPath());
+            $fileContent = file_get_contents($fileData->getRealPath());
 
             /* @FIXME
             - only gps!
@@ -99,9 +96,9 @@ class Track extends AbstractController
             // we should have service for gpx processing
             $processor = new Processor();
             $trackVersion = new Version();
-            $processor->process($c, $trackVersion);
+            $processor->process($fileContent, $trackVersion);
 
-            $trackFile = new TrackFile($trackVersion, $c);
+            $trackFile = new TrackFile($trackVersion, $fileContent);
             $trackVersion->setFile($trackFile);
 
             $track->addVersion($trackVersion);
@@ -117,6 +114,7 @@ class Track extends AbstractController
                     ->flush();
 
                 // @FIXME return response!
+                return $this->redirectToRoute('gps-view', ['id' => $track->getId()]);
             }
         }
 
