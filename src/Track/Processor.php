@@ -20,8 +20,8 @@ class Processor
             $order = 0;
 
             foreach ($track->trkseg as $trackSegment) {
-                foreach ($trackSegment->trkpt as $point) {
-                    $attributes = $point->attributes();
+                foreach ($trackSegment->trkpt as $trackPoint) {
+                    $attributes = $trackPoint->attributes();
                     $lat = (float)$attributes['lat'];
                     $lon = (float)$attributes['lon'];
 
@@ -30,6 +30,15 @@ class Processor
                         $lat,
                         $lon
                     );
+
+                    if ($trackPoint->ele < 1) {
+                        $break = 1;
+                    }
+
+
+                    if ($trackPoint->ele) {
+                        $point->setElevation(floatval($trackPoint->ele));
+                    }
 
                     $version->addPoint($point);
 
@@ -73,5 +82,12 @@ class Processor
     public function postProcess(Track $track)
     {
         $track->recalculateEdgesCache();
+    }
+
+    public function generateElevation(Version $version)
+    {
+        foreach ($version->getPoints() as $point) {
+
+        }
     }
 }

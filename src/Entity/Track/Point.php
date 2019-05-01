@@ -32,9 +32,14 @@ class Point
     private $lng;
 
     /**
+     * @ORM\Column(type="float")
+     */
+    private $elevation;
+
+    /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Track\Version", inversedBy="points")
      */
-    private $version;
+    private $version = 0;
 
     /**
      * @param $order
@@ -70,5 +75,18 @@ class Point
     public function getLng()
     {
         return $this->lng;
+    }
+
+    public function setElevation(float $elev)
+    {
+        $this->elevation = $elev;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getElevation()
+    {
+        return $this->elevation;
     }
 }

@@ -16,6 +16,8 @@
 
     <div style="height: 800px; width: 1000px;" id="map"></div>
 
+    <canvas id="elevation" width="400" height="400"></canvas>
+
     <script>
         var map = L.map('map').setView(
             [
@@ -31,6 +33,11 @@
         {% for version in track.versions %}
             (function() {
                 var latlngs = [];
+                var elevationData = [];
+                var elevationLabels = [];
+
+                {% set lastElevation = 0 %}
+
                 {% for point in version.points %}
                     {% if loop.first %}
                     L.marker([{{ point.lat }}, {{ point.lng }}]).addTo(map)
@@ -45,10 +52,45 @@
                         {{ point.lat }},
                         {{ point.lng }}
                     ]);
+
+                    {% if (lastElevation - point.elevation)|abs > 4.0 %}
+                        elevationData.push({{ point.elevation }});
+                        elevationLabels.push({{ loop.index }});
+                        {% set lastElevation = point.elevation %}
+                    {% endif %}
+
                 {% endfor %}
 
                 // @TODO change colors for different track versions
                 var polyline = L.polyline(latlngs, {color: 'red'}).addTo(map);
+
+                // elevation plot
+                {% if loop.first %}
+                    console.log(elevationData);
+                    console.log(elevationLabels);
+                    var ctx = document.getElementById('elevation').getContext('2d');
+                    var myChart = new window.chartJs(ctx, {
+                        type: 'line',
+                        data: {
+                            labels: elevationLabels,
+                            datasets: [{
+                                label: 'Elevation',
+                                data: elevationData,
+
+                                borderWidth: 1
+                            }]
+                        },
+                        options: {
+                            scales: {
+                                yAxes: [{
+                                    ticks: {
+                                        beginAtZero: false
+                                    }
+                                }]
+                            }
+                        }
+                    });
+                {% endif %}
             })();
         {% endfor %}
     </script>
