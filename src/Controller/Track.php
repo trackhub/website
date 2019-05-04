@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\File\TrackFile;
+use App\Entity\Track\Point;
 use App\Entity\Track\Version;
 use App\Form\Type\TrackVersion;
 use App\Track\Processor;
@@ -134,12 +135,33 @@ class Track extends AbstractController
                 ->getRepository(\App\Entity\Track::class);
 
         $gps = $repo->findOneBy(['id' => $id]);
+        /** @var $gps \App\Entity\Track */
 
+        // elevation plot
+        $lastPoint = null;
+        $elevationLables = [];
+        $elevationData = [];
+        foreach ($gps->getVersions()->first()->getPoints() as $point) {
+            /** @var $point Point */
+            $distanceToShow = 150;
+            if (!$lastPoint || ($point->getDistance() - $lastPoint->getDistance() > $distanceToShow)) {
+                $elevationData[] = $point->getElevation();
+                $elevationLables[] = number_format(
+                    $point->getDistance() / 1000,
+                    1,
+                    '.',
+                    ' '
+                );
+                $lastPoint = $point;
+            }
+        }
 
         return $this->render(
             'gps/view.html.twig',
             [
                 'track' => $gps,
+                'elevationData' => $elevationData,
+                'elevationLables' => $elevationLables,
             ]
         );
     }

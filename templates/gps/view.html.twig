@@ -55,11 +55,7 @@
                         {{ point.lng }}
                     ]);
 
-                    {% if (lastElevation - point.elevation)|abs > 5.0 %}
-                        elevationData.push({{ point.elevation }});
-                        elevationLabels.push('{{ point.distance }}');
-                        {% set lastElevation = point.elevation %}
-                    {% endif %}
+
 
                 {% endfor %}
 
@@ -68,6 +64,14 @@
 
                 // elevation plot
                 {% if loop.first %}
+                    {% for data in elevationData %}
+                        elevationData.push({{ data }});
+                    {% endfor %}
+
+                    {% for data in elevationLables %}
+                        elevationLabels.push('{{ data }}');
+                    {% endfor %}
+
                     console.log(elevationData);
                     console.log(elevationLabels);
                     var ctx = document.getElementById('elevation').getContext('2d');
