@@ -154,8 +154,6 @@ class Track
         $this->pointSouthWestLat = 999;
         $this->pointSouthWestLng = 999;
 
-        // @FIXME clear version points!?
-
         $this->getOptimizedPoints()->clear();
     }
 

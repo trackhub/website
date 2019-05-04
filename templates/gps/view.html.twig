@@ -55,9 +55,9 @@
                         {{ point.lng }}
                     ]);
 
-                    {% if (lastElevation - point.elevation)|abs > 4.0 %}
+                    {% if (lastElevation - point.elevation)|abs > 5.0 %}
                         elevationData.push({{ point.elevation }});
-                        elevationLabels.push({{ loop.index }});
+                        elevationLabels.push('{{ point.distance }}');
                         {% set lastElevation = point.elevation %}
                     {% endif %}
 
@@ -79,7 +79,8 @@
                                 label: 'Elevation',
                                 data: elevationData,
 
-                                borderWidth: 1
+                                borderWidth: 1,
+                                backgroundColor: 'rgba(0, 0, 240, 0.2)'
                             }]
                         },
                         options: {

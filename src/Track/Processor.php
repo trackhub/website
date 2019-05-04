@@ -11,14 +11,16 @@ class Processor
 {
     public function process(string $source, Version $version)
     {
+        $version->getPoints()->clear();
+
         $xml = simplexml_load_string($source);
         if ($xml === false) {
             throw new \RuntimeException("Xml load failed");
         }
 
+        $previousPoint = null;
+        $order = 0;
         foreach ($xml->trk as $track) {
-            $order = 0;
-
             foreach ($track->trkseg as $trackSegment) {
                 foreach ($trackSegment->trkpt as $trackPoint) {
                     $attributes = $trackPoint->attributes();
@@ -31,21 +33,39 @@ class Processor
                         $lon
                     );
 
-                    if ($trackPoint->ele < 1) {
-                        $break = 1;
-                    }
-
-
                     if ($trackPoint->ele) {
                         $point->setElevation(floatval($trackPoint->ele));
+                    }
+
+                    if ($previousPoint) {
+                        $distance = $this->calculateDistance($point, $previousPoint);
+                        $point->setDistance($distance + $previousPoint->getDistance());
                     }
 
                     $version->addPoint($point);
 
                     $order++;
+
+                    $previousPoint = $point;
                 }
             }
         }
+    }
+
+    private function calculateDistance(Point $a, Point $b)
+    {
+        $r = 6371000;
+
+        $dLan = deg2rad($b->getLat() - $a->getLat());
+        $dLng = deg2rad($b->getLng() - $a->getLng());
+
+        $lat1 = deg2rad($a->getLat());
+        $lat2 = deg2rad($b->getLat());
+
+        $a = (sin($dLan / 2) ** 2) + (sin($dLng / 2) ** 2) * cos($lat1) * cos($lat2);
+        $c = 2 * atan2(sqrt($a), sqrt(1 - $a));
+
+        return $c * $r;
     }
 
     public function generateOptimizedPoints(Version $version)
