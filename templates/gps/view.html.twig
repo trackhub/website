@@ -17,7 +17,10 @@
     <div style="height: 800px; width: 1000px;" id="map"></div>
 
     <div class="chart-container" style="height: 300px;">
-        <canvas id="elevation" width="400" height="300"></canvas>
+        <canvas id="elevation" width="400" height="300">
+            Your browse can't display elevation plot.
+            Browser doesn't support canvas elements.
+        </canvas>
     </div>
 
     <script>
@@ -64,11 +67,9 @@
 
                 // elevation plot
                 {% if loop.first %}
-                    elevationData = {{ elevationData|json_encode }};
+                    elevationData = {{ elevationData|json_encode|raw }};
                     elevationLabels = {{ elevationLabels|json_encode|raw }};
 
-                    console.log(elevationData);
-                    console.log(elevationLabels);
                     var ctx = document.getElementById('elevation').getContext('2d');
                     var myChart = new window.chartJs(ctx, {
                         type: 'line',
@@ -91,6 +92,9 @@
                                         beginAtZero: false
                                     }
                                 }]
+                            },
+                            tooltips: {
+                                mode: 'nearest'
                             }
                         }
                     });

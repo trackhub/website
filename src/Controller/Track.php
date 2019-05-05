@@ -145,7 +145,7 @@ class Track extends AbstractController
         $elevationValues = [];
 
         foreach ($elevationData as $elevation) {
-            $elevationLabels[] = $elevation['label'];
+            $elevationLabels[] = $elevation['label'] . ' km';
             $elevationValues[] = $elevation['elev'];
         }
 
