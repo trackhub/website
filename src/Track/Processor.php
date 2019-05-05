@@ -104,10 +104,32 @@ class Processor
         $track->recalculateEdgesCache();
     }
 
-    public function generateElevation(Version $version)
+    /**
+     * @param Point[] $pointCollection
+     * @param float $distance minimum distance between points
+     *
+     * @return array
+     */
+    public function generateElevationData(iterable $pointCollection, float $distance = 150): array
     {
-        foreach ($version->getPoints() as $point) {
+        $lastPoint = null;
+        $elevationData = [];
 
+        foreach ($pointCollection as $point) {
+            if (!$lastPoint || ($point->getDistance() - $lastPoint->getDistance() > $distance)) {
+                $elevationData[] = [
+                    'elev' => $point->getElevation(),
+                    'label' => number_format(
+                        $point->getDistance() / 1000,
+                        1,
+                        '.',
+                        ' '
+                    ),
+                ];
+                $lastPoint = $point;
+            }
         }
+
+        return $elevationData;
     }
 }

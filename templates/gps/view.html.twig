@@ -64,13 +64,8 @@
 
                 // elevation plot
                 {% if loop.first %}
-                    {% for data in elevationData %}
-                        elevationData.push({{ data }});
-                    {% endfor %}
-
-                    {% for data in elevationLables %}
-                        elevationLabels.push('{{ data }}');
-                    {% endfor %}
+                    elevationData = {{ elevationData|json_encode }};
+                    elevationLabels = {{ elevationLabels|json_encode|raw }};
 
                     console.log(elevationData);
                     console.log(elevationLabels);
