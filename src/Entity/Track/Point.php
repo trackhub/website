@@ -32,6 +32,18 @@ class Point
     private $lng;
 
     /**
+     * @ORM\Column(type="float")
+     */
+    private $elevation = 0;
+
+    /**
+     * Distance so far
+     *
+     * @ORM\Column(type="float")
+     */
+    private $distance = 0;
+
+    /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Track\Version", inversedBy="points")
      */
     private $version;
@@ -48,27 +60,38 @@ class Point
         $this->lng = $lng;
     }
 
-    /**
-     * @param mixed $version
-     */
     public function setVersion(Version $version): void
     {
         $this->version = $version;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getLat()
+    public function getLat(): float
     {
         return $this->lat;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getLng()
+    public function getLng(): float
     {
         return $this->lng;
+    }
+
+    public function setElevation(float $elev)
+    {
+        $this->elevation = $elev;
+    }
+
+    public function getElevation(): ?float
+    {
+        return $this->elevation;
+    }
+
+    public function getDistance(): ?float
+    {
+        return $this->distance;
+    }
+
+    public function setDistance(float $distance): void
+    {
+        $this->distance = $distance;
     }
 }

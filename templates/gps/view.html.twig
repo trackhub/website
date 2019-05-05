@@ -16,6 +16,13 @@
 
     <div style="height: 800px; width: 1000px;" id="map"></div>
 
+    <div class="chart-container" style="height: 300px;">
+        <canvas id="elevation" width="400" height="300">
+            Elevation plot can't be shown!
+            Your browser doesn't support canvas elements.
+        </canvas>
+    </div>
+
     <script>
         var map = L.map('map').setView(
             [
@@ -31,6 +38,7 @@
         {% for version in track.versions %}
             (function() {
                 var latlngs = [];
+
                 {% for point in version.points %}
                     {% if loop.first %}
                     L.marker([{{ point.lat }}, {{ point.lng }}]).addTo(map)
@@ -51,5 +59,38 @@
                 var polyline = L.polyline(latlngs, {color: 'red'}).addTo(map);
             })();
         {% endfor %}
+
+        // elevation plot
+        var elevationData = {{ elevationData|json_encode|raw }};
+        var elevationLabels = {{ elevationLabels|json_encode|raw }};
+
+        var ctx = document.getElementById('elevation').getContext('2d');
+        var myChart = new window.chartJs(ctx, {
+            type: 'line',
+            data: {
+                labels: elevationLabels,
+                datasets: [{
+                    label: 'Elevation',
+                    data: elevationData,
+
+                    borderWidth: 1,
+                    backgroundColor: 'rgba(0, 0, 240, 0.2)'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: false
+                        }
+                    }]
+                },
+                tooltips: {
+                    mode: 'nearest'
+                }
+            }
+        });
     </script>
 {% endblock %}

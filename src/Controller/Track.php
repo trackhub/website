@@ -134,12 +134,27 @@ class Track extends AbstractController
                 ->getRepository(\App\Entity\Track::class);
 
         $gps = $repo->findOneBy(['id' => $id]);
+        /** @var $gps \App\Entity\Track */
 
+        $processor = new Processor();
+        $elevationData = $processor->generateElevationData(
+            $gps->getVersions()->first()->getPoints()
+        );
+
+        $elevationLabels = [];
+        $elevationValues = [];
+
+        foreach ($elevationData as $elevation) {
+            $elevationLabels[] = $elevation['label'] . ' km';
+            $elevationValues[] = $elevation['elev'];
+        }
 
         return $this->render(
             'gps/view.html.twig',
             [
                 'track' => $gps,
+                'elevationData' => $elevationValues,
+                'elevationLabels' => $elevationLabels,
             ]
         );
     }
