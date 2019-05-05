@@ -38,10 +38,6 @@
         {% for version in track.versions %}
             (function() {
                 var latlngs = [];
-                var elevationData = [];
-                var elevationLabels = [];
-
-                {% set lastElevation = 0 %}
 
                 {% for point in version.points %}
                     {% if loop.first %}
@@ -57,49 +53,44 @@
                         {{ point.lat }},
                         {{ point.lng }}
                     ]);
-
-
-
                 {% endfor %}
 
                 // @TODO change colors for different track versions
                 var polyline = L.polyline(latlngs, {color: 'red'}).addTo(map);
-
-                // elevation plot
-                {% if loop.first %}
-                    elevationData = {{ elevationData|json_encode|raw }};
-                    elevationLabels = {{ elevationLabels|json_encode|raw }};
-
-                    var ctx = document.getElementById('elevation').getContext('2d');
-                    var myChart = new window.chartJs(ctx, {
-                        type: 'line',
-                        data: {
-                            labels: elevationLabels,
-                            datasets: [{
-                                label: 'Elevation',
-                                data: elevationData,
-
-                                borderWidth: 1,
-                                backgroundColor: 'rgba(0, 0, 240, 0.2)'
-                            }]
-                        },
-                        options: {
-                            responsive: true,
-                            maintainAspectRatio: false,
-                            scales: {
-                                yAxes: [{
-                                    ticks: {
-                                        beginAtZero: false
-                                    }
-                                }]
-                            },
-                            tooltips: {
-                                mode: 'nearest'
-                            }
-                        }
-                    });
-                {% endif %}
             })();
         {% endfor %}
+
+        // elevation plot
+        var elevationData = {{ elevationData|json_encode|raw }};
+        var elevationLabels = {{ elevationLabels|json_encode|raw }};
+
+        var ctx = document.getElementById('elevation').getContext('2d');
+        var myChart = new window.chartJs(ctx, {
+            type: 'line',
+            data: {
+                labels: elevationLabels,
+                datasets: [{
+                    label: 'Elevation',
+                    data: elevationData,
+
+                    borderWidth: 1,
+                    backgroundColor: 'rgba(0, 0, 240, 0.2)'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: false
+                        }
+                    }]
+                },
+                tooltips: {
+                    mode: 'nearest'
+                }
+            }
+        });
     </script>
 {% endblock %}
