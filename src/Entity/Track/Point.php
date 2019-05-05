@@ -34,7 +34,7 @@ class Point
     /**
      * @ORM\Column(type="float")
      */
-    private $elevation;
+    private $elevation = 0;
 
     /**
      * Distance so far
@@ -46,7 +46,7 @@ class Point
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Track\Version", inversedBy="points")
      */
-    private $version = 0;
+    private $version;
 
     /**
      * @param $order
