@@ -6,11 +6,10 @@
 
     {% for version in track.versions %}
         <a class="btn btn-success" href="{{ path('gps-download', {id: version.file.id}) }}">download, version {{ loop.revindex }}</a>
+        <button data-type="track-toggle" class="btn btn-info">show/hide</button>
     {% endfor %}
 
-    <div class="clearfix"></div>
-
-    <a href="{{ path('gps-new-version', {id:track.id}) }}">add new version</a>
+    <a href="{{ path('gps-new-version', {id:track.id}) }}" class="btn btn-success">add new version</a>
 
     <hr>
 
@@ -24,6 +23,50 @@
     </div>
 
     <script>
+        class Track {
+            constructor(map, polyline) {
+                this.map = map;
+                this.polyline = polyline;
+
+                var points = this.polyline.getLatLngs();
+                var firstPoint = points[0];
+                var lastPoint = points[points.length - 1];
+                this.markers = [];
+                var startMarker = L.marker([firstPoint.lat, firstPoint.lng]);
+                var endmarker = L.marker([lastPoint.lat, lastPoint.lng]);
+                this.markers.push(startMarker, endmarker);
+
+            }
+
+            show() {
+                this.visible = true;
+                this.polyline.addTo(this.map);
+
+                var marker;
+                for (marker in this.markers) {
+                    this.markers[marker].addTo(this.map).bindPopup('Start');
+                }
+            }
+
+            hide() {
+                this.visible = false;
+                this.polyline.remove();
+
+                var marker;
+                for (marker in this.markers) {
+                    this.markers[marker].remove();
+                }
+            }
+
+            toggle() {
+                if (this.visible) {
+                    this.hide();
+                } else {
+                    this.show();
+                }
+            }
+        };
+
         var map = L.map('map').setView(
             [
                 ({{ track.pointNorthEastLat }} + {{ track.pointSouthWestLat }}) / 2,
@@ -40,15 +83,6 @@
                 var latlngs = [];
 
                 {% for point in version.points %}
-                    {% if loop.first %}
-                    L.marker([{{ point.lat }}, {{ point.lng }}]).addTo(map)
-                        .bindPopup('Start');
-                    {% endif %}
-                    {% if loop.last %}
-                    L.marker([{{ point.lat }}, {{ point.lng }}]).addTo(map)
-                        .bindPopup('End');
-                    {% endif %}
-
                     latlngs.push([
                         {{ point.lat }},
                         {{ point.lng }}
@@ -56,22 +90,30 @@
                 {% endfor %}
 
                 // @TODO change colors for different track versions
-                var polyline = L.polyline(latlngs, {color: 'red'}).addTo(map);
+                var track = new Track(
+                    map,
+                    L.polyline(latlngs, {color: 'red'})
+                );
+
+                track.show();
+
+                var buttonToggle = document.querySelectorAll("[data-type=track-toggle")[{{ loop.index0 }}];
+                buttonToggle.addEventListener('click', function() {
+                    track.toggle();
+                });
+
             })();
         {% endfor %}
 
         // elevation plot
-        var elevationData = {{ elevationData|json_encode|raw }};
-        var elevationLabels = {{ elevationLabels|json_encode|raw }};
-
         var ctx = document.getElementById('elevation').getContext('2d');
         var myChart = new window.chartJs(ctx, {
             type: 'line',
             data: {
-                labels: elevationLabels,
+                labels: {{ elevationLabels|json_encode|raw }},
                 datasets: [{
                     label: 'Elevation',
-                    data: elevationData,
+                    data: {{ elevationData|json_encode|raw }},
 
                     borderWidth: 1,
                     backgroundColor: 'rgba(0, 0, 240, 0.2)'
