@@ -2,7 +2,7 @@ version: "3"
 services:
   web:
     restart: unless-stopped
-    build: docker/web
+    build: docker/web/dev
     volumes:
     - ./:/var/www
     environment:
