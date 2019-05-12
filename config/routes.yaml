@@ -32,3 +32,25 @@ gps-download:
 
 app_logout:
   path: /logout
+
+app_privacy_policy:
+  path: /{_locale}/privacy-polocy
+  controller: App\Controller\SimpleContent::privacyPolicy
+
+app_tos:
+  path: /{_locale}/terms-of-service
+  controller: App\Controller\SimpleContent::termsOfService
+
+app_contacts:
+  path: /{_locale}/contacts
+
+app_cookie_policy:
+  path: /{_locale}/cookie-policy
+  controller: App\Controller\SimpleContent::cookiePolicy
+
+app_sponsored_integration:
+  path: /{_locale}/sponsored-integration
+
+app_legal_bases:
+  path: /{_locale}/legal-bases
+  controller: App\Controller\SimpleContent::legalBases

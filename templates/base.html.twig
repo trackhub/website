@@ -38,16 +38,18 @@
             <div class="row">
                 <div class="col">
                     <a href="{{ path('home') }}">{{ 'Home'|trans }}</a>
-                    <a href="{{ path('gps-new') }}">{{ 'Add track'|trans }}</a>
+{#                    temporary disabled#}
+{#                    <a href="{{ path('gps-new') }}">{{ 'Add track'|trans }}</a>#}
                 </div>
 
                 <div class="col">
-                    {% if app.user %}
-                        {{ app.user.username }}
-                        <a href="{{ path('app_logout') }}">logout</a>
-                    {% else %}
-                        <a href="{{ path("hwi_oauth_connect") }}">{{ 'Log in'|trans }}</a>
-                    {% endif %}
+                    {#                    temporary disabled#}
+{#                    {% if app.user %}#}
+{#                        {{ app.user.username }}#}
+{#                        <a href="{{ path('app_logout') }}">logout</a>#}
+{#                    {% else %}#}
+{#                        <a href="{{ path("hwi_oauth_connect") }}">{{ 'Log in'|trans }}</a>#}
+{#                    {% endif %}#}
                 </div>
 
                 <div class="col">
@@ -59,5 +61,18 @@
             {% block content %}{% endblock %}
         </nav>
     {% block javascripts %}{% endblock %}
+
+    <hr>
+
+    <footer>
+
+        <nav>
+            <ul class="nav">
+                <li class="nav-item"><a href="{{ path('home') }}" class="nav-link">© track-hub.com</a></li>
+                <li class="nav-item"><a href="{{ path('app_privacy_policy') }}" class="nav-link">Privacy policy</a></li>
+                <li class="nav-item"><a href="{{ path('app_tos') }}" class="nav-link">ToS</a></li>
+            </ul>
+        </nav>
+    </footer>
     </body>
 </html>
