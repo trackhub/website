@@ -1,4 +1,8 @@
 FROM trackhub-web
+
+COPY cert/server.key /etc/ssl/private/apache.key
+COPY cert/server.crt /etc/ssl/certs/apache.crt
+
 ENV PHP_V="7.3"
 
 RUN apt-get update && \

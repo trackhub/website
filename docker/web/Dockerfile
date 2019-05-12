@@ -12,13 +12,10 @@ RUN mkdir /home/www-data && \
 
 RUN usermod -d /home/www-data www-data
 
-RUN a2enmod rewrite ssl
-
 COPY virtualhost.conf /etc/apache2/sites-enabled/000-default.conf
 COPY virtualhost-ssl.conf /etc/apache2/sites-available/000-default-ssl.conf
-COPY cert/server.key /etc/ssl/private/apache-selfsigned.key
-COPY cert/server.crt /etc/ssl/certs/apache-selfsigned.crt
 
+RUN a2enmod rewrite ssl
 RUN a2ensite 000-default-ssl
 
 # php
