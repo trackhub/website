@@ -54,4 +54,5 @@ RUN apt-get update && \
 
 WORKDIR /var/www
 
-CMD apachectl -D FOREGROUND
+CMD usermod -u $WEB_UID www-data && \
+    apachectl -D FOREGROUND

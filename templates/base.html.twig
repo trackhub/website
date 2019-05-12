@@ -44,12 +44,12 @@
 
                 <div class="col">
                     {#                    temporary disabled#}
-{#                    {% if app.user %}#}
-{#                        {{ app.user.username }}#}
-{#                        <a href="{{ path('app_logout') }}">logout</a>#}
-{#                    {% else %}#}
+                    {% if app.user %}
+                        {{ app.user.username }}
+                        <a href="{{ path('app_logout') }}">logout</a>
+                    {% else %}
 {#                        <a href="{{ path("hwi_oauth_connect") }}">{{ 'Log in'|trans }}</a>#}
-{#                    {% endif %}#}
+                    {% endif %}
                 </div>
 
                 <div class="col">
