@@ -16,7 +16,6 @@ COPY virtualhost.conf /etc/apache2/sites-enabled/000-default.conf
 COPY virtualhost-ssl.conf /etc/apache2/sites-available/000-default-ssl.conf
 
 RUN a2enmod rewrite ssl
-RUN a2ensite 000-default-ssl
 
 # php
 RUN apt-get update && \
@@ -48,6 +47,8 @@ RUN echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources
 RUN apt-get update && \
     apt-get install -y --no-install-recommends yarn
 # end js
+
+
 
 WORKDIR /var/www
 
