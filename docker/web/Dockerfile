@@ -11,6 +11,7 @@ RUN mkdir /home/www-data && \
     chown www-data /home/www-data
 
 RUN usermod -d /home/www-data www-data
+RUN usermod --password $(openssl rand 22 | base64) www-data
 
 COPY virtualhost.conf /etc/apache2/sites-enabled/000-default.conf
 COPY virtualhost-ssl.conf /etc/apache2/sites-available/000-default-ssl.conf
