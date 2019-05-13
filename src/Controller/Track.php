@@ -35,7 +35,7 @@ class Track extends AbstractController
             $track = new \App\Entity\Track();
             // we should have service for gpx processing
             $processor = new Processor();
-            $trackVersion = new Version();
+            $trackVersion = new Version($this->getUser());
             $processor->process($c, $trackVersion);
 
             $optimizedPoints = $processor->generateOptimizedPoints($trackVersion);
@@ -95,7 +95,7 @@ class Track extends AbstractController
 
             // we should have service for gpx processing
             $processor = new Processor();
-            $trackVersion = new Version();
+            $trackVersion = new Version($this->get());
             $processor->process($fileContent, $trackVersion);
 
             $trackFile = new TrackFile($trackVersion, $fileContent);

@@ -4,6 +4,7 @@ namespace App\Entity\Track;
 
 use App\Entity\File\TrackFile;
 use App\Entity\Track;
+use App\Entity\User\User;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -26,6 +27,11 @@ class Version
     private $name;
 
     /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\User\User")
+     */
+    private $sendBy;
+
+    /**
      * @ORM\OneToOne(targetEntity="App\Entity\File\TrackFile", cascade={"persist", "remove"}, orphanRemoval=true)
      */
     private $file;
@@ -40,8 +46,9 @@ class Version
      */
     private $points;
 
-    public function __construct()
+    public function __construct(User $sendBy)
     {
+        $this->sendBy = $sendBy;
         $this->points = new ArrayCollection();
     }
 
