@@ -7,6 +7,6 @@
 
     Log in using <br>
     {% for owner in hwi_oauth_resource_owners() %}
-        <a href="{{ hwi_oauth_login_url(owner)|replace({'http:': 'https:'})}}">{{ owner | trans({}, 'HWIOAuthBundle') }}</a> <br />
+        <a href="{{ hwi_oauth_login_url(owner) }}">{{ owner | trans({}, 'HWIOAuthBundle') }}</a> <br />
     {% endfor %}
 {% endblock %}

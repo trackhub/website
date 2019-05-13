@@ -1,4 +1,10 @@
 FROM trackhub-web
+
+RUN a2ensite 000-default-ssl
+
+COPY cert/server.key /etc/ssl/private/apache.key
+COPY cert/server.crt /etc/ssl/certs/apache.crt
+
 ENV PHP_V="7.3"
 
 RUN apt-get update && \

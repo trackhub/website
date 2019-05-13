@@ -11,15 +11,12 @@ RUN mkdir /home/www-data && \
     chown www-data /home/www-data
 
 RUN usermod -d /home/www-data www-data
-
-RUN a2enmod rewrite ssl
+RUN chsh -s /bin/bash www-data
 
 COPY virtualhost.conf /etc/apache2/sites-enabled/000-default.conf
 COPY virtualhost-ssl.conf /etc/apache2/sites-available/000-default-ssl.conf
-COPY cert/server.key /etc/ssl/private/apache-selfsigned.key
-COPY cert/server.crt /etc/ssl/certs/apache-selfsigned.crt
 
-RUN a2ensite 000-default-ssl
+RUN a2enmod rewrite ssl
 
 # php
 RUN apt-get update && \
@@ -35,6 +32,7 @@ RUN apt-get update && \
     apt-get install -y php$PHP_V \
                        php${PHP_V}-mysql \
                        php${PHP_V}-xml \
+                       php${PHP_V}-curl \
                        php${PHP_V}-intl
 RUN update-alternatives --set php /usr/bin/php${PHP_V}
 # end php
@@ -51,6 +49,8 @@ RUN echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources
 RUN apt-get update && \
     apt-get install -y --no-install-recommends yarn
 # end js
+
+
 
 WORKDIR /var/www
 
