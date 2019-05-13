@@ -34,6 +34,10 @@ app_logout:
   path: /logout
 
 app_privacy_policy:
+  path: /{_locale}/privacy-policy
+  controller: App\Controller\SimpleContent::privacyPolicy
+
+app_privacy_policy-type:
   path: /{_locale}/privacy-polocy
   controller: App\Controller\SimpleContent::privacyPolicy
 
@@ -54,3 +58,7 @@ app_sponsored_integration:
 app_legal_bases:
   path: /{_locale}/legal-bases
   controller: App\Controller\SimpleContent::legalBases
+
+app_user_terms:
+  path: /{_locale}/user/terms
+  controller: App\Controller\User::terms

@@ -11,4 +11,8 @@ return [
     // form types
     'cycling' => 'колоездене',
     'hiking' => 'пешеходен туризъм',
+
+    // footer
+    'Privacy Policy' => 'Поверителност',
+    'Terms of Service' => 'Общи условия',
 ];
