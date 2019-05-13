@@ -1,0 +1,18 @@
+{% extends "base.html.twig" %}
+
+{% block content %}
+
+    <h1>
+        User Agreement
+    </h1>
+
+    {{ form_start(form) }}
+        <a href="{{ path('app_tos') }}">{{ 'Terms of Service'|trans }}</a>
+        {{ form_row(form.agreeTerms) }}
+
+        <a href="{{ path('app_privacy_policy') }}">{{ 'Privacy Policy'|trans }}</a>
+        {{ form_row(form.agreePrivacy) }}
+
+    {{ form_end(form) }}
+
+{% endblock %}

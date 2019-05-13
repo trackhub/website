@@ -32,3 +32,8 @@ services:
         arguments:
             - '@fos_user.user_manager'
             - facebook: facebookId
+    app.user.force.terms:
+        class: App\Event\Listener\User\Terms
+        arguments: ['@security.token_storage']
+        tags:
+            - { name: kernel.event_listener, event: kernel.request }
