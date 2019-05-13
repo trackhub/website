@@ -9,7 +9,9 @@
         <button data-type="track-toggle" class="btn btn-info">show/hide</button>
     {% endfor %}
 
-    <a href="{{ path('gps-new-version', {id:track.id}) }}" class="btn btn-success">add new version</a>
+    {% if app.user %}
+        <a href="{{ path('gps-new-version', {id:track.id}) }}" class="btn btn-success">add new version</a>
+    {% endif %}
 
     <hr>
 
