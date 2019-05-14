@@ -7,10 +7,17 @@ class AppTrack {
         var firstPoint = points[0];
         var lastPoint = points[points.length - 1];
         this.markers = [];
-        var startMarker = L.marker([firstPoint.lat, firstPoint.lng]);
-        var endmarker = L.marker([lastPoint.lat, lastPoint.lng]);
-        this.markers.push(startMarker, endmarker);
 
+        var startMarker = L.marker([firstPoint.lat, firstPoint.lng]);
+
+        var finishIcon = L.icon({
+            iconUrl: '/images/flaticoncom/Smashicons/racing-flag-32.png',
+            iconSize: [32, 32],
+            iconAnchor: [0, 32],
+            popupAnchor: [9, -32]
+        });
+        var endMarker = L.marker([lastPoint.lat, lastPoint.lng], {icon:finishIcon});
+        this.markers.push(startMarker, endMarker);
     }
 
     show() {
@@ -19,7 +26,7 @@ class AppTrack {
 
         var marker;
         for (marker in this.markers) {
-            this.markers[marker].addTo(this.map).bindPopup('Start');
+            this.markers[marker].addTo(this.map);
         }
     }
 
