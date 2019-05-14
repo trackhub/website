@@ -15,3 +15,5 @@ require('../css/global.scss');
 window.appNotification = require('toastr');
 window.jQuery = require('jquery');
 window.chartJs = require('chart.js');
+
+window.AppTrack = require('./track.js');
