@@ -58,3 +58,7 @@ app_legal_bases:
 app_user_terms:
   path: /{_locale}/user/terms
   controller: App\Controller\User::terms
+
+app_user_download_personal_data:
+  path: /{_locale}/user/personal-data-download
+  controller: App\Controller\User::downloadPersonalData
