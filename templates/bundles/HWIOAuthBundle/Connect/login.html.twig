@@ -5,8 +5,23 @@
         <span>{{ error }}</span>
     {% endif %}
 
-    Log in using <br>
-    {% for owner in hwi_oauth_resource_owners() %}
-        <a href="{{ hwi_oauth_login_url(owner) }}">{{ owner | trans({}, 'HWIOAuthBundle') }}</a> <br />
-    {% endfor %}
+    <div id="login-content" style="display: none;">
+        Log in using: <br>
+        {% for owner in hwi_oauth_resource_owners() %}
+            <a href="{{ hwi_oauth_login_url(owner) }}" class="btn btn-success">{{ owner | trans({}, 'HWIOAuthBundle') }}</a> <br />
+        {% endfor %}
+    </div>
+
+    <div id="login-agreement">
+        Read and agree with our
+        <a href="{{ path('app_privacy_policy') }}">Privacy Policy</a>
+        and <a href="{{ path('app_user_terms') }}">Terms of Service</a>
+
+        <br>
+        <input type="button" value="I agree with the Privacy Policy and Terms of Service"
+            onclick="
+                document.getElementById('login-agreement').style.display='none';
+                document.getElementById('login-content').style.display='block';
+            ">
+    </div>
 {% endblock %}
