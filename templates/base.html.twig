@@ -3,7 +3,8 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>{% block title %}Welcome!{% endblock %}</title>
+        <title>{% block title %}track-hub.com | free gps tracks{% endblock %}</title>
+        <meta >
         <link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.4/dist/leaflet.css"
               integrity="sha512-puBpdR0798OZvTTbP4A8Ix/l+A4dHDD0DGqYW6RQ+9jxkRFclaxxQb/SJAWZfWAkuyeQUytO7+7N4QKrDh+drA=="
               crossorigin=""/>
@@ -65,12 +66,15 @@
     <hr>
 
     <footer>
-
         <nav>
             <ul class="nav">
                 <li class="nav-item"><a href="{{ path('home') }}" class="nav-link">© track-hub.com</a></li>
                 <li class="nav-item"><a href="{{ path('app_privacy_policy') }}" class="nav-link">{{ 'Privacy Policy'|trans }}</a></li>
                 <li class="nav-item"><a href="{{ path('app_tos') }}" class="nav-link">{{ 'Terms of Service'|trans }}</a></li>
+                <li class="nav-item">
+                    Icon made by <a href="https://www.flaticon.com/authors/smashicons">Smashicons</a>
+                    from <a href="https://www.flaticon.com">www.flaticon.com</a>
+                </li>
             </ul>
         </nav>
     </footer>

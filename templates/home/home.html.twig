@@ -54,7 +54,7 @@
 
                     var points = tracksData[i].points;
                     var pointsAsPolyline = [];
-                    for (var j=0; j < points.length; j++) {
+                    for (var j = 0; j < points.length; j++) {
                         pointsAsPolyline.push([
                             points[j].lat,
                             points[j].lng
@@ -62,8 +62,11 @@
                     }
 
                     var polelineColor = gpsColors[Math.floor(Math.random()*gpsColors.length)];
-                    var polyline = L.polyline(pointsAsPolyline, {color: polelineColor}).addTo(map);
+                    var polyline = L.polyline(pointsAsPolyline, {color: polelineColor});
                     polyline.bindPopup('<a href="/{{ app.request.locale }}/gps/view/' + id + '">view details</a>');
+
+                    var track = new AppTrack(map, polyline);
+                    track.show();
                 }
             };
             var url = '/{{ app.request.locale }}/gps/list';

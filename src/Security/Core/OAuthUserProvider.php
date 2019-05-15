@@ -21,21 +21,59 @@ class OAuthUserProvider extends FOSUBUserProvider
      */
     public function loadUserByOAuthUserResponse(UserResponseInterface $response)
     {
-        $username = $response->getUsername();
+        /**
+         * @var string id in 3rd party system
+         * For facebook this is user id
+         */
+        $idFromThirdParty = $response->getUsername();
 
-        if (empty($username)) {
-            throw new AccountNotLinkedException(sprintf("User '%s' not found.", $username));
+        if (empty($idFromThirdParty)) {
+            throw new AccountNotLinkedException(sprintf("User '%s' not found.", $idFromThirdParty));
         }
 
+        /*
+         * Case when we have same emails with different providers (facebook and google)
+         * is not handled
+         */
+
         $field = $this->getProperty($response);
-        $user = $this->userManager->findUserBy(array($field => $username));
+        $user = $this->userManager->findUserBy([$field => $idFromThirdParty]);
+
+        if (!$user) {
+            if ($response->getEmail()) {
+                $user = $this->userManager->findUserByEmail($response->getEmail());
+            }
+        }
+
         if (!$user) {
             $user = new \App\Entity\User\User();
-            $user->setFacebookId($username);
-            // @TODO check if username already exists
-            $user->setUsername($response->getNickname());
+            $user->setFacebookId($idFromThirdParty);
+
+            $usernameFromThirdParty = $response->getNickname();
+            $username = $usernameFromThirdParty;
+            $usernameExists = true;
+            $counter = 0;
+            while($usernameExists) {
+
+                if ($counter) {
+                    $username = $usernameFromThirdParty . $counter;
+                }
+
+                $existingUser = $this->userManager->findUserByUsername($username);
+                if (!$existingUser) {
+                    $usernameExists = false;
+                }
+
+                $counter++;
+            }
+
+            $user->setUsername($username);
             $user->setEmail($response->getEmail());
-            $user->setPassword(uniqid());
+            $user->setPassword(
+                sha1(
+                    base64_encode(random_bytes(30))
+                )
+            );
             $user->setEnabled(true);
             $this->userManager->updateUser($user);
 

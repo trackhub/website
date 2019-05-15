@@ -37,10 +37,6 @@ app_privacy_policy:
   path: /{_locale}/privacy-policy
   controller: App\Controller\SimpleContent::privacyPolicy
 
-app_privacy_policy-type:
-  path: /{_locale}/privacy-polocy
-  controller: App\Controller\SimpleContent::privacyPolicy
-
 app_tos:
   path: /{_locale}/terms-of-service
   controller: App\Controller\SimpleContent::termsOfService
