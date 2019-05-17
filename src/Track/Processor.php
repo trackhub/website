@@ -20,6 +20,9 @@ class Processor
 
         $previousPoint = null;
         $order = 0;
+        $positiveElevation = 0;
+        $negativeElevation = 0;
+
         foreach ($xml->trk as $track) {
             foreach ($track->trkseg as $trackSegment) {
                 foreach ($trackSegment->trkpt as $trackPoint) {
@@ -40,6 +43,13 @@ class Processor
                     if ($previousPoint) {
                         $distance = $this->calculateDistance($point, $previousPoint);
                         $point->setDistance($distance + $previousPoint->getDistance());
+
+                        if ($point->getElevation() > $previousPoint->getElevation()) {
+                            $positiveElevation += $point->getElevation() - $previousPoint->getElevation();
+                        } else {
+                            $negativeElevation += $previousPoint->getElevation() - $point->getElevation();
+                        }
+
                     }
 
                     $version->addPoint($point);
@@ -50,6 +60,9 @@ class Processor
                 }
             }
         }
+
+        $version->setPositiveElevation($positiveElevation);
+        $version->setNegativeElevation($negativeElevation);
     }
 
     private function calculateDistance(Point $a, Point $b)

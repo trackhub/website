@@ -45,6 +45,16 @@ class Version
      */
     private $points;
 
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $positiveElevation = 0;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $negativeElevation = 0;
+
     public function __construct(User $sendBy)
     {
         $this->sendBy = $sendBy;
@@ -88,5 +98,28 @@ class Version
     public function setFile(TrackFile $file): void
     {
         $this->file = $file;
+    }
+
+    public function getPositiveElevation(): int
+    {
+        return $this->positiveElevation;
+    }
+
+    public function setPositiveElevation(int $positiveElevation): void
+    {
+        $this->positiveElevation = $positiveElevation;
+    }
+
+    /**
+     * @return int
+     */
+    public function getNegativeElevation(): int
+    {
+        return $this->negativeElevation;
+    }
+
+    public function setNegativeElevation(int $negativeElevation): void
+    {
+        $this->negativeElevation = $negativeElevation;
     }
 }

@@ -5,7 +5,7 @@
     <h1>{{ track.name }}</h1>
 
     {% for version in track.versions %}
-        <a class="btn btn-success" href="{{ path('gps-download', {id: version.id}) }}">download, version {{ loop.revindex }}</a>
+        <a class="btn btn-success" href="{{ path('gps-download', {id: version.id}) }}">download, version {{ loop.index }}</a>
         <button data-type="track-toggle" class="btn btn-info">show/hide</button>
     {% endfor %}
 
@@ -16,6 +16,10 @@
     <hr>
 
     <div style="height: 800px; width: 1000px;" id="map"></div>
+
+    {% for version in track.versions %}
+        version{{ loop.index }}: climb: {{ version.positiveElevation|number_format(0, '', '\'') }}m, descent: {{ version.negativeElevation|number_format(0, '', '\'') }}m
+    {% endfor %}
 
     <div class="chart-container" style="height: 300px;">
         <canvas id="elevation" width="400" height="300">
