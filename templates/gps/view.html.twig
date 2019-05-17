@@ -25,12 +25,16 @@
     </div>
 
     <script>
-        var map = L.map('map').setView(
-            [
-                ({{ track.pointNorthEastLat }} + {{ track.pointSouthWestLat }}) / 2,
-                ({{ track.pointSouthWestLng + track.pointNorthEastLng}}) / 2
-            ],
-            12
+        var map = L.map(
+            'map',
+            {
+                gestureHandling: true,
+                center:[
+                    ({{ track.pointNorthEastLat }} + {{ track.pointSouthWestLat }}) / 2,
+                    ({{ track.pointSouthWestLng + track.pointNorthEastLng}}) / 2
+                ],
+                zoom: 12
+            }
         );
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
