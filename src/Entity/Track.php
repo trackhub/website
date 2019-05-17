@@ -70,6 +70,11 @@ class Track
     private $pointSouthWestLng = 999;
 
     /**
+     * @ORM\Column(type="datetime")
+     */
+    private $createdAt;
+
+    /**
      * @ORM\Column(type="integer")
      */
     private $type = self::TYPE_CYCLING;
@@ -79,6 +84,7 @@ class Track
         $this->lastCheck = new DateTime();
         $this->optimizedPoints = new ArrayCollection();
         $this->versions = new ArrayCollection();
+        $this->createdAt = new DateTime();
     }
 
     public function getName(): ?string
