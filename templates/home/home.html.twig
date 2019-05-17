@@ -3,6 +3,25 @@
 {% block content %}
     <div style="height: 400px; width: 700px;" id="map"></div>
 
+    <div>
+
+        <hr>
+        <div>Latest tracks:</div>
+        <ul>
+            {% for track in latestTracks %}
+                <li>
+                    <a href="{{ path('gps-view', { id: track.id}) }}">
+                        {% if track.name is empty %}
+                            {{ track.id }}
+                        {% else %}
+                            {{ track.name }}
+                        {% endif %}
+                    </a>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+
     <script>
         var gpsColors = [
             'blue',

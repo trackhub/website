@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Track\Point;
 use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\QueryBuilder;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -12,9 +13,22 @@ class Home extends AbstractController
 {
     public function home()
     {
+
+        $entityManager = $this->getDoctrine()->getManager();
+        $qb = $entityManager->createQueryBuilder();
+        /* @var $qb QueryBuilder*/
+        $qb->select('t');
+        $qb->from(\App\Entity\Track::class, 't');
+        $qb->orderBy('t.createdAt', 'desc');
+        $qb->setMaxResults(10);
+
+        $latestTracks = $qb->getQuery()->getResult();
+
         return $this->render(
             'home/home.html.twig',
-            []
+            [
+                'latestTracks' => $latestTracks,
+            ]
         );
     }
 
