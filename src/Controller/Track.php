@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\File\TrackFile;
 use App\Entity\Track\Version;
 use App\Form\Type\TrackVersion;
+use App\Track\Exporter;
 use App\Track\Processor;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -163,13 +164,14 @@ class Track extends AbstractController
     {
         $repo = $this->getDoctrine()
             ->getManager()
-                ->getRepository(TrackFile::class);
+                ->getRepository(Version::class);
+        $version = $repo->findOneBy(['id' => $id]);
 
-        $gps = $repo->findOneBy(['id' => $id]);
-        $gps->getFileContent();
+        $exporter = new Exporter();
+        $exported = $exporter->export($version, Exporter::FORMAT_GPX);
 
         $response = new \Symfony\Component\HttpFoundation\Response(
-            $gps->getFileContent(),
+            $exported,
             200,
             [
                 'Content-Disposition' => ResponseHeaderBag::DISPOSITION_ATTACHMENT . '; filename="track.gpx";',

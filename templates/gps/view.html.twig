@@ -5,7 +5,7 @@
     <h1>{{ track.name }}</h1>
 
     {% for version in track.versions %}
-        <a class="btn btn-success" href="{{ path('gps-download', {id: version.file.id}) }}">download, version {{ loop.revindex }}</a>
+        <a class="btn btn-success" href="{{ path('gps-download', {id: version.id}) }}">download, version {{ loop.revindex }}</a>
         <button data-type="track-toggle" class="btn btn-info">show/hide</button>
     {% endfor %}
 

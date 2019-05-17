@@ -52,9 +52,19 @@ class Version
         $this->points = new ArrayCollection();
     }
 
+    public function getId(): ?string
+    {
+        return $this->id;
+    }
+
     public function setTrack(Track $track): void
     {
         $this->track = $track;
+    }
+
+    public function getTrack(): ?Track
+    {
+        return $this->track;
     }
 
     /**
