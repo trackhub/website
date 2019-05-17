@@ -6,7 +6,6 @@ use App\Entity\File\TrackFile;
 use App\Entity\Track;
 use App\Entity\User\User;
 use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -79,22 +78,6 @@ class Version
     {
         $p->setVersion($this);
         $this->points->add($p);
-
-//        if ($p->getLat() > $this->pointNorthEastLat) {
-//            $this->pointNorthEastLat = $p->getLat();
-//        }
-//
-//        if ($p->getLng() > $this->pointNorthEastLng) {
-//            $this->pointNorthEastLng = $p->getLng();
-//        }
-//
-//        if ($p->getLat() < $this->pointSouthWestLat) {
-//            $this->pointSouthWestLat = $p->getLat();
-//        }
-//
-//        if ($p->getLng() < $this->pointSouthWestLng) {
-//            $this->pointSouthWestLng = $p->getLng();
-//        }
     }
 
     public function getFile(): ?TrackFile
@@ -102,9 +85,6 @@ class Version
         return $this->file;
     }
 
-    /**
-     * @param mixed $file
-     */
     public function setFile(TrackFile $file): void
     {
         $this->file = $file;
