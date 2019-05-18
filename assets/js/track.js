@@ -16,7 +16,15 @@ class AppTrack {
             iconAnchor: [0, 32],
             popupAnchor: [9, -32]
         });
-        var endMarker = L.marker([lastPoint.lat, lastPoint.lng], {icon:finishIcon});
+        var endMarker = L.marker([lastPoint.lat, lastPoint.lng], {icon: finishIcon});
+        var polylinePop = polyline.getPopup();
+
+        // copy polyline events to markers
+        if (polylinePop) {
+            endMarker.bindPopup(polylinePop.getContent());
+            startMarker.bindPopup(polylinePop.getContent());
+        }
+
         this.markers.push(startMarker, endMarker);
     }
 
