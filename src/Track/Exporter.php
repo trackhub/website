@@ -3,17 +3,18 @@
 
 namespace App\Track;
 
+use App\Entity\Track;
 use App\Entity\Track\Version;
 
 class Exporter
 {
     public const FORMAT_GPX = 'gpx';
 
-    public function export(Version $version, string $format): string
+    public function export(Track $track, string $format): string
     {
         switch ($format) {
             case self::FORMAT_GPX:
-                $result = $this->exportGpx($version);
+                $result = $this->exportGpx($track);
                 break;
             default:
                 throw new \RuntimeException('Unknown format');
@@ -22,23 +23,25 @@ class Exporter
         return $result;
     }
 
-    public function exportGpx(Version $version): string
+    public function exportGpx(Track $track): string
     {
         $xml = new \SimpleXMLElement('<gpx/>');
         $xml->addAttribute('version', '1.1');
         $xml->addAttribute('creator', 'track-hub.com: http://track-hub.com/');
 
-        $trkXml = $xml->addChild('trk');
-        $trkXml->addChild('name', $version->getTrack()->getName());
+        foreach ($track->getVersions() as $version) {
+            $trkXml = $xml->addChild('trk');
+            $trkXml->addChild('name', $version->getTrack()->getName());
 
-        $trkSegXSml = $trkXml->addChild('trkseg');
+            $trkSegXSml = $trkXml->addChild('trkseg');
 
-        foreach ($version->getPoints() as $point) {
-            $trkSegPointXml = $trkSegXSml->addChild('trkpt');
-            $trkSegPointXml->addAttribute('lat', $point->getLat());
-            $trkSegPointXml->addAttribute('lon', $point->getLng());
-            if ($point->getElevation()) {
-                $trkSegPointXml->addChild('ele', $point->getElevation());
+            foreach ($version->getPoints() as $point) {
+                $trkSegPointXml = $trkSegXSml->addChild('trkpt');
+                $trkSegPointXml->addAttribute('lat', $point->getLat());
+                $trkSegPointXml->addAttribute('lon', $point->getLng());
+                if ($point->getElevation()) {
+                    $trkSegPointXml->addChild('ele', $point->getElevation());
+                }
             }
         }
 
