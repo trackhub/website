@@ -4,14 +4,14 @@
 
     <h1>{{ track.name }}</h1>
 
-    <a class="btn btn-success" href="{{ path('gps-download', {id: track.id}) }}">download</a>
+    <a class="btn btn-success" href="{{ path('gps-download', {id: track.id}) }}">download .gpx file</a>
 
     {% for version in track.versions %}
 
     {% endfor %}
 
     {% if app.user %}
-        <a href="{{ path('gps-new-version', {id:track.id}) }}" class="btn btn-success">add new version</a>
+        <a href="{{ path('gps-new-version', {id:track.id}) }}" class="btn btn-info">add new version</a>
     {% endif %}
 
     <hr>
