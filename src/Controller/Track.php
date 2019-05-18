@@ -96,7 +96,7 @@ class Track extends AbstractController
 
             // we should have service for gpx processing
             $processor = new Processor();
-            $trackVersion = new Version($this->get());
+            $trackVersion = new Version($this->getUser());
             $processor->process($fileContent, $trackVersion);
 
             $trackFile = new TrackFile($trackVersion, $fileContent);
@@ -164,7 +164,7 @@ class Track extends AbstractController
     {
         $repo = $this->getDoctrine()
             ->getManager()
-                ->getRepository(Version::class);
+                ->getRepository(\App\Entity\Track::class);
         $version = $repo->findOneBy(['id' => $id]);
 
         $exporter = new Exporter();

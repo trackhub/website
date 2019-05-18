@@ -4,9 +4,10 @@
 
     <h1>{{ track.name }}</h1>
 
+    <a class="btn btn-success" href="{{ path('gps-download', {id: track.id}) }}">download</a>
+
     {% for version in track.versions %}
-        <a class="btn btn-success" href="{{ path('gps-download', {id: version.id}) }}">download, version {{ loop.index }}</a>
-        <button data-type="track-toggle" class="btn btn-info">show/hide</button>
+
     {% endfor %}
 
     {% if app.user %}
@@ -17,9 +18,24 @@
 
     <div style="height: 800px; width: 1000px;" id="map"></div>
 
+    <br>
+
+    <table class="table">
+        <tr>
+            <td></td>
+            <td>climb</td>
+            <td>descent</td>
+            <td>show/hide on map</td>
+        </tr>
     {% for version in track.versions %}
-        version{{ loop.index }}: climb: {{ version.positiveElevation|number_format(0, '', '\'') }}m, descent: {{ version.negativeElevation|number_format(0, '', '\'') }}m
+        <tr>
+            <td>version{{ loop.index }}</td>
+            <td>{{ version.positiveElevation|number_format(0, '', '\'') }} m</td>
+            <td>{{ version.negativeElevation|number_format(0, '', '\'') }} m</td>
+            <td><button data-type="track-toggle" class="btn btn-info">show/hide</button></td>
+        </tr>
     {% endfor %}
+    </table>
 
     <div class="chart-container" style="height: 300px;">
         <canvas id="elevation" width="400" height="300">
