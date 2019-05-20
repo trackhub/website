@@ -19,22 +19,6 @@
         {{ encore_entry_link_tags('app') }}
         {{ encore_entry_script_tags('app') }}
 
-        <script>
-            jQuery(window).resize(function() {
-                // 45 for bootstrap body margin
-                jQuery('#map').width(window.innerWidth - 45);
-
-                // top menu 120px
-                jQuery('#map').height(window.innerHeight - 120);
-            });
-
-            jQuery(document).ready(function() {
-                // osm map have onWindowResize listener, updating the map if needed
-                // we chacged the div size, so we need to redraw the map
-                window.dispatchEvent(new Event('resize'));
-            });
-        </script>
-
         {% block stylesheets %}{% endblock %}
     </head>
     <body>
@@ -65,10 +49,8 @@
                 </div>
             </div>
             <hr>
-            {% block content %}{% endblock %}
         </nav>
-    {% block javascripts %}{% endblock %}
-
+        {% block content %}{% endblock %}
     <hr>
 
     <footer>
@@ -113,5 +95,7 @@
 
             gtag('config', 'UA-140320045-1', { 'anonymize_ip': true });
         </script>
+
+        {% block javascripts %}{% endblock %}
     </body>
 </html>
