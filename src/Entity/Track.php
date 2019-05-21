@@ -80,14 +80,9 @@ class Track
     private $type = self::TYPE_CYCLING;
 
     /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\Track", mappedBy="downhills")
+     * @ORM\ManyToMany(targetEntity="App\Entity\Track")
      */
     private $uphills;
-
-    /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\Track", inversedBy="uphills")
-     */
-    private $downhills;
 
     public function __construct()
     {
@@ -95,7 +90,6 @@ class Track
         $this->optimizedPoints = new ArrayCollection();
         $this->versions = new ArrayCollection();
         $this->createdAt = new DateTime();
-        $this->downhills = new ArrayCollection();
         $this->uphills = new ArrayCollection();
     }
 
@@ -223,42 +217,9 @@ class Track
         return $this->uphills;
     }
 
-    /**
-     * @return ArrayCollection|Track[]
-     */
-    public function getDownhills()
-    {
-        return $this->downhills;
-    }
-
     public function addUphill(Track $track)
     {
         $this->uphills->add($track);
-
-        if ($track->getDownhills()->contains($this)) {
-            return;
-        }
-
-        $track->addDownhill($this);
-    }
-
-    public function addDownhill(Track $track)
-    {
-        $this->downhills->add($track);
-
-        if ($track->getUphills()->contains($this)) {
-            return;
-        }
-
-        $track->addUphill($this);
-    }
-
-    public function clearUphills()
-    {
-        foreach ($this->getUphills() as $track) {
-            $track->getDownhills()->removeElement($this);
-        }
-        $this->uphills->clear();
     }
 
     public function __toString(): string

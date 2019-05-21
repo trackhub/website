@@ -89,12 +89,6 @@ class Track extends AbstractController
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $uphills = $form->get('uphills')->getData();
-            $track->clearUphills();
-            foreach ($uphills->toArray() as $uphill) {
-                $track->addUphill($uphill);
-            }
-
             $this->getDoctrine()->getManager()
                 ->flush();
 
