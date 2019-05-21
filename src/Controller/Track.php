@@ -40,12 +40,17 @@ class Track extends AbstractController
             $processor->process($c, $trackVersion);
 
             $optimizedPoints = $processor->generateOptimizedPoints($trackVersion);
+
+            $uphills = $form->get('uphills')->getData();
+            foreach ($uphills as $uphill) {
+                $track->addUphill($uphill);
+            }
+
             $track->addOptimizedPoints($optimizedPoints);
 
             $track->addVersion($trackVersion);
 
-            $track->setType($form->get('type')->getData());
-            $track->setName($form->get('name')->getData());
+//            dump($track); die;
 
             $processor->postProcess($track);
 
@@ -65,6 +70,35 @@ class Track extends AbstractController
 
                 return $this->redirectToRoute('home');
             }
+        }
+
+        return $this->render(
+            'gps/edit.html.twig',
+            [
+                'form' => $form->createView(),
+            ]
+        );
+    }
+
+    public function edit(Request $request, $id)
+    {
+        $track = $this->getDoctrine()->getRepository(\App\Entity\Track::class)->findOneBy(['id' => $id]);
+
+        $form = $this->createForm(\App\Form\Type\Track::class, $track);
+        $form->add('submit', SubmitType::class);
+
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $uphills = $form->get('uphills')->getData();
+            $track->clearUphills();
+            foreach ($uphills->toArray() as $uphill) {
+                $track->addUphill($uphill);
+            }
+
+            $this->getDoctrine()->getManager()
+                ->flush();
+
+            return $this->redirectToRoute('gps-view', ['id' => $track->getId()]);
         }
 
         return $this->render(

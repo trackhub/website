@@ -6,12 +6,12 @@
 
     <a class="btn btn-success" href="{{ path('gps-download', {id: track.id}) }}">download .gpx file</a>
 
-    {% for version in track.versions %}
-
-    {% endfor %}
-
     {% if app.user %}
         <a href="{{ path('gps-new-version', {id:track.id}) }}" class="btn btn-info">add new version</a>
+    {% endif %}
+
+    {% if app.user %}
+        <a href="{{ path('app_track_edit', {id:track.id}) }}" class="btn btn-info">edit</a>
     {% endif %}
 
     <hr>
@@ -85,6 +85,36 @@
                 });
 
             })();
+        {% endfor %}
+
+        // uphils
+        {% for uphill in track.uphills %}
+            {% for version in uphill.versions %}
+                (function() {
+                    var latlngs = [];
+
+                    {% for point in version.points %}
+                    latlngs.push([
+                        {{ point.lat }},
+                        {{ point.lng }}
+                    ]);
+                    {% endfor %}
+
+                    // @TODO change colors for different track versions
+                    var track = new AppTrack(
+                        map,
+                        L.polyline(latlngs, {color: 'green'})
+                    );
+
+                    track.show();
+
+                    {#var buttonToggle = document.querySelectorAll("[data-type=track-toggle")[{{ loop.index0 }}];#}
+                    {#buttonToggle.addEventListener('click', function() {#}
+                    {#    track.toggle();#}
+                    {#});#}
+
+                })();
+            {% endfor %}
         {% endfor %}
 
         // elevation plot

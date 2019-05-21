@@ -3,11 +3,14 @@
 
 namespace App\Form\Type;
 
+use Doctrine\ORM\EntityRepository;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\FormBuilderInterface;
 use \Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class Track extends AbstractType
 {
@@ -16,6 +19,11 @@ class Track extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+        $track = null;
+        if (isset($options['data'])) {
+            $track = $options['data'];
+        }
+
         $builder->add(
             'name',
             TextType::class,
@@ -33,6 +41,33 @@ class Track extends AbstractType
                 ],
             ]
         );
-        $builder->add('file', FileType::class);
+
+        if ($track == null || $track->getId() == null) {
+            $builder->add('file', FileType::class, ['mapped' => false]);
+        }
+
+        $builder->add(
+            'uphills',
+            EntityType::class,
+            [
+                'class' => \App\Entity\Track::class,
+                'choice_label' => function(\App\Entity\Track $entity) {
+                    return $entity->getName() ?? $entity->getId();
+                },
+                'query_builder' => function(EntityRepository $repo) {
+                    $qb = $repo->createQueryBuilder('t');
+
+                    return $qb;
+                },
+                'multiple' => true,
+            ]
+        );
+    }
+
+    public function configureOptions(OptionsResolver $resolver)
+    {
+        $resolver->setDefaults([
+            'mapped' => false,
+        ]);
     }
 }
