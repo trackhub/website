@@ -81,8 +81,15 @@ class Track
 
     /**
      * @ORM\ManyToMany(targetEntity="App\Entity\Track")
+     * @ORM\JoinTable(name="track_uphill")
      */
     private $uphills;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="App\Entity\Track")
+     * @ORM\JoinTable(name="track_downhill")
+     */
+    private $downhills;
 
     public function __construct()
     {
@@ -91,6 +98,7 @@ class Track
         $this->versions = new ArrayCollection();
         $this->createdAt = new DateTime();
         $this->uphills = new ArrayCollection();
+        $this->downhills = new ArrayCollection();
     }
 
     public function getName(): ?string
@@ -210,16 +218,36 @@ class Track
     }
 
     /**
-     * @return ArrayCollection|Track[]
+     * @return Track[]
      */
-    public function getUphills()
+    public function getUphills(): array
     {
-        return $this->uphills;
+        return $this->uphills->toArray();
     }
 
     public function addUphill(Track $track)
     {
         $this->uphills->add($track);
+    }
+
+    public function removeUphill(Track $track)
+    {
+        $this->uphills->removeElement($track);
+    }
+
+    public function addDownhill(Track $track)
+    {
+        $this->downhills->add($track);
+    }
+
+    public function removeDownhill(Track $track)
+    {
+        $this->downhills->removeElement($track);
+    }
+
+    public function getDownhills()
+    {
+        return $this->downhills->toArray();
     }
 
     public function __toString(): string

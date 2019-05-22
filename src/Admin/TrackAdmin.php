@@ -48,6 +48,14 @@ class TrackAdmin extends AbstractAdmin
                     'multiple' => true,
                 ]
             )
+            ->add(
+                'downhills',
+                EntityType::class,
+                [
+                    'class' => Track::class,
+                    'multiple' => true,
+                ]
+            )
             ->end();
     }
 
