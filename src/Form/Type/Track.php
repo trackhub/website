@@ -45,23 +45,6 @@ class Track extends AbstractType
         if ($track == null || $track->getId() == null) {
             $builder->add('file', FileType::class, ['mapped' => false]);
         }
-
-        $builder->add(
-            'uphills',
-            EntityType::class,
-            [
-                'class' => \App\Entity\Track::class,
-                'choice_label' => function(\App\Entity\Track $entity) {
-                    return $entity->getName() ?? $entity->getId();
-                },
-                'query_builder' => function(EntityRepository $repo) {
-                    $qb = $repo->createQueryBuilder('t');
-
-                    return $qb;
-                },
-                'multiple' => true,
-            ]
-        );
     }
 
     public function configureOptions(OptionsResolver $resolver)
