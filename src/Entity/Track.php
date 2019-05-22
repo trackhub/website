@@ -224,6 +224,9 @@ class Track
 
     public function __toString(): string
     {
-        return $this->getName() || $this->getId();
+        if ($this->getName()) {
+            return $this->getName();
+        }
+        return $this->getId();
     }
 }
