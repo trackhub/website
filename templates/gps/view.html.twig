@@ -4,8 +4,6 @@
 
     <h1>{{ track.name }}</h1>
 
-
-
     {% if app.user %}
         <a href="{{ path('gps-new-version', {id:track.id}) }}" class="btn btn-info">add new version</a>
     {% endif %}
@@ -20,13 +18,13 @@
 
     <br>
 
-    <form method="get" action="/TO_DO_____">
+    <form method="post" action="{{ path('app_track_download_batch') }}">
         <table class="table">
             <tr>
                 <td></td>
                 <td>climb</td>
                 <td>descent</td>
-                <td>show/hide on map</td>
+                <td>include in export</td>
             </tr>
         {% for version in track.versions %}
             <tr>
@@ -82,7 +80,7 @@
         </table>
 
         <a class="btn btn-success" href="{{ path('gps-download', {id: track.id}) }}">download main track</a>
-        <input type="submit" class="btn btn-success" value="download all shown tracks">
+        <input type="submit" class="btn btn-success" value="download selected versions">
     </form>
 
     <div class="chart-container" style="height: 300px;">

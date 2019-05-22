@@ -10,11 +10,11 @@ class Exporter
 {
     public const FORMAT_GPX = 'gpx';
 
-    public function export(Track $track, string $format): string
+    public function export(iterable $versions, string $format): string
     {
         switch ($format) {
             case self::FORMAT_GPX:
-                $result = $this->exportGpx($track);
+                $result = $this->exportGpx($versions);
                 break;
             default:
                 throw new \RuntimeException('Unknown format');
@@ -23,13 +23,13 @@ class Exporter
         return $result;
     }
 
-    public function exportGpx(Track $track): string
+    public function exportGpx(iterable $versionCollection): string
     {
         $xml = new \SimpleXMLElement('<gpx/>');
         $xml->addAttribute('version', '1.1');
         $xml->addAttribute('creator', 'track-hub.com: http://track-hub.com/');
 
-        foreach ($track->getVersions() as $version) {
+        foreach ($versionCollection as $version) {
             $trkXml = $xml->addChild('trk');
             $trkXml->addChild('name', $version->getTrack()->getName());
 

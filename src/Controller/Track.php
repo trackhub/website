@@ -47,10 +47,7 @@ class Track extends AbstractController
             }
 
             $track->addOptimizedPoints($optimizedPoints);
-
             $track->addVersion($trackVersion);
-
-//            dump($track); die;
 
             $processor->postProcess($track);
 
@@ -193,10 +190,30 @@ class Track extends AbstractController
         $repo = $this->getDoctrine()
             ->getManager()
                 ->getRepository(\App\Entity\Track::class);
-        $version = $repo->findOneBy(['id' => $id]);
+        $track = $repo->findOneBy(['id' => $id]);
 
         $exporter = new Exporter();
-        $exported = $exporter->export($version, Exporter::FORMAT_GPX);
+        $exported = $exporter->export($track->getVersions(), Exporter::FORMAT_GPX);
+
+        $response = new \Symfony\Component\HttpFoundation\Response(
+            $exported,
+            200,
+            [
+                'Content-Disposition' => ResponseHeaderBag::DISPOSITION_ATTACHMENT . '; filename="track.gpx";',
+            ]
+        );
+
+        return $response;
+    }
+
+    public function downloadBatch(Request $request)
+    {
+        $versions = $request->request->get('versions');
+        $versionRepo = $this->getDoctrine()->getRepository(Version::class);
+        $versionsCollection = $versionRepo->findBy(['id' => $versions]);
+
+        $exporter = new Exporter();
+        $exported = $exporter->export($versionsCollection, Exporter::FORMAT_GPX);
 
         $response = new \Symfony\Component\HttpFoundation\Response(
             $exported,
