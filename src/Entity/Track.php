@@ -74,8 +74,6 @@ class Track
      */
     private $createdAt;
 
-    private $downhillVersionsCache;
-
     /**
      * @ORM\Column(type="integer")
      */
@@ -87,11 +85,16 @@ class Track
      */
     private $uphills;
 
+    private $uphillVersionsCache;
+
+
     /**
      * @ORM\ManyToMany(targetEntity="App\Entity\Track")
      * @ORM\JoinTable(name="track_downhill")
      */
     private $downhills;
+
+    private $downhillVersionsCache;
 
     public function __construct()
     {
@@ -274,6 +277,31 @@ class Track
 
             foreach ($downhills->getDownhillVersions($useCache, $ignoredTracks) as $dhVersionsRecursive) {
                 $versions[] = $dhVersionsRecursive;
+            }
+        }
+
+        return $versions;
+    }
+
+    public function getUphillVersions($useCache = false, $ignoredTracks = []): array
+    {
+        if ($useCache && $this->uphillVersionsCache !== null) {
+            return $this->uphillVersionsCache;
+        }
+
+        $ignoredTracks[] = $this;
+        $versions = [];
+        foreach ($this->getUphills() as $uphills) {
+            if (array_search($uphills, $ignoredTracks) !== false) {
+                continue;
+            }
+
+            foreach ($uphills->getVersions() as $version) {
+                $versions[] = $version;
+            }
+
+            foreach ($uphills->getUphillVersions($useCache, $ignoredTracks) as $uphillVersionsRecursive) {
+                $versions[] = $uphillVersionsRecursive;
             }
         }
 
