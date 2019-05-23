@@ -38,21 +38,18 @@ class TrackTest extends TestCase
         }
     }
 
-    public function testGetDownhillVersions()
+    public function downhillUphillMethodProvider()
     {
-        $track = new Track();
-
-        $expectedVersions = [];
-
-        $downhillVersionOne = $this->generateTrack(1);
-        $expectedVersions[] = $downhillVersionOne->getVersions()[0];
-
-        $track->addDownhill($downhillVersionOne);
-
-        $this->assertArraysAreIdentical($expectedVersions, $track->getDownhillVersions());
+        return [
+            ['addDownhill', 'getDownhillVersions',],
+            ['addUphill', 'getUphillVersions',],
+        ];
     }
 
-    public function testGetDownhillVersionsMultiple()
+    /**
+     * @dataProvider downhillUphillMethodProvider
+     */
+    public function testGetDownhillVersions($addTrackMethod, $getVersionsMethod)
     {
         $track = new Track();
 
@@ -60,17 +57,38 @@ class TrackTest extends TestCase
 
         $downhillVersionOne = $this->generateTrack(1);
         $expectedVersions[] = $downhillVersionOne->getVersions()[0];
+
+        $track->{$addTrackMethod}($downhillVersionOne);
+
+        $this->assertArraysAreIdentical($expectedVersions, $track->{$getVersionsMethod}());
+    }
+
+    /**
+     * @dataProvider downhillUphillMethodProvider
+     */
+    public function testGetDownhillVersionsMultiple($addTrackMethod, $getVersionsMethod)
+    {
+        $track = new Track();
+
+        $expectedVersions = [];
+
+        $downhillVersionOne = $this->generateTrack(2);
+        $expectedVersions[] = $downhillVersionOne->getVersions()[0];
+        $expectedVersions[] = $downhillVersionOne->getVersions()[1];
 
         $dhVersionTwo = $this->generateTrack(1);
         $expectedVersions[] = $dhVersionTwo->getVersions()[0];
 
-        $track->addDownhill($downhillVersionOne);
-        $track->addDownhill($dhVersionTwo);
+        $track->{$addTrackMethod}($downhillVersionOne);
+        $track->{$addTrackMethod}($dhVersionTwo);
 
-        $this->assertArraysAreIdentical($expectedVersions, $track->getDownhillVersions());
+        $this->assertArraysAreIdentical($expectedVersions, $track->{$getVersionsMethod}());
     }
 
-    public function testGetDownhillVersionsRecursive()
+    /**
+     * @dataProvider downhillUphillMethodProvider
+     */
+    public function testGetDownhillVersionsRecursive($addTrackMethod, $getVersionsMethod)
     {
         $track = new Track();
 
@@ -83,16 +101,19 @@ class TrackTest extends TestCase
         $expectedVersions[] = $dhVersionTwo->getVersions()[0];
 
         $dhVersionTwoRecursive = $this->generateTrack(1);
-        $dhVersionTwo->addDownhill($dhVersionTwoRecursive);
+        $dhVersionTwo->{$addTrackMethod}($dhVersionTwoRecursive);
         $expectedVersions[] = $dhVersionTwoRecursive->getVersions()[0];
 
-        $track->addDownhill($downhillVersionOne);
-        $track->addDownhill($dhVersionTwo);
+        $track->{$addTrackMethod}($downhillVersionOne);
+        $track->{$addTrackMethod}($dhVersionTwo);
 
-        $this->assertArraysAreIdentical($expectedVersions, $track->getDownhillVersions());
+        $this->assertArraysAreIdentical($expectedVersions, $track->{$getVersionsMethod}());
     }
 
-    public function testGetDownhillVersionsInfinitiveLoop()
+    /**
+     * @dataProvider downhillUphillMethodProvider
+     */
+    public function testGetDownhillVersionsInfinitiveLoop($addTrackMethod, $getVersionsMethod)
     {
         $track = new Track();
 
@@ -100,10 +121,10 @@ class TrackTest extends TestCase
 
         $downhillVersionOne = $this->generateTrack(1);
         $expectedVersions[] = $downhillVersionOne->getVersions()[0];
-        $downhillVersionOne->addDownhill($track);
+        $downhillVersionOne->{$addTrackMethod}($track);
 
-        $track->addDownhill($downhillVersionOne);
+        $track->{$addTrackMethod}($downhillVersionOne);
 
-        $this->assertArraysAreIdentical($expectedVersions, $track->getDownhillVersions());
+        $this->assertArraysAreIdentical($expectedVersions, $track->{$getVersionsMethod}());
     }
 }
