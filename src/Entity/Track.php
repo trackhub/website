@@ -74,6 +74,8 @@ class Track
      */
     private $createdAt;
 
+    private $downhillVersionsCache;
+
     /**
      * @ORM\Column(type="integer")
      */
@@ -245,9 +247,37 @@ class Track
         $this->downhills->removeElement($track);
     }
 
+    /**
+     * @return Track[]
+     */
     public function getDownhills()
     {
         return $this->downhills->toArray();
+    }
+
+    public function getDownhillVersions($useCache = false, $ignoredTracks = []): array
+    {
+        if ($useCache && $this->downhillVersionsCache !== null) {
+            return $this->downhillVersionsCache;
+        }
+
+        $ignoredTracks[] = $this;
+        $versions = [];
+        foreach ($this->getDownhills() as $downhills) {
+            if (array_search($downhills, $ignoredTracks) !== false) {
+                continue;
+            }
+
+            foreach ($downhills->getVersions() as $version) {
+                $versions[] = $version;
+            }
+
+            foreach ($downhills->getDownhillVersions($useCache, $ignoredTracks) as $dhVersionsRecursive) {
+                $versions[] = $dhVersionsRecursive;
+            }
+        }
+
+        return $versions;
     }
 
     public function __toString(): string

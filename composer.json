@@ -23,6 +23,7 @@
         "symfony/yaml": "*"
     },
     "require-dev": {
+        "phpunit/phpunit": "^8.1",
         "symfony/dotenv": "*",
         "symfony/profiler-pack": "^1.0"
     },

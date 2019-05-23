@@ -13,6 +13,7 @@ use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class Track extends AbstractController
 {
@@ -161,6 +162,22 @@ class Track extends AbstractController
 
         $gps = $repo->findOneBy(['id' => $id]);
         /** @var $gps \App\Entity\Track */
+
+        if ($gps) {
+            throw new NotFoundHttpException("Trakc not found");
+        }
+
+        $downhills = $gps->getDownhills();
+        foreach ($downhills as $downhill) {
+
+        }
+
+
+
+
+
+
+
 
         $processor = new Processor();
         $elevationData = $processor->generateElevationData(
