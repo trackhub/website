@@ -40,8 +40,14 @@ class OAuthUserProvider extends FOSUBUserProvider
         $user = $this->userManager->findUserBy([$field => $idFromThirdParty]);
 
         if (!$user) {
+            // if user email is changed in 3rd party system, then change our data too
+            // the problem is when user have login from facebook and google and emails are different :(
             if ($response->getEmail()) {
                 $user = $this->userManager->findUserByEmail($response->getEmail());
+            }
+
+            if ($user) {
+                $user->setFacebookId($idFromThirdParty);
             }
         }
 
