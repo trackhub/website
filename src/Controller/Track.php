@@ -80,6 +80,8 @@ class Track extends AbstractController
 
     public function edit(Request $request, $id)
     {
+        throw new \Exception("Not implemented");
+
         $track = $this->getDoctrine()->getRepository(\App\Entity\Track::class)->findOneBy(['id' => $id]);
 
         $form = $this->createForm(\App\Form\Type\Track::class, $track);

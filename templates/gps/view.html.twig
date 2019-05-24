@@ -8,10 +8,6 @@
         <a href="{{ path('gps-new-version', {id:track.id}) }}" class="btn btn-info">add new version</a>
     {% endif %}
 
-    {% if app.user %}
-        <a href="{{ path('app_track_edit', {id:track.id}) }}" class="btn btn-info">edit</a>
-    {% endif %}
-
     <hr>
 
     <div style="height: 50vh; min-height: 300px; width: 100%;" id="map"></div>
