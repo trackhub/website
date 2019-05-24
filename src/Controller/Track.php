@@ -13,6 +13,7 @@ use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class Track extends AbstractController
 {
@@ -40,10 +41,9 @@ class Track extends AbstractController
             $processor->process($c, $trackVersion);
 
             $optimizedPoints = $processor->generateOptimizedPoints($trackVersion);
+
             $track->addOptimizedPoints($optimizedPoints);
-
             $track->addVersion($trackVersion);
-
             $track->setType($form->get('type')->getData());
             $track->setName($form->get('name')->getData());
 
@@ -65,6 +65,31 @@ class Track extends AbstractController
 
                 return $this->redirectToRoute('home');
             }
+        }
+
+        return $this->render(
+            'gps/edit.html.twig',
+            [
+                'form' => $form->createView(),
+            ]
+        );
+    }
+
+    public function edit(Request $request, $id)
+    {
+        throw new \Exception("Not implemented");
+
+        $track = $this->getDoctrine()->getRepository(\App\Entity\Track::class)->findOneBy(['id' => $id]);
+
+        $form = $this->createForm(\App\Form\Type\Track::class, $track);
+        $form->add('submit', SubmitType::class);
+
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->getDoctrine()->getManager()
+                ->flush();
+
+            return $this->redirectToRoute('gps-view', ['id' => $track->getId()]);
         }
 
         return $this->render(
@@ -137,6 +162,10 @@ class Track extends AbstractController
         $gps = $repo->findOneBy(['id' => $id]);
         /** @var $gps \App\Entity\Track */
 
+        if (!$gps) {
+            throw new NotFoundHttpException("Trakc not found");
+        }
+
         $processor = new Processor();
         $elevationData = $processor->generateElevationData(
             $gps->getVersions()->first()->getPoints()
@@ -165,10 +194,30 @@ class Track extends AbstractController
         $repo = $this->getDoctrine()
             ->getManager()
                 ->getRepository(\App\Entity\Track::class);
-        $version = $repo->findOneBy(['id' => $id]);
+        $track = $repo->findOneBy(['id' => $id]);
 
         $exporter = new Exporter();
-        $exported = $exporter->export($version, Exporter::FORMAT_GPX);
+        $exported = $exporter->export($track->getVersions(), Exporter::FORMAT_GPX);
+
+        $response = new \Symfony\Component\HttpFoundation\Response(
+            $exported,
+            200,
+            [
+                'Content-Disposition' => ResponseHeaderBag::DISPOSITION_ATTACHMENT . '; filename="track.gpx";',
+            ]
+        );
+
+        return $response;
+    }
+
+    public function downloadBatch(Request $request)
+    {
+        $versions = $request->request->get('versions');
+        $versionRepo = $this->getDoctrine()->getRepository(Version::class);
+        $versionsCollection = $versionRepo->findBy(['id' => $versions]);
+
+        $exporter = new Exporter();
+        $exported = $exporter->export($versionsCollection, Exporter::FORMAT_GPX);
 
         $response = new \Symfony\Component\HttpFoundation\Response(
             $exported,

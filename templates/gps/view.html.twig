@@ -4,12 +4,6 @@
 
     <h1>{{ track.name }}</h1>
 
-    <a class="btn btn-success" href="{{ path('gps-download', {id: track.id}) }}">download .gpx file</a>
-
-    {% for version in track.versions %}
-
-    {% endfor %}
-
     {% if app.user %}
         <a href="{{ path('gps-new-version', {id:track.id}) }}" class="btn btn-info">add new version</a>
     {% endif %}
@@ -20,22 +14,66 @@
 
     <br>
 
-    <table class="table">
-        <tr>
-            <td></td>
-            <td>climb</td>
-            <td>descent</td>
-            <td>show/hide on map</td>
-        </tr>
-    {% for version in track.versions %}
-        <tr>
-            <td>version{{ loop.index }}</td>
-            <td>{{ version.positiveElevation|number_format(0, '', '\'') }} m</td>
-            <td>{{ version.negativeElevation|number_format(0, '', '\'') }} m</td>
-            <td><button data-type="track-toggle" class="btn btn-info">show/hide</button></td>
-        </tr>
-    {% endfor %}
-    </table>
+    <form method="post" action="{{ path('app_track_download_batch') }}">
+        <table class="table">
+            <tr>
+                <td></td>
+                <td>climb</td>
+                <td>descent</td>
+                <td>include in export</td>
+            </tr>
+        {% for version in track.versions %}
+            <tr>
+                <td>main track #{{ loop.index }}</td>
+                <td>{{ version.positiveElevation|number_format(0, '', '\'') }} m</td>
+                <td>{{ version.negativeElevation|number_format(0, '', '\'') }} m</td>
+                <td>
+                    <input type="checkbox" data-type="track-toggle" checked
+                           id="{{ 'version_export_id' }}{{ loop.index }}"
+                           required
+                           name="versions[]"
+                           value="{{ version.id }}"
+                    />
+                    <label for="{{ 'version_export_id' }}{{ loop.index }}">Export</label>
+                </td>
+            </tr>
+        {% endfor %}
+        {% for version in track.getUphillVersions(true) %}
+            <tr>
+                <td>uphill version #{{ loop.index }}</td>
+                <td>{{ version.positiveElevation|number_format(0, '', '\'') }} m</td>
+                <td>{{ version.negativeElevation|number_format(0, '', '\'') }} m</td>
+                <td>
+                    <input type="checkbox" data-type="track-toggle" checked
+                           id="{{ 'uphill_export_id' }}{{ loop.index }}"
+                           name="versions[]"
+                           value="{{ version.id }}"
+                    />
+                    <label for="{{ 'uphill_export_id' }}{{ loop.index }}">Export</label>
+                </td>
+            </tr>
+        {% endfor %}
+
+        {% for version in track.downhillVersions(true) %}
+            <tr>
+                <td>downhill version #{{ loop.index }}</td>
+                <td>{{ version.positiveElevation|number_format(0, '', '\'') }} m</td>
+                <td>{{ version.negativeElevation|number_format(0, '', '\'') }} m</td>
+                <td>
+                    <input type="checkbox" data-type="track-toggle" checked
+                           id="{{ 'downhill_export_id' }}{{ loop.index }}"
+                           name="versions[]"
+                           value="{{ version.id }}"
+                    />
+                    <label for="{{ 'downhill_export_id' }}{{ loop.index }}">Export</label>
+                </td>
+            </tr>
+        {% endfor %}
+        </table>
+
+        <a class="btn btn-success" href="{{ path('gps-download', {id: track.id}) }}">download main track</a>
+        <input type="submit" class="btn btn-success" value="download selected versions">
+    </form>
 
     <div class="chart-container" style="height: 300px;">
         <canvas id="elevation" width="400" height="300">
@@ -60,6 +98,8 @@
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         }).addTo(map);
 
+        {% set trackIndex = 0 %}
+
         {% for version in track.versions %}
             (function() {
                 var latlngs = [];
@@ -71,7 +111,6 @@
                     ]);
                 {% endfor %}
 
-                // @TODO change colors for different track versions
                 var track = new AppTrack(
                     map,
                     L.polyline(latlngs, {color: 'red'})
@@ -79,12 +118,75 @@
 
                 track.show();
 
-                var buttonToggle = document.querySelectorAll("[data-type=track-toggle")[{{ loop.index0 }}];
+                var buttonToggle = document.querySelectorAll("[data-type=track-toggle")[{{ trackIndex }}];
                 buttonToggle.addEventListener('click', function() {
                     track.toggle();
                 });
-
             })();
+
+            {% set trackIndex = trackIndex + 1 %}
+        {% endfor %}
+
+        // uphills
+        {% for uphill in track.uphills %}
+            {% for version in uphill.versions %}
+                (function() {
+                    var latlngs = [];
+
+                    {% for point in version.points %}
+                    latlngs.push([
+                        {{ point.lat }},
+                        {{ point.lng }}
+                    ]);
+                    {% endfor %}
+
+                    var track = new AppTrack(
+                        map,
+                        L.polyline(latlngs, {color: 'green'})
+                    );
+
+                    track.show();
+
+                    var buttonToggle = document.querySelectorAll("[data-type=track-toggle")[{{ trackIndex }}];
+                    buttonToggle.addEventListener('click', function() {
+                        track.toggle();
+                    });
+
+                })();
+
+                {% set trackIndex = trackIndex + 1 %}
+            {% endfor %}
+        {% endfor %}
+
+
+        // downhills
+        {% for downhill in track.downhills %}
+            {% for version in downhill.versions %}
+                (function() {
+                    var latlngs = [];
+
+                    {% for point in version.points %}
+                    latlngs.push([
+                        {{ point.lat }},
+                        {{ point.lng }}
+                    ]);
+                    {% endfor %}
+
+                    var track = new AppTrack(
+                        map,
+                        L.polyline(latlngs, {color: 'orange'})
+                    );
+
+                    track.show();
+
+                        var buttonToggle = document.querySelectorAll("[data-type=track-toggle")[{{ trackIndex }}];
+                        buttonToggle.addEventListener('click', function() {
+                            track.toggle();
+                        });
+                })();
+
+                {% set trackIndex = trackIndex + 1 %}
+            {% endfor %}
         {% endfor %}
 
         // elevation plot

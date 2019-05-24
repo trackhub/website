@@ -79,12 +79,31 @@ class Track
      */
     private $type = self::TYPE_CYCLING;
 
+    /**
+     * @ORM\ManyToMany(targetEntity="App\Entity\Track")
+     * @ORM\JoinTable(name="track_uphill")
+     */
+    private $uphills;
+
+    private $uphillVersionsCache;
+
+
+    /**
+     * @ORM\ManyToMany(targetEntity="App\Entity\Track")
+     * @ORM\JoinTable(name="track_downhill")
+     */
+    private $downhills;
+
+    private $downhillVersionsCache;
+
     public function __construct()
     {
         $this->lastCheck = new DateTime();
         $this->optimizedPoints = new ArrayCollection();
         $this->versions = new ArrayCollection();
         $this->createdAt = new DateTime();
+        $this->uphills = new ArrayCollection();
+        $this->downhills = new ArrayCollection();
     }
 
     public function getName(): ?string
@@ -166,11 +185,6 @@ class Track
     public function addVersion(Version $version)
     {
         $version->setTrack($this);
-
-        if ($this->versions->isEmpty()) {
-            // @TODO calculate cached enpoints
-        }
-
         $this->versions->add($version);
     }
 
@@ -206,5 +220,99 @@ class Track
                 $this->pointSouthWestLng = $p->getLng();
             }
         }
+    }
+
+    /**
+     * @return Track[]
+     */
+    public function getUphills(): array
+    {
+        return $this->uphills->toArray();
+    }
+
+    public function addUphill(Track $track)
+    {
+        $this->uphills->add($track);
+    }
+
+    public function removeUphill(Track $track)
+    {
+        $this->uphills->removeElement($track);
+    }
+
+    public function addDownhill(Track $track)
+    {
+        $this->downhills->add($track);
+    }
+
+    public function removeDownhill(Track $track)
+    {
+        $this->downhills->removeElement($track);
+    }
+
+    /**
+     * @return Track[]
+     */
+    public function getDownhills()
+    {
+        return $this->downhills->toArray();
+    }
+
+    public function getDownhillVersions($useCache = false, $ignoredTracks = []): array
+    {
+        if ($useCache && $this->downhillVersionsCache !== null) {
+            return $this->downhillVersionsCache;
+        }
+
+        $ignoredTracks[] = $this;
+        $versions = [];
+        foreach ($this->getDownhills() as $downhills) {
+            if (array_search($downhills, $ignoredTracks) !== false) {
+                continue;
+            }
+
+            foreach ($downhills->getVersions() as $version) {
+                $versions[] = $version;
+            }
+
+            foreach ($downhills->getDownhillVersions($useCache, $ignoredTracks) as $dhVersionsRecursive) {
+                $versions[] = $dhVersionsRecursive;
+            }
+        }
+
+        return $versions;
+    }
+
+    public function getUphillVersions($useCache = false, $ignoredTracks = []): array
+    {
+        if ($useCache && $this->uphillVersionsCache !== null) {
+            return $this->uphillVersionsCache;
+        }
+
+        $ignoredTracks[] = $this;
+        $versions = [];
+        foreach ($this->getUphills() as $uphills) {
+            if (array_search($uphills, $ignoredTracks) !== false) {
+                continue;
+            }
+
+            foreach ($uphills->getVersions() as $version) {
+                $versions[] = $version;
+            }
+
+            foreach ($uphills->getUphillVersions($useCache, $ignoredTracks) as $uphillVersionsRecursive) {
+                $versions[] = $uphillVersionsRecursive;
+            }
+        }
+
+        return $versions;
+    }
+
+    public function __toString(): string
+    {
+        if ($this->getName()) {
+            return $this->getName();
+        }
+        return $this->getId();
     }
 }

@@ -3,10 +3,6 @@ FROM debian:9
 RUN apt-get update && \
     apt-get install -y apache2 curl gnupg2
 
-# usually 1st user have id 1000
-# changing the www-data to be with id 1000
-# will alllow files editing w/o sudo
-RUN usermod -u 1000 www-data
 RUN mkdir /home/www-data && \
     chown www-data /home/www-data
 
@@ -33,6 +29,7 @@ RUN apt-get update && \
                        php${PHP_V}-mysql \
                        php${PHP_V}-xml \
                        php${PHP_V}-curl \
+                       php${PHP_V}-mbstring \
                        php${PHP_V}-intl
 RUN update-alternatives --set php /usr/bin/php${PHP_V}
 # end php

@@ -1,6 +1,5 @@
 <?php
 
-
 namespace App\Security\Core;
 
 use HWI\Bundle\OAuthBundle\OAuth\Response\UserResponseInterface;
@@ -9,13 +8,6 @@ use HWI\Bundle\OAuthBundle\Security\Core\Exception\AccountNotLinkedException;
 
 class OAuthUserProvider extends FOSUBUserProvider
 {
-    /**
-     * @var array
-     */
-    protected $properties = array(
-        'identifier' => 'id',
-    );
-
     /**
      * {@inheritdoc}
      */
@@ -31,17 +23,18 @@ class OAuthUserProvider extends FOSUBUserProvider
             throw new AccountNotLinkedException(sprintf("User '%s' not found.", $idFromThirdParty));
         }
 
-        /*
-         * Case when we have same emails with different providers (facebook and google)
-         * is not handled
-         */
-
         $field = $this->getProperty($response);
         $user = $this->userManager->findUserBy([$field => $idFromThirdParty]);
 
         if (!$user) {
+            // if user email is changed in 3rd party system, then change our data too
+            // the problem is when user have login from facebook and google and emails are different :(
             if ($response->getEmail()) {
                 $user = $this->userManager->findUserByEmail($response->getEmail());
+            }
+
+            if ($user) {
+                $user->setFacebookId($idFromThirdParty);
             }
         }
 
@@ -53,8 +46,7 @@ class OAuthUserProvider extends FOSUBUserProvider
             $username = $usernameFromThirdParty;
             $usernameExists = true;
             $counter = 0;
-            while($usernameExists) {
-
+            while ($usernameExists) {
                 if ($counter) {
                     $username = $usernameFromThirdParty . $counter;
                 }
@@ -76,8 +68,6 @@ class OAuthUserProvider extends FOSUBUserProvider
             );
             $user->setEnabled(true);
             $this->userManager->updateUser($user);
-
-            $user = $this->loadUserByUsername($response->getNickname());
         }
 
         return $user;

@@ -26,6 +26,14 @@ gps-list:
     size: 10
   controller: App\Controller\Home::find
 
+app_track_edit:
+  path: /{_locale}/gps/edit/{id}
+  controller: App\Controller\Track::edit
+
+app_track_download_batch:
+  path: /{_locale}/gps/download-batch
+  controller: App\Controller\Track::downloadBatch
+
 gps-download:
   path: /{_locale}/gps/download/{id}
   controller: App\Controller\Track::download

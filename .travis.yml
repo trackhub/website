@@ -1,0 +1,21 @@
+language: php
+php:
+  - 7.3
+  - nightly
+
+before_script:
+  - phpenv rehash
+
+script:
+    - composer install --prefer-dist
+    - ./vendor/bin/phpunit -c tests/phpunit/phpunit.xml --no-coverage
+    - ./bin/console doctrine:mapping:info
+
+matrix:
+    allow_failures:
+        - php: nightly
+
+notifications:
+    on_success: never
+    on_failure: never
+    on_change: never
