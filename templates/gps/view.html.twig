@@ -28,7 +28,7 @@
             </tr>
         {% for version in track.versions %}
             <tr>
-                <td>version{{ loop.index }}</td>
+                <td>main track #{{ loop.index }}</td>
                 <td>{{ version.positiveElevation|number_format(0, '', '\'') }} m</td>
                 <td>{{ version.negativeElevation|number_format(0, '', '\'') }} m</td>
                 <td>
@@ -42,40 +42,36 @@
                 </td>
             </tr>
         {% endfor %}
-        {% for uphill in track.uphills %}
-            {% for version in uphill.versions %}
-                <tr>
-                    <td>version{{ loop.index }}</td>
-                    <td>{{ version.positiveElevation|number_format(0, '', '\'') }} m</td>
-                    <td>{{ version.negativeElevation|number_format(0, '', '\'') }} m</td>
-                    <td>
-                        <input type="checkbox" data-type="track-toggle" checked
-                               id="{{ 'uphill_export_id' }}{{ loop.index }}"
-                               name="versions[]"
-                               value="{{ version.id }}"
-                        />
-                        <label for="{{ 'uphill_export_id' }}{{ loop.index }}">Export</label>
-                    </td>
-                </tr>
-            {% endfor %}
+        {% for version in track.getUphillVersions(true) %}
+            <tr>
+                <td>uphill version #{{ loop.index }}</td>
+                <td>{{ version.positiveElevation|number_format(0, '', '\'') }} m</td>
+                <td>{{ version.negativeElevation|number_format(0, '', '\'') }} m</td>
+                <td>
+                    <input type="checkbox" data-type="track-toggle" checked
+                           id="{{ 'uphill_export_id' }}{{ loop.index }}"
+                           name="versions[]"
+                           value="{{ version.id }}"
+                    />
+                    <label for="{{ 'uphill_export_id' }}{{ loop.index }}">Export</label>
+                </td>
+            </tr>
         {% endfor %}
 
-        {% for downhill in track.downhills %}
-            {% for version in downhill.versions %}
-                <tr>
-                    <td>version{{ loop.index }}</td>
-                    <td>{{ version.positiveElevation|number_format(0, '', '\'') }} m</td>
-                    <td>{{ version.negativeElevation|number_format(0, '', '\'') }} m</td>
-                    <td>
-                        <input type="checkbox" data-type="track-toggle" checked
-                               id="{{ 'downhill_export_id' }}{{ loop.index }}"
-                               name="versions[]"
-                               value="{{ version.id }}"
-                        />
-                        <label for="{{ 'downhill_export_id' }}{{ loop.index }}">Export</label>
-                    </td>
-                </tr>
-            {% endfor %}
+        {% for version in track.downhillVersions(true) %}
+            <tr>
+                <td>downhill version #{{ loop.index }}</td>
+                <td>{{ version.positiveElevation|number_format(0, '', '\'') }} m</td>
+                <td>{{ version.negativeElevation|number_format(0, '', '\'') }} m</td>
+                <td>
+                    <input type="checkbox" data-type="track-toggle" checked
+                           id="{{ 'downhill_export_id' }}{{ loop.index }}"
+                           name="versions[]"
+                           value="{{ version.id }}"
+                    />
+                    <label for="{{ 'downhill_export_id' }}{{ loop.index }}">Export</label>
+                </td>
+            </tr>
         {% endfor %}
         </table>
 

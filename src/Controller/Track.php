@@ -163,21 +163,9 @@ class Track extends AbstractController
         $gps = $repo->findOneBy(['id' => $id]);
         /** @var $gps \App\Entity\Track */
 
-        if ($gps) {
+        if (!$gps) {
             throw new NotFoundHttpException("Trakc not found");
         }
-
-        $downhills = $gps->getDownhills();
-        foreach ($downhills as $downhill) {
-
-        }
-
-
-
-
-
-
-
 
         $processor = new Processor();
         $elevationData = $processor->generateElevationData(
