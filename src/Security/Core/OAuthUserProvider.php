@@ -68,8 +68,6 @@ class OAuthUserProvider extends FOSUBUserProvider
             );
             $user->setEnabled(true);
             $this->userManager->updateUser($user);
-
-            $user = $this->loadUserByUsername($response->getNickname());
         }
 
         return $user;
