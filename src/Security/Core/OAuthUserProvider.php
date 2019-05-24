@@ -1,6 +1,5 @@
 <?php
 
-
 namespace App\Security\Core;
 
 use HWI\Bundle\OAuthBundle\OAuth\Response\UserResponseInterface;
@@ -9,13 +8,6 @@ use HWI\Bundle\OAuthBundle\Security\Core\Exception\AccountNotLinkedException;
 
 class OAuthUserProvider extends FOSUBUserProvider
 {
-    /**
-     * @var array
-     */
-    protected $properties = array(
-        'identifier' => 'id',
-    );
-
     /**
      * {@inheritdoc}
      */
@@ -30,11 +22,6 @@ class OAuthUserProvider extends FOSUBUserProvider
         if (empty($idFromThirdParty)) {
             throw new AccountNotLinkedException(sprintf("User '%s' not found.", $idFromThirdParty));
         }
-
-        /*
-         * Case when we have same emails with different providers (facebook and google)
-         * is not handled
-         */
 
         $field = $this->getProperty($response);
         $user = $this->userManager->findUserBy([$field => $idFromThirdParty]);
@@ -59,8 +46,7 @@ class OAuthUserProvider extends FOSUBUserProvider
             $username = $usernameFromThirdParty;
             $usernameExists = true;
             $counter = 0;
-            while($usernameExists) {
-
+            while ($usernameExists) {
                 if ($counter) {
                     $username = $usernameFromThirdParty . $counter;
                 }
