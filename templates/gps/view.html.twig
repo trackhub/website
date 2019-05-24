@@ -54,7 +54,7 @@
             </tr>
         {% endfor %}
 
-        {% for version in track.downhillVersions(true) %}
+        {% for version in downhills %}
             <tr>
                 <td>downhill version #{{ loop.index }}</td>
                 <td>{{ version.positiveElevation|number_format(0, '', '\'') }} m</td>
@@ -160,33 +160,31 @@
 
 
         // downhills
-        {% for downhill in track.downhills %}
-            {% for version in downhill.versions %}
-                (function() {
-                    var latlngs = [];
+        {% for version in downhills %}
+            (function() {
+                var latlngs = [];
 
-                    {% for point in version.points %}
+                {% for point in version.points %}
                     latlngs.push([
                         {{ point.lat }},
                         {{ point.lng }}
                     ]);
-                    {% endfor %}
+                {% endfor %}
 
-                    var track = new AppTrack(
-                        map,
-                        L.polyline(latlngs, {color: 'orange'})
-                    );
+                var track = new AppTrack(
+                    map,
+                    L.polyline(latlngs, {color: 'orange'})
+                );
 
-                    track.show();
+                track.show();
 
-                        var buttonToggle = document.querySelectorAll("[data-type=track-toggle")[{{ trackIndex }}];
-                        buttonToggle.addEventListener('click', function() {
-                            track.toggle();
-                        });
-                })();
+                var buttonToggle = document.querySelectorAll("[data-type=track-toggle")[{{ trackIndex }}];
+                buttonToggle.addEventListener('click', function() {
+                    track.toggle();
+                });
+            })();
 
-                {% set trackIndex = trackIndex + 1 %}
-            {% endfor %}
+            {% set trackIndex = trackIndex + 1 %}
         {% endfor %}
 
         // elevation plot
