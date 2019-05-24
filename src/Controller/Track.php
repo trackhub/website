@@ -42,13 +42,10 @@ class Track extends AbstractController
 
             $optimizedPoints = $processor->generateOptimizedPoints($trackVersion);
 
-            $uphills = $form->get('uphills')->getData();
-            foreach ($uphills as $uphill) {
-                $track->addUphill($uphill);
-            }
-
             $track->addOptimizedPoints($optimizedPoints);
             $track->addVersion($trackVersion);
+            $track->setType($form->get('type')->getData());
+            $track->setName($form->get('name')->getData());
 
             $processor->postProcess($track);
 
