@@ -162,7 +162,7 @@ class Track extends AbstractController
         /** @var $gps \App\Entity\Track */
 
         if (!$gps) {
-            throw new NotFoundHttpException("Trakc not found");
+            throw new NotFoundHttpException("Track not found");
         }
 
         $downhills = $repo->getAllRelatedDownhillVersions($gps, true);
