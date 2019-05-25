@@ -36,7 +36,7 @@ class TrackRepository extends EntityRepository
 
         // remove given track versions
         foreach ($track->getVersions() as $version) {
-            array_pop($versions);
+            array_shift($versions);
         }
 
         return $versions;
@@ -72,7 +72,7 @@ class TrackRepository extends EntityRepository
 
         // remove given track versions
         foreach ($track->getVersions() as $version) {
-            array_pop($versions);
+            array_shift($versions);
         }
 
         return $versions;
