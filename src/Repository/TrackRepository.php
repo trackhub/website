@@ -16,9 +16,8 @@ class TrackRepository extends EntityRepository
 
         $result = $qb->getQuery()->execute();
 
-        $versions = [$track->getVersions()];
-
-        $versions = $track->getDownhillVersions($useCache, $versions);
+        $versions = $track->getVersions()->toArray();
+        $versions = array_merge($versions, $track->getDownhillVersions($useCache));
 
         foreach ($result as $relatedDh) {
             /* @var $relatedDh Track */
@@ -52,9 +51,8 @@ class TrackRepository extends EntityRepository
 
         $result = $qb->getQuery()->execute();
 
-        $versions = [$track->getVersions()];
-
-        $versions = $track->getUphillVersions($useCache, $versions);
+        $versions = $track->getVersions()->toArray();
+        $versions = array_merge($versions, $track->getUphillVersions($useCache));
 
         foreach ($result as $relatedUh) {
             /* @var $relatedUh Track */
