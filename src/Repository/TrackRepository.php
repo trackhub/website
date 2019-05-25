@@ -27,11 +27,11 @@ class TrackRepository extends EntityRepository
                 }
             }
 
-
-            $versions = array_merge(
-                $versions,
-                $relatedDh->getDownhillVersions($useCache, $versions)
-            );
+            foreach ($relatedDh->getDownhillVersions($useCache, $versions) as $version) {
+                if (array_search($version, $versions) === false) {
+                    $versions[] = $version;
+                }
+            }
         }
 
         // remove given track versions
@@ -63,10 +63,11 @@ class TrackRepository extends EntityRepository
             }
 
 
-            $versions = array_merge(
-                $versions,
-                $relatedUh->getUphillVersions($useCache, $versions)
-            );
+            foreach ($relatedUh->getUphillVersions($useCache, $versions) as $uphillVersion) {
+                if (array_search($uphillVersion, $versions) === false) {
+                    $versions[] = $uphillVersion;
+                }
+            }
         }
 
         // remove given track versions
