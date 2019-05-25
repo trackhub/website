@@ -139,7 +139,6 @@ class Track extends AbstractController
                 $this->getDoctrine()->getManager()
                     ->flush();
 
-                // @FIXME return response!
                 return $this->redirectToRoute('gps-view', ['id' => $track->getId()]);
             }
         }
@@ -167,6 +166,7 @@ class Track extends AbstractController
         }
 
         $downhills = $repo->getAllRelatedDownhillVersions($gps, true);
+        $uphills = $repo->getAllRelatedUphillVersions($gps, true);
 
         $processor = new Processor();
         $elevationData = $processor->generateElevationData(
@@ -188,6 +188,7 @@ class Track extends AbstractController
                 'elevationData' => $elevationValues,
                 'elevationLabels' => $elevationLabels,
                 'downhills' => $downhills,
+                'uphills' => $uphills,
             ]
         );
     }

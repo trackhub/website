@@ -38,7 +38,7 @@
                 </td>
             </tr>
         {% endfor %}
-        {% for version in track.getUphillVersions(true) %}
+        {% for version in uphills %}
             <tr>
                 <td>uphill version #{{ loop.index }}</td>
                 <td>{{ version.positiveElevation|number_format(0, '', '\'') }} m</td>
@@ -128,34 +128,32 @@
         {% endfor %}
 
         // uphills
-        {% for uphill in track.uphills %}
-            {% for version in uphill.versions %}
-                (function() {
-                    var latlngs = [];
+        {% for version in uphills %}
+            (function() {
+                var latlngs = [];
 
-                    {% for point in version.points %}
-                    latlngs.push([
-                        {{ point.lat }},
-                        {{ point.lng }}
-                    ]);
-                    {% endfor %}
+                {% for point in version.points %}
+                latlngs.push([
+                    {{ point.lat }},
+                    {{ point.lng }}
+                ]);
+                {% endfor %}
 
-                    var track = new AppTrack(
-                        map,
-                        L.polyline(latlngs, {color: 'green'})
-                    );
+                var track = new AppTrack(
+                    map,
+                    L.polyline(latlngs, {color: 'green'})
+                );
 
-                    track.show();
+                track.show();
 
-                    var buttonToggle = document.querySelectorAll("[data-type=track-toggle")[{{ trackIndex }}];
-                    buttonToggle.addEventListener('click', function() {
-                        track.toggle();
-                    });
+                var buttonToggle = document.querySelectorAll("[data-type=track-toggle")[{{ trackIndex }}];
+                buttonToggle.addEventListener('click', function() {
+                    track.toggle();
+                });
 
-                })();
+            })();
 
-                {% set trackIndex = trackIndex + 1 %}
-            {% endfor %}
+            {% set trackIndex = trackIndex + 1 %}
         {% endfor %}
 
 
