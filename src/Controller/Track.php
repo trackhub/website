@@ -165,9 +165,6 @@ class Track extends AbstractController
             throw new NotFoundHttpException("Track not found");
         }
 
-        $downhills = $repo->getAllRelatedDownhillVersions($gps, true);
-        $uphills = $repo->getAllRelatedUphillVersions($gps, true);
-
         $processor = new Processor();
         $elevationData = $processor->generateElevationData(
             $gps->getVersions()->first()->getPoints()
@@ -187,8 +184,6 @@ class Track extends AbstractController
                 'track' => $gps,
                 'elevationData' => $elevationValues,
                 'elevationLabels' => $elevationLabels,
-                'downhills' => $downhills,
-                'uphills' => $uphills,
             ]
         );
     }

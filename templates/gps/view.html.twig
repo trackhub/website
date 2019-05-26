@@ -38,7 +38,7 @@
                 </td>
             </tr>
         {% endfor %}
-        {% for version in uphills %}
+        {% for version in track.getUphillVersions(true) %}
             <tr>
                 <td>uphill version #{{ loop.index }}</td>
                 <td>{{ version.positiveElevation|number_format(0, '', '\'') }} m</td>
@@ -54,7 +54,7 @@
             </tr>
         {% endfor %}
 
-        {% for version in downhills %}
+        {% for version in track.downhillVersions(true) %}
             <tr>
                 <td>downhill version #{{ loop.index }}</td>
                 <td>{{ version.positiveElevation|number_format(0, '', '\'') }} m</td>
@@ -128,7 +128,7 @@
         {% endfor %}
 
         // uphills
-        {% for version in uphills %}
+        {% for version in track.getUphillVersions(true) %}
             (function() {
                 var latlngs = [];
 
@@ -158,7 +158,7 @@
 
 
         // downhills
-        {% for version in downhills %}
+        {% for version in track.downhillVersions(true) %}
             (function() {
                 var latlngs = [];
 
