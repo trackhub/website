@@ -128,65 +128,61 @@
         {% endfor %}
 
         // uphills
-        {% for uphill in track.uphills %}
-            {% for version in uphill.versions %}
-                (function() {
-                    var latlngs = [];
+        {% for version in track.getUphillVersions(true) %}
+            (function() {
+                var latlngs = [];
 
-                    {% for point in version.points %}
-                    latlngs.push([
-                        {{ point.lat }},
-                        {{ point.lng }}
-                    ]);
-                    {% endfor %}
+                {% for point in version.points %}
+                latlngs.push([
+                    {{ point.lat }},
+                    {{ point.lng }}
+                ]);
+                {% endfor %}
 
-                    var track = new AppTrack(
-                        map,
-                        L.polyline(latlngs, {color: 'green'})
-                    );
+                var track = new AppTrack(
+                    map,
+                    L.polyline(latlngs, {color: 'green'})
+                );
 
-                    track.show();
+                track.show();
 
-                    var buttonToggle = document.querySelectorAll("[data-type=track-toggle")[{{ trackIndex }}];
-                    buttonToggle.addEventListener('click', function() {
-                        track.toggle();
-                    });
+                var buttonToggle = document.querySelectorAll("[data-type=track-toggle")[{{ trackIndex }}];
+                buttonToggle.addEventListener('click', function() {
+                    track.toggle();
+                });
 
-                })();
+            })();
 
-                {% set trackIndex = trackIndex + 1 %}
-            {% endfor %}
+            {% set trackIndex = trackIndex + 1 %}
         {% endfor %}
 
 
         // downhills
-        {% for downhill in track.downhills %}
-            {% for version in downhill.versions %}
-                (function() {
-                    var latlngs = [];
+        {% for version in track.downhillVersions(true) %}
+            (function() {
+                var latlngs = [];
 
-                    {% for point in version.points %}
+                {% for point in version.points %}
                     latlngs.push([
                         {{ point.lat }},
                         {{ point.lng }}
                     ]);
-                    {% endfor %}
+                {% endfor %}
 
-                    var track = new AppTrack(
-                        map,
-                        L.polyline(latlngs, {color: 'orange'})
-                    );
+                var track = new AppTrack(
+                    map,
+                    L.polyline(latlngs, {color: 'orange'})
+                );
 
-                    track.show();
+                track.show();
 
-                        var buttonToggle = document.querySelectorAll("[data-type=track-toggle")[{{ trackIndex }}];
-                        buttonToggle.addEventListener('click', function() {
-                            track.toggle();
-                        });
-                })();
+                var buttonToggle = document.querySelectorAll("[data-type=track-toggle")[{{ trackIndex }}];
+                buttonToggle.addEventListener('click', function() {
+                    track.toggle();
+                });
+            })();
 
-                {% set trackIndex = trackIndex + 1 %}
-            {% endfor %}
+            {% set trackIndex = trackIndex + 1 %}
         {% endfor %}
 
         // elevation plot

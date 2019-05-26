@@ -139,7 +139,6 @@ class Track extends AbstractController
                 $this->getDoctrine()->getManager()
                     ->flush();
 
-                // @FIXME return response!
                 return $this->redirectToRoute('gps-view', ['id' => $track->getId()]);
             }
         }
@@ -163,7 +162,7 @@ class Track extends AbstractController
         /** @var $gps \App\Entity\Track */
 
         if (!$gps) {
-            throw new NotFoundHttpException("Trakc not found");
+            throw new NotFoundHttpException("Track not found");
         }
 
         $processor = new Processor();

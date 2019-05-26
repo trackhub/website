@@ -13,6 +13,8 @@ require('../css/global.scss');
 // var $ = require('jquery');
 
 window.appNotification = require('toastr');
+window.appNotification.options.toastClass = 'toastr';
+
 window.jQuery = require('jquery');
 window.chartJs = require('chart.js');
 
