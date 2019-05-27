@@ -3,7 +3,10 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>{% block title %}track-hub.com | free gps tracks{% endblock %}</title>
+        <title>{% if app_title is defined and app_title is not empty %}
+            {{ app_title }}
+            |
+        {% endif %} GPS tracks by track-hub.com</title>
         {% if app_canonical_url is defined and app_canonical_url is not empty %}
             <link rel="canonical" href="{{ absolute_url(app_canonical_url) }}" />
         {% endif %}
