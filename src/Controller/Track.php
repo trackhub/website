@@ -250,11 +250,6 @@ class Track extends AbstractController
             ];
         }
 
-//        dump($elevationLabels);
-//        dump($dataSets);
-//
-//        die;
-
         $appTitle = $gps->getName();
         switch ($gps->getType()) {
             case \App\Entity\Track::TYPE_CYCLING:

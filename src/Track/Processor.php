@@ -131,7 +131,7 @@ class Processor
         foreach ($pointCollection as $point) {
             if (!$lastPoint || ($point->getDistance() - $lastPoint->getDistance() > $distance)) {
                 $elevationData[] = [
-                    'elev' => $point->getElevation(),
+                    'elev' => (int) $point->getElevation(),
                     'label' => number_format(
                         $point->getDistance() / 1000,
                         1,
