@@ -138,6 +138,7 @@ class Processor
                         '.',
                         ' '
                     ),
+                    'point' => $point,
                 ];
                 $lastPoint = $point;
             }
