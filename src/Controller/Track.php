@@ -186,6 +186,12 @@ class Track extends AbstractController
             $elevationValues[] = $elevation['elev'];
         }
 
+        $appTitle = $gps->getName();
+        switch ($gps->getType()) {
+            case \App\Entity\Track::TYPE_CYCLING:
+                $appTitle .= ' mountain bike trail';
+        }
+
         return $this->render(
             'gps/view.html.twig',
             [
@@ -193,6 +199,7 @@ class Track extends AbstractController
                 'elevationData' => $elevationValues,
                 'elevationLabels' => $elevationLabels,
                 'app_canonical_url' => $canonicalUrl,
+                'app_title' => $appTitle,
             ]
         );
     }
