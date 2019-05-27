@@ -32,6 +32,11 @@ class Track
     /**
      * @ORM\Column(type="string", nullable=true)
      */
+    private $slug;
+
+    /**
+     * @ORM\Column(type="string", nullable=true)
+     */
     private $name;
 
     /**
@@ -172,6 +177,16 @@ class Track
         $this->type = $type;
     }
 
+    public function getSlug(): ?string
+    {
+        return $this->slug;
+    }
+
+    public function setSlug(?string $slug): void
+    {
+        $this->slug = $slug;
+    }
+
     public function prepareForRecalculation()
     {
         $this->pointNorthEastLat = -999;
@@ -306,6 +321,15 @@ class Track
         }
 
         return $versions;
+    }
+
+    public function getSlugOrId(): string
+    {
+        if ($this->getSlug()) {
+            return $this->getSlug();
+        }
+
+        return $this->getId();
     }
 
     public function __toString(): string

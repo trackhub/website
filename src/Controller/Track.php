@@ -14,6 +14,7 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class Track extends AbstractController
 {
@@ -159,6 +160,13 @@ class Track extends AbstractController
                 ->getRepository(\App\Entity\Track::class);
 
         $gps = $repo->findOneBy(['id' => $id]);
+
+        $canonicalUrl = null;
+        if (!$gps) {
+            $canonicalUrl = $this->generateUrl('gps-view', ['id' => $id]);
+            $gps = $repo->findOneBy(['slug' => $id]);
+        }
+
         /** @var $gps \App\Entity\Track */
 
         if (!$gps) {
@@ -184,6 +192,7 @@ class Track extends AbstractController
                 'track' => $gps,
                 'elevationData' => $elevationValues,
                 'elevationLabels' => $elevationLabels,
+                'app_canonical_url' => $canonicalUrl,
             ]
         );
     }
