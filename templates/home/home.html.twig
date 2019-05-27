@@ -9,7 +9,7 @@
         <ul>
             {% for track in latestTracks %}
                 <li>
-                    <a href="{{ path('gps-view', { id: track.id}) }}">
+                    <a href="{{ path('gps-view', { id: track.slugOrId}) }}">
                         {% if track.name is empty %}
                             {{ track.id }}
                         {% else %}
