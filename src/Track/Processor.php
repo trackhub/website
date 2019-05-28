@@ -117,32 +117,71 @@ class Processor
         $track->recalculateEdgesCache();
     }
 
-    /**
-     * @param Point[] $pointCollection
-     * @param float $distance minimum distance between points
-     *
-     * @return array
-     */
-    public function generateElevationData(iterable $pointCollection, float $distance = 150): array
+    public function generateElevationLables(iterable $pointCollection, int $pointsCount)
     {
-        $lastPoint = null;
-        $elevationData = [];
+        $longestDistance = 0;
+        $labels = [];
 
-        foreach ($pointCollection as $point) {
-            if (!$lastPoint || ($point->getDistance() - $lastPoint->getDistance() > $distance)) {
-                $elevationData[] = [
-                    'elev' => $point->getElevation(),
-                    'label' => number_format(
-                        $point->getDistance() / 1000,
-                        1,
-                        '.',
-                        ' '
-                    ),
-                ];
-                $lastPoint = $point;
+        foreach ($pointCollection as $points) {
+            $lastPoint = end($points);
+            if ($lastPoint->getDistance() > $longestDistance) {
+                $longestDistance = $lastPoint->getDistance();
             }
         }
 
-        return $elevationData;
+        $labelDistance = $longestDistance / $pointsCount;
+        for ($q = 0; $q < $pointsCount; $q++) {
+            $labels[] = $labelDistance * $q;
+        }
+
+        return $labels;
+    }
+
+    /**
+     * @param Point[][] $pointCollection
+     * @param iterable $lables
+     *
+     * @return array
+     */
+    public function generateElevationData(iterable $pointCollection, iterable $lables): array
+    {
+        $return = [];
+
+        foreach ($pointCollection as $item) {
+            reset($item);
+            $return[] = [];
+        }
+
+        $collectionsCount = count($pointCollection);
+
+        foreach ($lables as $labelIndex => $labelDistance) {
+            for($q = 0; $q < $collectionsCount; $q++) {
+                $currentPoint = current($pointCollection[$q]);
+
+                // case: skip point
+                while ($currentPoint && $currentPoint->getDistance() < $labelDistance) {
+                    $currentPoint = next($pointCollection[$q]);
+                }
+
+                if ($currentPoint === false) {
+                    continue;
+                }
+
+                // case: skip label
+                if (isset($lables[$labelIndex + 1])) {
+                    $nextLabelDistance = $lables[$labelIndex + 1];
+                    if ($nextLabelDistance < $currentPoint->getDistance()) {
+                        $return[$q][] = $currentPoint->getElevation();
+                        continue;
+                    }
+                }
+
+
+                $return[$q][] = $currentPoint->getElevation();
+                next($pointCollection[$q]);
+            }
+        }
+
+        return $return;
     }
 }

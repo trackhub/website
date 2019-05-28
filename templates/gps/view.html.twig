@@ -191,13 +191,7 @@
             type: 'line',
             data: {
                 labels: {{ elevationLabels|json_encode|raw }},
-                datasets: [{
-                    label: 'Elevation',
-                    data: {{ elevationData|json_encode|raw }},
-
-                    borderWidth: 1,
-                    backgroundColor: 'rgba(0, 0, 240, 0.2)'
-                }]
+                datasets: {{ elevationData|json_encode|raw }}
             },
             options: {
                 responsive: true,
