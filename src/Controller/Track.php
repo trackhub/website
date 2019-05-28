@@ -193,11 +193,22 @@ class Track extends AbstractController
 
         $values = $processor->generateElevationData($pointsCollection, $labels);
 
+        foreach ($labels as &$label) {
+            $label = number_format($label, 0, '', ' ') . ' m';
+        }
+        unset ($label);
+
         $dataSets = [];
         reset($values);
         for($q = 0; $q < $gps->getVersions()->count(); $q++) {
+            $currentValues = current($values);
+            foreach ($currentValues as &$value) {
+                $value = (int) $value;
+            }
+            unset($value);
+
             $dataSets[] = [
-                'data' => current($values),
+                'data' => $currentValues,
                 'label' => 'main track #' . ($q + 1),
                 'borderColor' => 'red',
             ];
@@ -206,8 +217,14 @@ class Track extends AbstractController
         }
 
         for($q = 0; $q < count($gps->getDownhillVersions()); $q++) {
+            $currentValues = current($values);
+            foreach ($currentValues as &$value) {
+                $value = (int) $value;
+            }
+            unset($value);
+
             $dataSets[] = [
-                'data' => current($values),
+                'data' => $currentValues,
                 'label' => 'downhill version #' . ($q + 1),
                 'borderColor' => 'orange',
             ];
@@ -216,8 +233,14 @@ class Track extends AbstractController
         }
 
         for($q = 0; $q < count($gps->getUphillVersions()); $q++) {
+            $currentValues = current($values);
+            foreach ($currentValues as &$value) {
+                $value = (int) $value;
+            }
+            unset($value);
+
             $dataSets[] = [
-                'data' => current($values),
+                'data' => $currentValues,
                 'label' => 'uphill version #' . ($q + 1),
                 'borderColor' => 'green',
             ];
