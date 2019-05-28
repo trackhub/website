@@ -174,80 +174,55 @@ class Track extends AbstractController
         }
 
         $processor = new Processor();
-        $elevationDataCollection = [];
+
+        $pointsCollection = [];
 
         foreach ($gps->getVersions() as $loopIndex => $version) {
-            $elevationDataCollection[] = [
-                'values' => $processor->generateElevationData(
-                    $version->getPoints()
-                ),
-                'label' => 'main track #' . ($loopIndex + 1),
-                'borderColor' => 'red',
-            ];
+            $pointsCollection[] = $version->getPoints()->toArray();
         }
 
         foreach ($gps->getDownhillVersions() as $loopIndex => $item) {
-            $elevationDataCollection[] = [
-                'values' => $processor->generateElevationData(
-                    $item->getPoints()
-                ),
-                'label' => 'downhill track #' . ($loopIndex + 1),
-                'borderColor' => 'orange',
-            ];
+            $pointsCollection[] = $item->getPoints()->toArray();
         }
 
         foreach ($gps->getUphillVersions() as $loopIndex => $item) {
-            $elevationDataCollection[] = [
-                'values' => $processor->generateElevationData(
-                    $item->getPoints()
-                ),
-                'label' => 'uphill track #' . ($loopIndex + 1),
-                'borderColor' => 'green',
-            ];
+            $pointsCollection[] = $item->getPoints()->toArray();
         }
 
+        $labels = $processor->generateElevationLables($pointsCollection, 150);
 
-        $elevationLabels = [];
-        $elevationLabelsPoints = [];
+        $values = $processor->generateElevationData($pointsCollection, $labels);
 
-        foreach ($elevationDataCollection as $versionIndex => $elevationItem) {
-            $tmpElevationValues = [];
-            $lastPointIndex = 0;
-            foreach ($elevationItem['values'] as $elevationValueIndex => $elevationValueData) {
-                if ($versionIndex === 0) {
-                    $elevationLabels[] = $elevationValueData['label'] . ' km';
-                    $elevationLabelsPoints[] = $elevationValueData['point'];
-                }
-
-                if ($versionIndex === 0) {
-                    $tmpElevationValues[] = $elevationValueData['elev'];
-                } else {
-                    if (count($elevationLabels) > count($tmpElevationValues)) {
-                        $currentLabelDistance = $elevationLabelsPoints[$lastPointIndex]->getDistance();
-                        $currentElevationDataDistance = $elevationValueData['point']->getDistance();
-
-                        $addPoint = true;
-                        if (isset($elevationLabelsPoints[$lastPointIndex + 1])) {
-                            $nextPoint = $elevationLabelsPoints[$lastPointIndex + 1];
-
-                            if ($currentElevationDataDistance >= $nextPoint->getDistance()) {
-                                $addPoint = false;
-                            }
-                        }
-
-                        if ($addPoint && $currentElevationDataDistance >= $currentLabelDistance) {
-                            $tmpElevationValues[] = $elevationValueData['elev'];
-                            $lastPointIndex++;
-                        }
-                    }
-                }
-            }
-
+        $dataSets = [];
+        reset($values);
+        for($q = 0; $q < $gps->getVersions()->count(); $q++) {
             $dataSets[] = [
-                'data' => $tmpElevationValues,
-                'label' =>  $elevationItem['label'],
-                'borderColor' => $elevationItem['borderColor'],
+                'data' => current($values),
+                'label' => 'main track #' . ($q + 1),
+                'borderColor' => 'red',
             ];
+
+            next($values);
+        }
+
+        for($q = 0; $q < count($gps->getDownhillVersions()); $q++) {
+            $dataSets[] = [
+                'data' => current($values),
+                'label' => 'downhill version #' . ($q + 1),
+                'borderColor' => 'orange',
+            ];
+
+            next($values);
+        }
+
+        for($q = 0; $q < count($gps->getUphillVersions()); $q++) {
+            $dataSets[] = [
+                'data' => current($values),
+                'label' => 'uphill version #' . ($q + 1),
+                'borderColor' => 'green',
+            ];
+
+            next($values);
         }
 
         $appTitle = $gps->getName();
@@ -261,7 +236,7 @@ class Track extends AbstractController
             [
                 'track' => $gps,
                 'elevationData' => $dataSets,
-                'elevationLabels' => $elevationLabels,
+                'elevationLabels' => $labels,
                 'app_canonical_url' => $canonicalUrl,
                 'app_title' => $appTitle,
             ]
