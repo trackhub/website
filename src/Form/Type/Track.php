@@ -42,6 +42,17 @@ class Track extends AbstractType
             ]
         );
 
+        $builder->add(
+            'visibility',
+            ChoiceType::class,
+            [
+                'choices' => [
+                    'public' => \App\Entity\Track::VISIBILITY_PUBLIC,
+                    'unlisted' => \App\Entity\Track::VISIBILITY_UNLISTED,
+                ],
+            ]
+        );
+
         if ($track == null || $track->getId() == null) {
             $builder->add('file', FileType::class, ['mapped' => false]);
         }

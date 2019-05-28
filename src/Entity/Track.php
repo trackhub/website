@@ -22,6 +22,9 @@ class Track
         self::TYPE_HIKING => self::TYPE_HIKING,
     ];
 
+    const VISIBILITY_PUBLIC = 0;
+    const VISIBILITY_UNLISTED = 1;
+
     /**
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="UUID")
@@ -38,6 +41,11 @@ class Track
      * @ORM\Column(type="string", nullable=true)
      */
     private $name;
+
+    /**
+     * @ORM\Column(type="boolean", nullable=false)
+     */
+    private $visibility = 0;
 
     /**
      * @ORM\Column(type="date")
@@ -91,7 +99,6 @@ class Track
     private $uphills;
 
     private $uphillVersionsCache;
-
 
     /**
      * @ORM\ManyToMany(targetEntity="App\Entity\Track")
@@ -330,6 +337,16 @@ class Track
         }
 
         return $this->getId();
+    }
+
+    public function getVisibility(): int
+    {
+        return $this->visibility;
+    }
+
+    public function setVisibility(int $visibility): void
+    {
+        $this->visibility = $visibility;
     }
 
     public function __toString(): string
