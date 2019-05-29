@@ -54,7 +54,14 @@ class Track extends AbstractType
         );
 
         if ($track == null || $track->getId() == null) {
-            $builder->add('file', FileType::class, ['mapped' => false]);
+            $builder->add(
+                'file',
+                FileType::class,
+                [
+                    'mapped' => false,
+                    'label' => '.gpx file'
+                ]
+            );
         }
     }
 
