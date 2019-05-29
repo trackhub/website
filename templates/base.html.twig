@@ -31,12 +31,11 @@
             <div class="row">
                 <div class="col">
                     <a href="{{ path('home') }}">{{ 'Home'|trans }}</a>
-{#                    temporary disabled#}
-{#                    <a href="{{ path('gps-new') }}">{{ 'Add track'|trans }}</a>#}
+                    |
+                    <a href="{{ path('gps-new') }}">{{ 'Add track'|trans }}</a>
                 </div>
 
                 <div class="col">
-                    {#                    temporary disabled#}
                     {% if app.user %}
                         {{ app.user.username }}
                         <a href="{{ path('app_logout') }}">logout</a>
@@ -44,7 +43,7 @@
                             Download personal data
                         </a>
                     {% else %}
-{#                        <a href="{{ path("hwi_oauth_connect") }}">{{ 'Log in'|trans }}</a>#}
+                        <a href="{{ path("hwi_oauth_connect") }}">{{ 'Log in'|trans }}</a>
                     {% endif %}
                 </div>
 

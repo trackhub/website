@@ -14,7 +14,6 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class Track extends AbstractController
 {
@@ -47,6 +46,7 @@ class Track extends AbstractController
             $track->addVersion($trackVersion);
             $track->setType($form->get('type')->getData());
             $track->setName($form->get('name')->getData());
+            $track->setVisibility($form->get('visibility')->getData());
 
             $processor->postProcess($track);
 
@@ -78,9 +78,8 @@ class Track extends AbstractController
 
     public function edit(Request $request, $id)
     {
-        throw new \Exception("Not implemented");
-
         $track = $this->getDoctrine()->getRepository(\App\Entity\Track::class)->findOneBy(['id' => $id]);
+        $this->denyAccessUnlessGranted('edit', $track);
 
         $form = $this->createForm(\App\Form\Type\Track::class, $track);
         $form->add('submit', SubmitType::class);
@@ -104,6 +103,7 @@ class Track extends AbstractController
     public function newVersion(Request $request, string $id)
     {
         $track = $this->getDoctrine()->getRepository(\App\Entity\Track::class)->findOneBy(['id' => $id]);
+        $this->denyAccessUnlessGranted('edit', $track);
 
         $form = $this->createForm(TrackVersion::class);
         $form->add('submit', SubmitType::class);
@@ -262,6 +262,7 @@ class Track extends AbstractController
                 'elevationLabels' => $labels,
                 'app_canonical_url' => $canonicalUrl,
                 'app_title' => $appTitle,
+                'canEdit' => $this->isGranted('edit', $gps),
             ]
         );
     }

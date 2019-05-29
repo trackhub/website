@@ -13,7 +13,6 @@ class Home extends AbstractController
 {
     public function home()
     {
-
         $entityManager = $this->getDoctrine()->getManager();
         $qb = $entityManager->createQueryBuilder();
         /* @var $qb QueryBuilder*/
@@ -44,6 +43,7 @@ class Home extends AbstractController
         $qb = $em->createQueryBuilder('g');
         $qb->select('count(g.id)');
 
+        $qb->andWhere($qb->expr()->eq('g.visibility', \App\Entity\Track::VISIBILITY_PUBLIC));
         $qb->andWhere(
             $qb->expr()->andX(
                 $qb->expr()->lte('g.pointNorthEastLat', $neLat),
