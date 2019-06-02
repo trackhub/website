@@ -5,6 +5,7 @@ namespace App\Entity;
 
 use App\Entity\Track\OptimizedPoint;
 use App\Entity\Track\Version;
+use App\Entity\Video\Youtube;
 use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
@@ -108,6 +109,11 @@ class Track
 
     private $downhillVersionsCache;
 
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Video\Youtube", mappedBy="track", cascade={"persist", "remove"})
+     */
+    private $videosYoutube;
+
     public function __construct()
     {
         $this->lastCheck = new DateTime();
@@ -116,6 +122,7 @@ class Track
         $this->createdAt = new DateTime();
         $this->uphills = new ArrayCollection();
         $this->downhills = new ArrayCollection();
+        $this->videosYoutube = new ArrayCollection();
     }
 
     public function getName(): ?string
@@ -347,6 +354,26 @@ class Track
     public function setVisibility(int $visibility): void
     {
         $this->visibility = $visibility;
+    }
+
+    public function getVideosYoutube(): iterable
+    {
+        return $this->videosYoutube;
+    }
+
+    public function setVideosYoutube(iterable $videos)
+    {
+        $this->videosYoutube->clear();
+
+        foreach ($videos as $video) {
+            $this->addVideoYoutube($video);
+        }
+    }
+
+    public function addVideoYoutube(Youtube $video)
+    {
+        $video->setTrack($this);
+        $this->videosYoutube->add($video);
     }
 
     public function __toString(): string

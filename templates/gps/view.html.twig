@@ -83,6 +83,15 @@
         </canvas>
     </div>
 
+    <div>
+        {% for youtube in track.videosYoutube %}
+            <iframe width="560" height="315"
+                    src="https://www.youtube.com/embed/{{ youtube.link }}"
+                    frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
+            </iframe>
+        {% endfor %}
+    </div>
+
     <script>
         var map = L.map(
             'map',

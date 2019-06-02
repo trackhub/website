@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\File\TrackFile;
 use App\Entity\Track\Version;
+use App\Entity\Video\Youtube;
 use App\Form\Type\TrackVersion;
 use App\Track\Exporter;
 use App\Track\Processor;
@@ -81,11 +82,25 @@ class Track extends AbstractController
         $track = $this->getDoctrine()->getRepository(\App\Entity\Track::class)->findOneBy(['id' => $id]);
         $this->denyAccessUnlessGranted('edit', $track);
 
-        $form = $this->createForm(\App\Form\Type\Track::class, $track);
+        $form = $this->createForm(\App\Form\Type\Track::class);
+        $form->get('name')->setData($track->getName());
+        $form->get('type')->setData($track->getType());
+        $form->get('visibility')->setData($track->getVisibility());
+        $form->get('videosYoutube')->setData($track->getVideosYoutube());
+
         $form->add('submit', SubmitType::class);
+        $form->remove('file');
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
+
+            $youtubeVideos = [];
+            foreach ($form->get('videosYoutube')->getData() as $youtube) {
+                $youtubeVideos[] = $youtube;
+            }
+
+            $track->setvideosYoutube($youtubeVideos);
+
             $this->getDoctrine()->getManager()
                 ->flush();
 

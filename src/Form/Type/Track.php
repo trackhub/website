@@ -3,10 +3,14 @@
 
 namespace App\Form\Type;
 
+use App\Entity\Video\Youtube;
+use App\Form\Type\Track\Video\YoutubeType;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\CallbackTransformer;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\FormBuilderInterface;
 use \Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -63,6 +67,17 @@ class Track extends AbstractType
                 ]
             );
         }
+
+        $builder->add(
+            'videosYoutube',
+            CollectionType::class,
+            [
+                'allow_add' => true,
+                'allow_delete' => true,
+                'by_reference' => true,
+                'entry_type' => YoutubeType::class,
+            ]
+        );
     }
 
     public function configureOptions(OptionsResolver $resolver)
