@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "defb1fd9c0dbcbaaf7e9dfb7b8c68be9",
+    "content-hash": "817662aa5b2cdd10e1f4af4460b19efa",
     "packages": [
         {
             "name": "clue/stream-filter",
@@ -6169,6 +6169,39 @@
             "description": "Symfony Yaml Component",
             "homepage": "https://symfony.com",
             "time": "2019-01-03T09:05:57+00:00"
+        },
+        {
+            "name": "tekstove/url-video-parser",
+            "version": "1.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Tekstove/UrlVideoParser.git",
+                "reference": "65740d014b953905463c227ab3460443409121e8"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Tekstove/UrlVideoParser/zipball/65740d014b953905463c227ab3460443409121e8",
+                "reference": "65740d014b953905463c227ab3460443409121e8",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.6.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^5.6"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "Tekstove": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "parse video links",
+            "time": "2016-11-23T20:25:07+00:00"
         },
         {
             "name": "twig/extensions",

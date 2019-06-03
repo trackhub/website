@@ -4,9 +4,11 @@ namespace App\Controller;
 
 use App\Entity\File\TrackFile;
 use App\Entity\Track\Version;
+use App\Entity\Video\Youtube;
 use App\Form\Type\TrackVersion;
 use App\Track\Exporter;
 use App\Track\Processor;
+use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormError;
@@ -14,10 +16,12 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Tekstove\UrlVideoParser\Exception\ParseException;
+use Tekstove\UrlVideoParser\Youtube\YoutubeParser;
 
 class Track extends AbstractController
 {
-    public function new(Request $request)
+    public function new(Request $request, LoggerInterface $logger)
     {
         $form = $this->createForm(\App\Form\Type\Track::class);
         $form->add('submit', SubmitType::class);
@@ -48,6 +52,23 @@ class Track extends AbstractController
             $track->setName($form->get('name')->getData());
             $track->setVisibility($form->get('visibility')->getData());
 
+            $videoParser = new YoutubeParser();
+            $youtubeVideos = [];
+            foreach ($form->get('videosYoutube')->getData() as $youtubeLink) {
+                if (empty($youtubeLink['link'])) {
+                    continue;
+                }
+
+                try {
+                    $videoId = $videoParser->getId($youtubeLink['link']);
+                    $youtubeVideos[] = new Youtube($videoId);
+                } catch (ParseException $e) {
+                    $logger->error("Video parsing failed", [$e->getMessage()]);
+                }
+            }
+
+            $track->setvideosYoutube($youtubeVideos);
+
             $processor->postProcess($track);
 
             if ($track->getOptimizedPoints()->isEmpty()) {
@@ -76,16 +97,46 @@ class Track extends AbstractController
         );
     }
 
-    public function edit(Request $request, $id)
+    public function edit(Request $request, $id, LoggerInterface $logger)
     {
         $track = $this->getDoctrine()->getRepository(\App\Entity\Track::class)->findOneBy(['id' => $id]);
         $this->denyAccessUnlessGranted('edit', $track);
 
-        $form = $this->createForm(\App\Form\Type\Track::class, $track);
+        $form = $this->createForm(\App\Form\Type\Track::class);
+        $form->get('name')->setData($track->getName());
+        $form->get('type')->setData($track->getType());
+        $form->get('visibility')->setData($track->getVisibility());
+
+        $youtubeFormData = [];
+        foreach ($track->getVideosYoutube() as $youtube) {
+            $youtubeFormData[] = [
+                'link' => $youtube->getLink(),
+            ];
+        }
+        $form->get('videosYoutube')->setData($youtubeFormData);
+
         $form->add('submit', SubmitType::class);
+        $form->remove('file');
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
+            $videoParser = new YoutubeParser();
+            $youtubeVideos = [];
+            foreach ($form->get('videosYoutube')->getData() as $youtubeLink) {
+                if (empty($youtubeLink['link'])) {
+                    continue;
+                }
+
+                try {
+                    $videoId = $videoParser->getId($youtubeLink['link']);
+                    $youtubeVideos[] = new Youtube($videoId);
+                } catch (ParseException $e) {
+                    $logger->error("Video parsing failed", [$e->getMessage()]);
+                }
+            }
+
+            $track->setvideosYoutube($youtubeVideos);
+
             $this->getDoctrine()->getManager()
                 ->flush();
 
