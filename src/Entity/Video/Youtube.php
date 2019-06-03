@@ -38,14 +38,6 @@ class Youtube
         return $this->link;
     }
 
-    /**
-     * @param mixed $link
-     */
-    public function setLink(string $link)
-    {
-        $this->link = $link;
-    }
-
     public function setTrack(Track $track)
     {
         $this->track = $track;
