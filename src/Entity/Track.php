@@ -110,7 +110,7 @@ class Track
     private $downhillVersionsCache;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Video\Youtube", mappedBy="track", cascade={"persist", "remove"})
+     * @ORM\OneToMany(targetEntity="App\Entity\Video\Youtube", mappedBy="track", cascade={"persist", "remove"}, orphanRemoval=true)
      */
     private $videosYoutube;
 
@@ -356,6 +356,9 @@ class Track
         $this->visibility = $visibility;
     }
 
+    /**
+     * @return Youtube[]|iterable
+     */
     public function getVideosYoutube(): iterable
     {
         return $this->videosYoutube;

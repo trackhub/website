@@ -2,11 +2,9 @@
 
 namespace App\Form\Type\Track\Video;
 
-use App\Entity\Video\Youtube;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class YoutubeType extends AbstractType
 {
@@ -19,15 +17,11 @@ class YoutubeType extends AbstractType
             'link',
             TextType::class,
             [
-                'required' => true,
+                'required' => false,
+                'attr' => [
+                    'placeholder' => 'https://www.youtube.com/watch?v=EqYgAX6D43Q',
+                ],
             ]
         );
-    }
-
-    public function configureOptions(OptionsResolver $resolver)
-    {
-        $resolver->setDefaults(array(
-            'data_class' => Youtube::class,
-        ));
     }
 }
