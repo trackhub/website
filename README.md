@@ -2,11 +2,7 @@
 
 ## Prepare docker
 
-Install docker
-```sh
-apt update
-apt install docker.io docker-compose
-```
+[Install docker](https://docs.docker.com/install/)
 
 Add user to docker group
 ```sh
@@ -20,7 +16,7 @@ Create docker image
 ```sh
 bash run.sh
 ```
-After the build, start new container
+After the build, attach to **web** container
 ```sh
 docker-compose -p track exec web bash
 ```
@@ -35,9 +31,11 @@ yarn encore dev
 yarn encore production
 ```
 
-Create DB scheme
+Create DB schema
 ```sh
-php bin/console doctrine:scheme:create
+cd /var/www/script/migration
+composer install --no-dev
+./vendor/bin/phinx migrate
 ```
 
 
