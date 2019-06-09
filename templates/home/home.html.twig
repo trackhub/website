@@ -113,19 +113,19 @@
 
                     loadedTracks[id] = true;
 
-                    var polelineColor = gpsColors[Math.floor(Math.random()*gpsColors.length)];
+                    var polylineColor = gpsColors[Math.floor(Math.random()*gpsColors.length)];
                     var polylineCollection = [];
                     for (var j = 0; j < tracksData[i].points.length; j++) {
                         var points = tracksData[i].points[j];
                         var pointsAsPolyline = [];
-                        for (var jj = 0; jj < points.length; jj++) {
+                        for (let pointIndex = 0; pointIndex < points.length; pointIndex++) {
                             pointsAsPolyline.push([
-                                points[jj].lat,
-                                points[jj].lng
+                                points[pointIndex].lat,
+                                points[pointIndex].lng
                             ]);
                         }
 
-                        var polyline = L.polyline(pointsAsPolyline, {color: polelineColor});
+                        var polyline = L.polyline(pointsAsPolyline, {color: polylineColor});
                         polylineCollection.push(polyline);
                         polyline.bindPopup('<a href="/{{ app.request.locale }}/gps/view/' + id + '">view details</a>');
                     }
