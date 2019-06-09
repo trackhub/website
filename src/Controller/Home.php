@@ -31,18 +31,8 @@ class Home extends AbstractController
         );
     }
 
-    public function find($neLat, $neLon, $swLat, $swLon, Request $request)
+    private function applyTrackSearchFilters(QueryBuilder $qb, array $skipTracks, $neLat, $swLat, $neLon, $swLon)
     {
-        $skipTracks = $request->request->get('skipTracks', []);
-        $skipTracksAsArray = explode(',', $skipTracks);
-
-        $doctrine = $this->getDoctrine();
-        $em = $doctrine->getRepository(\App\Entity\Track::class);
-        /* @var $em EntityRepository */
-
-        $qb = $em->createQueryBuilder('g');
-        $qb->select('count(g.id)');
-
         $qb->andWhere($qb->expr()->eq('g.visibility', \App\Entity\Track::VISIBILITY_PUBLIC));
         $qb->andWhere(
             $qb->expr()->andX(
@@ -54,8 +44,22 @@ class Home extends AbstractController
         );
 
         $qb->andWhere(
-            $qb->expr()->notIn('g.id', $skipTracksAsArray)
+            $qb->expr()->notIn('g.id', $skipTracks)
         );
+    }
+
+    public function find($neLat, $neLon, $swLat, $swLon, Request $request)
+    {
+        $skipTracks = $request->request->get('skipTracks', []);
+        $skipTracksAsArray = explode(',', $skipTracks);
+
+        $doctrine = $this->getDoctrine();
+        $em = $doctrine->getRepository(\App\Entity\Track::class);
+        /* @var $em EntityRepository */
+
+        $qb = $em->createQueryBuilder('g');
+        $this->applyTrackSearchFilters($qb, $skipTracksAsArray, $neLat, $swLat, $neLat, $swLon);
+        $qb->select('count(g.id)');
 
         $q = $qb->getQuery();
         $data = $q->getSingleResult();
@@ -74,18 +78,7 @@ class Home extends AbstractController
             );
         } else {
             $qb = $em->createQueryBuilder('g');
-            $qb->andWhere(
-                $qb->expr()->andX(
-                    $qb->expr()->lte('g.pointNorthEastLat', $neLat),
-                    $qb->expr()->gte('g.pointSouthWestLat', $swLat),
-                    $qb->expr()->lte('g.pointNorthEastLng', $neLon),
-                    $qb->expr()->gte('g.pointSouthWestLng', $swLon)
-                )
-            );
-            $qb->andWhere(
-                $qb->expr()->notIn('g.id', $skipTracksAsArray)
-            );
-
+            $this->applyTrackSearchFilters($qb, $skipTracksAsArray, $neLat, $swLat, $neLat, $swLon);
 
             $qb->select('g');
             $q = $qb->getQuery();
@@ -100,7 +93,7 @@ class Home extends AbstractController
                 $gpsArrayData['name'] = $gps->getName();
                 foreach ($gps->getOptimizedPoints() as $point) {
                     /* @var $point Point */
-                    $gpsArrayData['points'][] = [
+                    $gpsArrayData['points'][$point->getVersionIndex()][] = [
                         'lat' => $point->getLat(),
                         'lng' => $point->getLng(),
                     ];

@@ -37,6 +37,11 @@ class OptimizedPoint
     private $track;
 
     /**
+     * @ORM\Column(type="integer")
+     */
+    private $versionIndex = 0;
+
+    /**
      * Point constructor.
      * @param $order
      * @param $lat
@@ -71,5 +76,15 @@ class OptimizedPoint
     public function getLng()
     {
         return $this->lng;
+    }
+
+    public function getVersionIndex(): int
+    {
+        return $this->versionIndex;
+    }
+
+    public function setVersionIndex(int $versionIndex): void
+    {
+        $this->versionIndex = $versionIndex;
     }
 }

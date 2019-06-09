@@ -1,9 +1,9 @@
 class AppTrack {
-    constructor(map, polyline) {
+    constructor(map, polylines) {
         this.map = map;
-        this.polyline = polyline;
+        this.polylines = polylines;
 
-        var points = this.polyline.getLatLngs();
+        var points = this.polylines[0].getLatLngs();
         var firstPoint = points[0];
         var lastPoint = points[points.length - 1];
         this.markers = [];
@@ -17,9 +17,9 @@ class AppTrack {
             popupAnchor: [9, -32]
         });
         var endMarker = L.marker([lastPoint.lat, lastPoint.lng], {icon: finishIcon});
-        var polylinePop = polyline.getPopup();
+        var polylinePop = polylines[0].getPopup();
 
-        // copy polyline events to markers
+        // copy first polyline events to markers
         if (polylinePop) {
             endMarker.bindPopup(polylinePop.getContent());
             startMarker.bindPopup(polylinePop.getContent());
@@ -30,7 +30,9 @@ class AppTrack {
 
     show() {
         this.visible = true;
-        this.polyline.addTo(this.map);
+        for (var i = 0; i < this.polylines.length; i++) {
+            this.polylines[i].addTo(this.map);
+        }
 
         var marker;
         for (marker in this.markers) {
@@ -40,7 +42,9 @@ class AppTrack {
 
     hide() {
         this.visible = false;
-        this.polyline.remove();
+        for (var i = 0; i < this.polylines.length; i++) {
+            this.polyline[i].remove();
+        }
 
         var marker;
         for (marker in this.markers) {
