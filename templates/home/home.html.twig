@@ -106,6 +106,7 @@
 
                 for (var i =0; i < tracksData.length; i++) {
                     var id = tracksData[i].id;
+                    let slugOrId = tracksData[i].slugOrId;
 
                     if (loadedTracks[id]) {
                         continue;
@@ -127,7 +128,7 @@
 
                         var polyline = L.polyline(pointsAsPolyline, {color: polylineColor});
                         polylineCollection.push(polyline);
-                        polyline.bindPopup('<a href="/{{ app.request.locale }}/gps/view/' + id + '">view details</a>');
+                        polyline.bindPopup('<a href="/{{ app.request.locale }}/gps/view/' + encodeURIComponent(slugOrId) + '">view details</a>');
                     }
 
                     var track = new AppTrack(map, polylineCollection);
