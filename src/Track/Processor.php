@@ -18,6 +18,10 @@ class Processor
             throw new \RuntimeException("Xml load failed");
         }
 
+        if ($xml->getName() != "gpx") {
+            throw new \RuntimeException("Xml invalid format");
+        }
+
         $previousPoint = null;
         $order = 0;
         $positiveElevation = 0;
@@ -27,8 +31,33 @@ class Processor
             foreach ($track->trkseg as $trackSegment) {
                 foreach ($trackSegment->trkpt as $trackPoint) {
                     $attributes = $trackPoint->attributes();
+
+                    /**
+                     * Longitude and latitude are requered attributes.
+                     * Skip if one or both of them are missing.
+                     */
+                    if (!isset($attributes['lat']) || !isset($attributes['lon'])) {
+                        /* TODO: Throw an exception for corrupted GPX file? */
+                        continue;
+                    }
+
                     $lat = (float)$attributes['lat'];
                     $lon = (float)$attributes['lon'];
+
+                    /**
+                     * Latitude must be bigger than -90 and less than 90
+                     * degrees. If the value is outside, asume there is
+                     * something wrong with the gpx file and throw an
+                     * exception.
+                     * Same applies for longtitude, but the range is -180, 180.
+                     */
+                    if ($lat < -90 || $lat > 90) {
+                        throw new \UnexpectedValueException("Invalid latitude value");
+                    }
+
+                    if ($lon < -180 || $lon > 180) {
+                        throw new \UnexpectedValueException("Invalid longitude value");
+                    }
 
                     $point = new Point(
                         $order,
@@ -49,7 +78,6 @@ class Processor
                         } else {
                             $negativeElevation += $previousPoint->getElevation() - $point->getElevation();
                         }
-
                     }
 
                     $version->addPoint($point);
