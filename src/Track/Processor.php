@@ -18,6 +18,10 @@ class Processor
             throw new \RuntimeException("Xml load failed");
         }
 
+        if ($xml->getName() != "gpx") {
+            throw new \RuntimeException("Xml invalid format");
+        }
+
         $previousPoint = null;
         $order = 0;
         $positiveElevation = 0;
@@ -27,6 +31,16 @@ class Processor
             foreach ($track->trkseg as $trackSegment) {
                 foreach ($trackSegment->trkpt as $trackPoint) {
                     $attributes = $trackPoint->attributes();
+
+                    /**
+                     * Longitude and Latitude are requered attributes.
+                     * Skip if one or both of them are missing.
+                     */
+                    if (!isset($attributes['lat']) || !isset($attributes['lon'])) {
+                        /* TODO: Throw an exception for corrupted GPX file? */
+                        continue;
+                    }
+
                     $lat = (float)$attributes['lat'];
                     $lon = (float)$attributes['lon'];
 
