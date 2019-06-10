@@ -11,6 +11,14 @@ use PHPUnit\Framework\TestCase;
 
 class ProcessorTest extends TestCase
 {
+    /**
+     * Test for non-xml file
+     *
+     * When passing non-xml file to simplexml_load_string a parser error
+     * occurs. This can be catched as Warning exception.
+     *
+     * @covers Processor::process
+     */
     public function testProcessorInvalidFile()
     {
         $xml = '
@@ -33,6 +41,14 @@ class ProcessorTest extends TestCase
         $processor->process($xml, $version);
     }
 
+    /**
+     * Test for non-gpx xml file
+     *
+     * The root node of a GPX file is <gpx>. If it missing we assume, that
+     * the file is with invalid format.
+     *
+     * @covers Processor::process
+     */
     public function testProcessorInvalidFormat()
     {
         $xml = '
@@ -48,6 +64,14 @@ class ProcessorTest extends TestCase
         $processor->process($xml, $version);
 	}
 
+    /**
+     * Test for corrupted gpx file
+     *
+     * Each <trkpt> element has lat and lon attributes. If one is not found,
+     * the point should be skipped.
+     *
+     * @covers Processor::process
+     */
     public function testProcessorCorrupedFile()
     {
         /**
@@ -84,6 +108,13 @@ class ProcessorTest extends TestCase
         $this->assertCount(2, $version->getPoints());
     }
 
+    /**
+     * Test for points count
+     *
+     * Pass valid input data and count processed points.
+     *
+     * @covers Processor::process
+     */
     public function testProcessorCount()
     {
         /**
