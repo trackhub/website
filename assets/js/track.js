@@ -1,25 +1,25 @@
 class AppTrack {
-    constructor(map, polyline) {
+    constructor(map, polylines) {
         this.map = map;
-        this.polyline = polyline;
+        this.polylines = polylines;
 
-        var points = this.polyline.getLatLngs();
-        var firstPoint = points[0];
-        var lastPoint = points[points.length - 1];
+        let points = this.polylines[0].getLatLngs();
+        let firstPoint = points[0];
+        let lastPoint = points[points.length - 1];
         this.markers = [];
 
-        var startMarker = L.marker([firstPoint.lat, firstPoint.lng]);
+        let startMarker = L.marker([firstPoint.lat, firstPoint.lng]);
 
-        var finishIcon = L.icon({
+        let finishIcon = L.icon({
             iconUrl: '/images/flaticoncom/Smashicons/racing-flag-32.png',
             iconSize: [32, 32],
             iconAnchor: [0, 32],
             popupAnchor: [9, -32]
         });
-        var endMarker = L.marker([lastPoint.lat, lastPoint.lng], {icon: finishIcon});
-        var polylinePop = polyline.getPopup();
+        let endMarker = L.marker([lastPoint.lat, lastPoint.lng], {icon: finishIcon});
+        let polylinePop = polylines[0].getPopup();
 
-        // copy polyline events to markers
+        // copy first polyline events to markers
         if (polylinePop) {
             endMarker.bindPopup(polylinePop.getContent());
             startMarker.bindPopup(polylinePop.getContent());
@@ -30,9 +30,11 @@ class AppTrack {
 
     show() {
         this.visible = true;
-        this.polyline.addTo(this.map);
+        for (let i = 0; i < this.polylines.length; i++) {
+            this.polylines[i].addTo(this.map);
+        }
 
-        var marker;
+        let marker;
         for (marker in this.markers) {
             this.markers[marker].addTo(this.map);
         }
@@ -40,7 +42,9 @@ class AppTrack {
 
     hide() {
         this.visible = false;
-        this.polyline.remove();
+        for (let i = 0; i < this.polylines.length; i++) {
+            this.polyline[i].remove();
+        }
 
         var marker;
         for (marker in this.markers) {

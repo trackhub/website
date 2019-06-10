@@ -109,6 +109,10 @@ class Processor
         return $c * $r;
     }
 
+    /**
+     * @param Version $version
+     * @return OptimizedPoint[]
+     */
     public function generateOptimizedPoints(Version $version)
     {
         $optimizedPointLat = 0;

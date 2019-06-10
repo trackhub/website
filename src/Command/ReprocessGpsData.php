@@ -33,6 +33,8 @@ class ReprocessGpsData extends Command
             $output->writeln("Processing track {$track->getId()}", OutputInterface::VERBOSITY_VERBOSE);
 
             $track->prepareForRecalculation();
+
+            $optimizedVersionIndex = 0;
             foreach ($track->getVersions() as $versionIndex => $version) {
                 $output->writeln("Processing version {$versionIndex}");
 
@@ -40,10 +42,16 @@ class ReprocessGpsData extends Command
                     $version->getFile()->getFileContent(),
                     $version
                 );
+
+                foreach ($processor->generateOptimizedPoints($version) as $optimizedPoint) {
+                    $optimizedPoint->setVersionIndex($optimizedVersionIndex);
+                    $track->addOptimizedPoint($optimizedPoint);
+                }
+
+                $optimizedVersionIndex++;
             }
 
-            $optimizedPointCollection = $processor->generateOptimizedPoints($track->getVersions()->first());
-            $track->addOptimizedPoints($optimizedPointCollection);
+
 
             $processor->postProcess($track);
 
