@@ -4,6 +4,7 @@ namespace App\Tests\test\Track;
 
 use App\Track\Processor;
 use App\Entity\Track\Version;
+use App\Entity\Track\Point;
 use App\Entity\User\User;
 use PHPUnit\Framework\Error\Warning;
 use PHPUnit\Framework\TestCase;
@@ -149,5 +150,107 @@ class ProcessorTest extends TestCase
 
         $processor->process($xml, $version);
         $this->assertCount(3, $version->getPoints());
+    }
+
+    public function processorInvalidValueProvider()
+    {
+        return [
+            [ '<gpx><trk><trkseg>
+                      <trkpt lat="90.1" lon="-122.0"></trkpt>
+                      <trkpt lat="48.0" lon="-121.0"></trkpt>
+                </trkseg></trk></gpx>'
+            ],
+            [ '<gpx><trk><trkseg>
+                      <trkpt lat="47.0" lon="-122.0"></trkpt>
+                      <trkpt lat="48.0" lon="-181.0"></trkpt>
+                </trkseg></trk></gpx>'
+            ]
+        ];
+    }
+
+    /**
+     * Test latitude/longitude values
+     *
+     * Longitude has range of -180 to +180 degreess, and latitude -90 to 90.
+     * Pass invalid values and catch exception
+     *
+     * @dataProvider processorInvalidValueProvider
+     * @covers Processor::process
+     */
+    public function testProcessorInvalidValue(string $xml)
+    {
+        $processor = new Processor();
+        $user = new User();
+        $version = new Version($user);
+
+        $this->expectException(\UnexpectedValueException::class);
+        $processor->process($xml, $version);
+
+    }
+
+    public function processorDistanceProvider()
+    {
+        return [
+            [
+                'a' => [
+                    'lat' => -72.12503124983368,
+                    'lon' => 140.76635256575747,
+                ],
+                'b' => [
+                    'lat' => 57.853869742542884,
+                    'lon' => -42.489069295117616,
+                ],
+                'expected' => 18421409.06561638
+            ],
+            [
+                'a' => [
+                    'lat' => 38.42570035324164,
+                    'lon' => 112.5367830045156,
+                ],
+                'b' => [
+                    'lat' => 37.17377431206806,
+                    'lon' => 71.02303487909325,
+                ],
+                'expected' => 3619034.7619460933
+            ],
+            [
+                'a' => [
+                    'lat' => 1.9383769856308533,
+                    'lon' => -97.62005322982051,
+                ],
+                'b' => [
+                    'lat' => -53.0574428236386,
+                    'lon' => -42.13740740171784,
+                ],
+                'expected' => 7977058.660106259
+            ],
+        ];
+    }
+
+    /**
+     * Test distance between 2 points
+     *
+     * The expected distance between each 2 points are precalculated
+     * using Haversine formula:
+     * https://en.wikipedia.org/wiki/Haversine_formula
+     *
+     * @dataProvider processorDistanceProvider
+     * @covers Processor::calculateDistance
+     */
+    public function testProcessorDisatance($a, $b, $expected)
+    {
+        $processor = new Processor();
+        $user = new User();
+        $version = new Version($user);
+
+        $xml = '<gpx><trk><trkseg>
+            <trkpt lat="'.$a['lat'].'" lon="'.$a['lon'].'"></trkpt>
+            <trkpt lat="'.$b['lat'].'" lon="'.$b['lon'].'"></trkpt>
+        </trkseg></trk></gpx>';
+
+        $processor->process($xml, $version);
+        $this->assertEquals(
+            round($version->getPoints()[1]->getDistance(), 5),
+            round($expected, 5));
     }
 }
