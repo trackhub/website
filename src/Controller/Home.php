@@ -18,6 +18,7 @@ class Home extends AbstractController
         /* @var $qb QueryBuilder*/
         $qb->select('t');
         $qb->from(\App\Entity\Track::class, 't');
+        $qb->andWhere('t.visibility = 0');
         $qb->orderBy('t.createdAt', 'desc');
         $qb->setMaxResults(10);
 
