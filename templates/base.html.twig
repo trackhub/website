@@ -6,7 +6,7 @@
         <title>{% if app_title is defined and app_title is not empty %}
             {{ app_title }}
             |
-        {% endif %} GPS tracks by track-hub.com</title>
+        {% endif %} {{ 'GPS tracks by track-hub.com'|trans }}</title>
         {% if app_canonical_url is defined and app_canonical_url is not empty %}
             <link rel="canonical" href="{{ absolute_url(app_canonical_url) }}" />
         {% endif %}
@@ -38,7 +38,9 @@
                 <div class="col">
                     {% if app.user %}
                         {{ app.user.username }}
-                        <a href="{{ path('app_logout') }}">logout</a>
+                        |
+                        <a href="{{ path('app_logout') }}">{{ 'logout'|trans }}</a>
+                        |
                         <a href="{{ path('app_user_download_personal_data') }}">
                             Download personal data
                         </a>

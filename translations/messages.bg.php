@@ -7,6 +7,12 @@ return [
     'Log in' => 'Вписване',
     'Name' => 'Име',
     'Type' => 'Тип',
+    'GPS tracks by track-hub.com' => 'GPS следи от track-hub.com',
+
+    'Latest tracks' => 'Най-нови следи',
+
+    // user menu
+    'logout' => 'изход',
 
     // form types
     'cycling' => 'колоездене',
