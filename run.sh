@@ -8,7 +8,7 @@ set -e
 [[ $UID == 0 ]] && export WEB_UID=1000 || export WEB_UID=$UID
 
 docker build --tag=trackhub-web ./docker/web/
-docker-compose build
+docker-compose -p track build
 
 if [ "$1" == "-p" ]; then
     docker-compose -p track -f docker-compose.yml -f docker-compose-prod.yml build

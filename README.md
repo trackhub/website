@@ -1,14 +1,9 @@
 # Installation
 
-## Prepare docker
+## Docker setup
 
-[Install docker](https://docs.docker.com/install/)
-
-Add user to docker group
-```sh
-sudo usermod -aG docker $USER
-su - $USER
-```
+* [Install docker](https://docs.docker.com/install/)
+* [Docker post install steps](https://docs.docker.com/install/linux/linux-postinstall/) - optional
 
 ## Prepare components
 
@@ -16,12 +11,13 @@ Create docker image
 ```sh
 bash run.sh
 ```
-After the build, attach to **web** container
+
+Attaching to the `web` container
 ```sh
-docker-compose -p track exec web bash
+docker exec -it track_web_1 bash
 ```
 
-Install web components
+### Install web components (done automatically on container startup)
 ```sh
 composer install
 yarn install
@@ -31,7 +27,7 @@ yarn encore dev
 yarn encore production
 ```
 
-Create DB schema
+### Create DB schema (done automatically on container startup)
 ```sh
 cd /var/www/script/migration
 composer install --no-dev

@@ -47,9 +47,4 @@ RUN apt-get update && \
     apt-get install -y --no-install-recommends yarn
 # end js
 
-
-
 WORKDIR /var/www
-
-CMD usermod -u $WEB_UID www-data && \
-    apachectl -D FOREGROUND
