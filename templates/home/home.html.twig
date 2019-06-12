@@ -28,7 +28,7 @@
 
     <script>
         var mapOptions = {
-            showNyBike: true,
+            showByBike: true,
             showByFoot: true
         };
 
@@ -142,7 +142,21 @@
 
                     let track = new AppTrack(map, polylineCollection);
                     track.setType(tracksData[i].type);
-                    track.show();
+
+                    switch (track.getType()) {
+                        case 1:
+                            if (mapOptions.showByBike) {
+                                track.show();
+                            }
+                            break;
+                        case 2:
+                            if (mapOptions.showByFoot) {
+                                track.show();
+                            }
+                            break;
+                        default:
+                            track.show();
+                    }
 
                     loadedTracks[id] = track;
                 }
@@ -174,10 +188,9 @@
 
         // filter for track by type
         document.getElementById('map_show_mtb').addEventListener('click', function() {
-            mapOptions.showNyBike = this.checked;
+            mapOptions.showByBike = this.checked;
             for(let trackId in loadedTracks) {
                 let track = loadedTracks[trackId];
-                console.log(track);
                 if (track.getType() === 1) {
                     if (this.checked) {
                         track.show();
@@ -187,5 +200,20 @@
                 }
             }
         });
+
+        document.getElementById('map_show_foot').addEventListener('click', function() {
+            mapOptions.showByFoot = this.checked;
+            for(let trackId in loadedTracks) {
+                let track = loadedTracks[trackId];
+                if (track.getType() === 2) {
+                    if (this.checked) {
+                        track.show();
+                    } else {
+                        track.hide();
+                    }
+                }
+            }
+        });
+
     </script>
 {% endblock %}
