@@ -92,6 +92,7 @@ class Home extends AbstractController
                 $gpsArrayData['id'] = $gps->getId();
                 $gpsArrayData['name'] = $gps->getName();
                 $gpsArrayData['slugOrId'] = $gps->getSlugOrId();
+                $gpsArrayData['type'] = $gps->getType();
                 foreach ($gps->getOptimizedPoints() as $point) {
                     /* @var $point Point */
                     $gpsArrayData['points'][$point->getVersionIndex()][] = [

@@ -2,6 +2,11 @@
 
 {% block content %}
     <div style="height: 50vh; min-height: 300px; width: 100%;" id="map"></div>
+    <div class="">
+        <input type="checkbox" id="map_show_mtb" checked /><label for="map_show_mtb">by bike</label>
+        |
+        <input type="checkbox" id="map_show_foot" checked /><label for="map_show_foot">by foot</label>
+    </div>
 
     <hr>
     <div>
@@ -22,6 +27,11 @@
     </div>
 
     <script>
+        var mapOptions = {
+            showNyBike: true,
+            showByFoot: true
+        };
+
         var gpsColors = [
             'blue',
             'black',
@@ -87,7 +97,7 @@
                     return;
                 }
 
-                responseAsJson = JSON.parse(this.responseText);
+                let responseAsJson = JSON.parse(this.responseText);
 
                 var responseStatus = responseAsJson.status;
 
@@ -102,23 +112,21 @@
                     return;
                 }
 
-                var tracksData = responseAsJson.data;
+                let tracksData = responseAsJson.data;
 
-                for (var i =0; i < tracksData.length; i++) {
-                    var id = tracksData[i].id;
+                for (let i = 0; i < tracksData.length; i++) {
+                    let id = tracksData[i].id;
                     let slugOrId = tracksData[i].slugOrId;
 
                     if (loadedTracks[id]) {
                         continue;
                     }
 
-                    loadedTracks[id] = true;
 
-                    var polylineColor = gpsColors[Math.floor(Math.random()*gpsColors.length)];
                     var polylineCollection = [];
-                    for (var j = 0; j < tracksData[i].points.length; j++) {
-                        var points = tracksData[i].points[j];
-                        var pointsAsPolyline = [];
+                    for (let j = 0; j < tracksData[i].points.length; j++) {
+                        let points = tracksData[i].points[j];
+                        let pointsAsPolyline = [];
                         for (let pointIndex = 0; pointIndex < points.length; pointIndex++) {
                             pointsAsPolyline.push([
                                 points[pointIndex].lat,
@@ -126,24 +134,28 @@
                             ]);
                         }
 
-                        var polyline = L.polyline(pointsAsPolyline, {color: polylineColor});
+                        let polylineColor = gpsColors[Math.floor(Math.random()*gpsColors.length)];
+                        let polyline = L.polyline(pointsAsPolyline, {color: polylineColor});
                         polylineCollection.push(polyline);
                         polyline.bindPopup('<a href="/{{ app.request.locale }}/gps/view/' + encodeURIComponent(slugOrId) + '">view details</a>');
                     }
 
-                    var track = new AppTrack(map, polylineCollection);
+                    let track = new AppTrack(map, polylineCollection);
+                    track.setType(tracksData[i].type);
                     track.show();
+
+                    loadedTracks[id] = track;
                 }
             };
-            var url = '/{{ app.request.locale }}/gps/list';
+            let url = '/{{ app.request.locale }}/gps/list';
             url += '/' + map.getBounds().getNorthEast().lat;
             url += '/' + map.getBounds().getNorthEast().lng;
             url += '/' + map.getBounds().getSouthWest().lat;
             url += '/' + map.getBounds().getSouthWest().lng;
 
-            var postData = new FormData();
-            var fetchedTracksIds = [];
-            for (var key in loadedTracks) {
+            let postData = new FormData();
+            let fetchedTracksIds = [];
+            for (let key in loadedTracks) {
                 fetchedTracksIds.push(key);
             }
 
@@ -159,5 +171,21 @@
                 map.panTo(new L.LatLng(position.coords.latitude, position.coords.longitude));
             });
         }
+
+        // filter for track by type
+        document.getElementById('map_show_mtb').addEventListener('click', function() {
+            mapOptions.showNyBike = this.checked;
+            for(let trackId in loadedTracks) {
+                let track = loadedTracks[trackId];
+                console.log(track);
+                if (track.getType() === 1) {
+                    if (this.checked) {
+                        track.show();
+                    } else {
+                        track.hide();
+                    }
+                }
+            }
+        });
     </script>
 {% endblock %}
