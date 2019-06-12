@@ -1,7 +1,7 @@
 FROM debian:9
 
 RUN apt-get update && \
-    apt-get install -y apache2 curl gnupg2
+    apt-get install -y apache2 curl gnupg2 netcat
 
 RUN mkdir /home/www-data && \
     chown www-data /home/www-data
