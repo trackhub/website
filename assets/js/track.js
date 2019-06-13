@@ -2,6 +2,7 @@ class AppTrack {
     constructor(map, polylines) {
         this.map = map;
         this.polylines = polylines;
+        this.type = null;
 
         let points = this.polylines[0].getLatLngs();
         let firstPoint = points[0];
@@ -28,6 +29,14 @@ class AppTrack {
         this.markers.push(startMarker, endMarker);
     }
 
+    setType(type) {
+        this.type = type;
+    }
+
+    getType() {
+        return this.type;
+    }
+
     show() {
         this.visible = true;
         for (let i = 0; i < this.polylines.length; i++) {
@@ -43,7 +52,7 @@ class AppTrack {
     hide() {
         this.visible = false;
         for (let i = 0; i < this.polylines.length; i++) {
-            this.polyline[i].remove();
+            this.polylines[i].remove();
         }
 
         var marker;
