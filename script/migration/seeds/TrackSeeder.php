@@ -22,25 +22,19 @@ class TrackSeeder extends AbstractSeed
 
         $track = $this->table('track');
 
+
+
         $finder = new \Symfony\Component\Finder\Finder();
         $finder->in(__DIR__ . '/tracks');
-        $finder->filter(function(SplFileInfo $file) {
-            if ($file->getExtension() === 'gpx') {
-                return true;
-            }
-
-            return false;
-        });
-        $finder->depth('==1');
+        $finder->directories();
 
         $processedTracks = 0;
-        foreach ($finder as $trackFile) {
-            $this->getOutput()->writeln("Processing track " . $trackFile->getFilename());
-
+        foreach ($finder as $trackDirectory) {
+            $this->output->writeln("Processing track {$trackDirectory->getFilename()}");
             $trackId = uniqid();
             $data = [
                 'id' => $trackId,
-                'name' => 'Dummy track ' . $trackId,
+                'name' => $trackDirectory->getFilename(),
                 'last_check' => date('Y-m-d H:i:s',  strtotime(sprintf("-%d hours", $processedTracks))),
                 'point_north_east_lat' => 0,
                 'point_north_east_lng' => 0,
@@ -53,36 +47,42 @@ class TrackSeeder extends AbstractSeed
 
             $track->insert($data)->save();
 
-            $gpxFileData = file_get_contents($trackFile->getPathname());
-            $version = $this->table('version');
-            $fileTable = $this->table('track_file');
+            $finderTrackFiles = new \Symfony\Component\Finder\Finder();
+            $finderTrackFiles->in($trackDirectory->getPathname());
 
-            $versionId = uniqid('v_');
+            foreach ($finderTrackFiles as $trackFile) {
+                $this->getOutput()->writeln("Processing gpx file " . $trackFile->getFilename());
+                $gpxFileData = file_get_contents($trackFile->getPathname());
+                $version = $this->table('version');
+                $fileTable = $this->table('track_file');
 
-            $this->getOutput()->writeln("Version id: {$versionId}", OutputInterface::VERBOSITY_VERY_VERBOSE);
+                $versionId = uniqid('v_');
 
-            $data = [
-                'id' => $versionId,
-                'track_id' => $trackId,
-                'name' => "Version",
-                'positive_elevation' => 0,
-                'negative_elevation' => 0,
-            ];
+                $this->getOutput()->writeln("Version id: {$versionId}", OutputInterface::VERBOSITY_VERY_VERBOSE);
 
-            $version->insert($data)->saveData();
+                $data = [
+                    'id' => $versionId,
+                    'track_id' => $trackId,
+                    'name' => "Version",
+                    'positive_elevation' => 0,
+                    'negative_elevation' => 0,
+                ];
 
-            $versionFileData = [
-                'id' => uniqid('vf_' . $i . '_'),
-                'version_id' => $versionId,
-                'created_at' => '2019-01-01 01:01:01',
-                'file_content' => $gpxFileData,
-            ];
+                $version->insert($data)->saveData();
 
-            $this->getOutput()->writeln("File id: {$versionFileData['id']}", OutputInterface::VERBOSITY_VERY_VERBOSE);
+                $versionFileData = [
+                    'id' => uniqid(),
+                    'version_id' => $versionId,
+                    'created_at' => '2019-01-01 01:01:01',
+                    'file_content' => $gpxFileData,
+                ];
 
-            $fileTable->insert($versionFileData)->saveData();
+                $this->getOutput()->writeln("File id: {$versionFileData['id']}", OutputInterface::VERBOSITY_VERY_VERBOSE);
 
-            $this->query("UPDATE version SET file_id = '{$versionFileData['id']}' WHERE id = '{$versionId}'");
+                $fileTable->insert($versionFileData)->saveData();
+
+                $this->query("UPDATE version SET file_id = '{$versionFileData['id']}' WHERE id = '{$versionId}'");
+            }
 
             $processedTracks++;
         }
