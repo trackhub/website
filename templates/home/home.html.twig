@@ -10,9 +10,24 @@
 
     <hr>
     <div>
-        <div>{{ "Latest tracks"|trans }}:</div>
+        <div>{{ "Latest tracks"|trans }} - mtb:</div>
         <ul>
             {% for track in latestTracks %}
+                <li>
+                    <a href="{{ path('gps-view', { id: track.slugOrId}) }}">
+                        {% if track.name is empty %}
+                            {{ track.id }}
+                        {% else %}
+                            {{ track.name }}
+                        {% endif %}
+                    </a>
+                </li>
+            {% endfor %}
+        </ul>
+
+        <div>{{ "Latest tracks"|trans }} - hike:</div>
+        <ul>
+            {% for track in latestTracksHike %}
                 <li>
                     <a href="{{ path('gps-view', { id: track.slugOrId}) }}">
                         {% if track.name is empty %}
