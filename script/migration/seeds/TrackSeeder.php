@@ -1,7 +1,7 @@
 <?php
 
-
 use Phinx\Seed\AbstractSeed;
+use Symfony\Component\Console\Output\OutputInterface;
 
 class TrackSeeder extends AbstractSeed
 {
@@ -13,33 +13,80 @@ class TrackSeeder extends AbstractSeed
 
     public function run()
     {
-
-        if (!$this->hasTable('track'))
-            return;
+        $this->query("UPDATE track_file SET version_id = NULL");
+        $this->query("UPDATE version SET file_id = NULL");
+        $this->query("DELETE FROM point");
+        $this->query("DELETE FROM version");
+        $this->query("DELETE FROM optimized_point");
+        $this->query("DELETE FROM track");
 
         $track = $this->table('track');
 
-        /* Disable constrains check during truncate */
-        $this->execute('SET FOREIGN_KEY_CHECKS = 0; ');
-        $track->truncate();
-        $this->execute('SET FOREIGN_KEY_CHECKS = 1; ');
+        $finder = new \Symfony\Component\Finder\Finder();
+        $finder->in(__DIR__ . '/tracks');
+        $finder->filter(function(SplFileInfo $file) {
+            if ($file->getExtension() === 'gpx') {
+                return true;
+            }
 
-        $count = rand(1, 5);
-        for ($i = 0; $i < $count; $i++) {
+            return false;
+        });
+        $finder->depth('==1');
+
+        $processedTracks = 0;
+        foreach ($finder as $trackFile) {
+            $this->getOutput()->writeln("Processing track " . $trackFile->getFilename());
+
+            $trackId = uniqid();
             $data = [
-                'id' => uniqid(),
-                'name' => 'Dummy track '.$i,
-                'last_check' => date('Y-m-d H:i:s',  strtotime(sprintf("+%d hours", $i))),
+                'id' => $trackId,
+                'name' => 'Dummy track ' . $trackId,
+                'last_check' => date('Y-m-d H:i:s',  strtotime(sprintf("-%d hours", $processedTracks))),
                 'point_north_east_lat' => 0,
                 'point_north_east_lng' => 0,
                 'point_south_west_lat' => 0,
                 'point_south_west_lng' => 0,
                 'type' => $this::TYPE_CYCLING,
-                'created_at' => date('Y-m-d H:i:s',  strtotime(sprintf("+%d hours", $i))),
+                'created_at' => date('Y-m-d H:i:s',  strtotime(sprintf("-%d hours", $processedTracks))),
                 'visibility' => $this::VISIBILITY_PUBLIC,
             ];
 
             $track->insert($data)->save();
+
+            $gpxFileData = file_get_contents($trackFile->getPathname());
+            $version = $this->table('version');
+            $fileTable = $this->table('track_file');
+
+            $versionId = uniqid('v_');
+
+            $this->getOutput()->writeln("Version id: {$versionId}", OutputInterface::VERBOSITY_VERY_VERBOSE);
+
+            $data = [
+                'id' => $versionId,
+                'track_id' => $trackId,
+                'name' => "Version",
+                'positive_elevation' => 0,
+                'negative_elevation' => 0,
+            ];
+
+            $version->insert($data)->saveData();
+
+            $versionFileData = [
+                'id' => uniqid('vf_' . $i . '_'),
+                'version_id' => $versionId,
+                'created_at' => '2019-01-01 01:01:01',
+                'file_content' => $gpxFileData,
+            ];
+
+            $this->getOutput()->writeln("File id: {$versionFileData['id']}", OutputInterface::VERBOSITY_VERY_VERBOSE);
+
+            $fileTable->insert($versionFileData)->saveData();
+
+            $this->query("UPDATE version SET file_id = '{$versionFileData['id']}' WHERE id = '{$versionId}'");
+
+            $processedTracks++;
         }
+
+        $track->save();
     }
 }
