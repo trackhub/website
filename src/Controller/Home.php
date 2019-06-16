@@ -67,48 +67,42 @@ class Home extends AbstractController
         $count = current($data);
 
         if ($count > 10) {
-            // status 2 = too many tracks found
-            return new Response(
-                json_encode([
-                    'status' => 2,
-                ]),
-                Response::HTTP_OK,
-                [
-                    'Content-Type' => 'text/json',
-                ]
-            );
+            $status = 2; // 2 = too many tracks
         } else {
-            $qb = $em->createQueryBuilder('g');
-            $this->applyTrackSearchFilters($qb, $skipTracksAsArray, $neLat, $swLat, $neLat, $swLon);
+            $status = 1; // 1 = ok
+        }
 
-            $qb->select('g');
-            $q = $qb->getQuery();
-            $qResult = $q->getResult();
-            /* @var $qResult \App\Entity\Track[] */
+        $qb = $em->createQueryBuilder('g');
+        $this->applyTrackSearchFilters($qb, $skipTracksAsArray, $neLat, $swLat, $neLat, $swLon);
 
-            $responseData = [];
+        $qb->select('g');
+        $qb->setMaxResults(10);
+        $q = $qb->getQuery();
+        $qResult = $q->getResult();
+        /* @var $qResult \App\Entity\Track[] */
 
-            foreach($qResult as $gps) {
-                $gpsArrayData = [];
-                $gpsArrayData['id'] = $gps->getId();
-                $gpsArrayData['name'] = $gps->getName();
-                $gpsArrayData['slugOrId'] = $gps->getSlugOrId();
-                $gpsArrayData['type'] = $gps->getType();
-                foreach ($gps->getOptimizedPoints() as $point) {
-                    /* @var $point Point */
-                    $gpsArrayData['points'][$point->getVersionIndex()][] = [
-                        'lat' => $point->getLat(),
-                        'lng' => $point->getLng(),
-                    ];
-                }
+        $responseData = [];
 
-                $responseData[] = $gpsArrayData;
+        foreach($qResult as $gps) {
+            $gpsArrayData = [];
+            $gpsArrayData['id'] = $gps->getId();
+            $gpsArrayData['name'] = $gps->getName();
+            $gpsArrayData['slugOrId'] = $gps->getSlugOrId();
+            $gpsArrayData['type'] = $gps->getType();
+            foreach ($gps->getOptimizedPoints() as $point) {
+                /* @var $point Point */
+                $gpsArrayData['points'][$point->getVersionIndex()][] = [
+                    'lat' => $point->getLat(),
+                    'lng' => $point->getLng(),
+                ];
             }
+
+            $responseData[] = $gpsArrayData;
         }
 
         return new Response(
             json_encode([
-                'status' => 1,
+                'status' => $status,
                 'data' => $responseData,
             ]),
             Response::HTTP_OK,
