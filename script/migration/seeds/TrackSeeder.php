@@ -56,7 +56,7 @@ class TrackSeeder extends AbstractSeed
                 $version = $this->table('version');
                 $fileTable = $this->table('track_file');
 
-                $versionId = uniqid('v_');
+                $versionId = uniqid();
 
                 $this->getOutput()->writeln("Version id: {$versionId}", OutputInterface::VERBOSITY_VERY_VERBOSE);
 
@@ -86,7 +86,5 @@ class TrackSeeder extends AbstractSeed
 
             $processedTracks++;
         }
-
-        $track->save();
     }
 }
