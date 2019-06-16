@@ -12,9 +12,6 @@ require('../css/global.scss');
 // Need jQuery? Install it with "yarn add jquery", then uncomment to require it.
 // var $ = require('jquery');
 
-window.appNotification = require('toastr');
-window.appNotification.options.toastClass = 'toastr';
-
 window.jQuery = require('jquery');
 window.chartJs = require('chart.js');
 
