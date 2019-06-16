@@ -1,14 +1,11 @@
 <?php
 
-
 namespace App\Security\Authorization\Voter;
 
 use App\Entity\Track;
 use App\Entity\User\User;
-use Knp\Menu\Matcher\Voter\VoterInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
-use Symfony\Component\Security\Core\Authorization\Voter\Voter;;
-use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
 class TrackVoter extends Voter
 {

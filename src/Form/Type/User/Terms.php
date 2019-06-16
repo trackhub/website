@@ -17,7 +17,7 @@ class Terms extends AbstractType
     {
         $builder->add(
             'agreeTerms',
-                CheckboxType::class,
+            CheckboxType::class,
             [
                 'required' => true,
                 'label' => 'I agree with the Terms of the Service',

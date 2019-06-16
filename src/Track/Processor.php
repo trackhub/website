@@ -187,7 +187,7 @@ class Processor
         $collectionsCount = count($pointCollection);
 
         foreach ($lables as $labelIndex => $labelDistance) {
-            for($q = 0; $q < $collectionsCount; $q++) {
+            for ($q = 0; $q < $collectionsCount; $q++) {
                 $currentPoint = current($pointCollection[$q]);
 
                 // case: skip point
