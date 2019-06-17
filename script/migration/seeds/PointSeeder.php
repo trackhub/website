@@ -1,11 +1,9 @@
 <?php
 
-
 use Phinx\Seed\AbstractSeed;
 
 class PointSeeder extends AbstractSeed
 {
-
     private function distance($a, $b) :float
     {
         $r = 6371000;
@@ -36,8 +34,9 @@ class PointSeeder extends AbstractSeed
     public function run()
     {
 
-        if (!$this->hasTable('point'))
+        if (!$this->hasTable('point')) {
             return;
+        }
 
         $point = $this->table('point');
 
@@ -50,9 +49,7 @@ class PointSeeder extends AbstractSeed
         $versions = $this->fetchAll('SELECT * FROM version');
         $tracks = $this->fetchAll('SELECT * FROM track');
 
-
         foreach ($versions as $version) {
-
             $pointNorthEastLat = -999;
             $pointNorthEastLng = -999;
             $pointSouthWestLat = 999;

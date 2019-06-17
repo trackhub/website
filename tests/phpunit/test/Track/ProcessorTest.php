@@ -9,7 +9,6 @@ use App\Entity\User\User;
 use PHPUnit\Framework\Error\Warning;
 use PHPUnit\Framework\TestCase;
 
-
 class ProcessorTest extends TestCase
 {
     /**
@@ -63,7 +62,7 @@ class ProcessorTest extends TestCase
 
         $this->expectException(\RuntimeException::class);
         $processor->process($xml, $version);
-	}
+    }
 
     /**
      * Test for corrupted gpx file
@@ -185,7 +184,6 @@ class ProcessorTest extends TestCase
 
         $this->expectException(\UnexpectedValueException::class);
         $processor->process($xml, $version);
-
     }
 
     public function processorDistanceProvider()
@@ -251,6 +249,7 @@ class ProcessorTest extends TestCase
         $processor->process($xml, $version);
         $this->assertEquals(
             round($version->getPoints()[1]->getDistance(), 5),
-            round($expected, 5));
+            round($expected, 5)
+        );
     }
 }

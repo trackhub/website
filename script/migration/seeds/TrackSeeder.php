@@ -1,6 +1,5 @@
 <?php
 
-
 use Phinx\Seed\AbstractSeed;
 
 class TrackSeeder extends AbstractSeed
@@ -14,8 +13,9 @@ class TrackSeeder extends AbstractSeed
     public function run()
     {
 
-        if (!$this->hasTable('track'))
+        if (!$this->hasTable('track')) {
             return;
+        }
 
         $track = $this->table('track');
 
@@ -29,13 +29,13 @@ class TrackSeeder extends AbstractSeed
             $data = [
                 'id' => uniqid(),
                 'name' => 'Dummy track '.$i,
-                'last_check' => date('Y-m-d H:i:s',  strtotime(sprintf("+%d hours", $i))),
+                'last_check' => date('Y-m-d H:i:s', strtotime(sprintf("+%d hours", $i))),
                 'point_north_east_lat' => 0,
                 'point_north_east_lng' => 0,
                 'point_south_west_lat' => 0,
                 'point_south_west_lng' => 0,
                 'type' => $this::TYPE_CYCLING,
-                'created_at' => date('Y-m-d H:i:s',  strtotime(sprintf("+%d hours", $i))),
+                'created_at' => date('Y-m-d H:i:s', strtotime(sprintf("+%d hours", $i))),
                 'visibility' => $this::VISIBILITY_PUBLIC,
             ];
 

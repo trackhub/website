@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<ruleset name="PHP_CodeSniffer">
+    <description>The coding standard for PHP_CodeSniffer itself.</description>
+
+    <file>../../src</file>
+    <file>../../tests</file>
+    <file>../../script</file>
+
+    <exclude-pattern>phpcs/</exclude-pattern>
+    <exclude-pattern>*/vendor/</exclude-pattern>
+    <exclude-pattern>*.js</exclude-pattern>
+    <exclude-pattern>*.css</exclude-pattern>
+
+    <rule ref="PSR1">
+        <exclude name="Generic.Files.LineLength"/>
+    </rule>
+
+    <rule ref="PSR1.Classes.ClassDeclaration">
+        <exclude-pattern>script/migration/</exclude-pattern>
+    </rule>
+
+    <rule ref="PSR2" />
+
+    <rule ref="Generic.Files.EndFileNewline" />
+</ruleset>
