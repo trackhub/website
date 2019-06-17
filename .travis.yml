@@ -10,6 +10,7 @@ script:
     - composer install --prefer-dist
     - ./vendor/bin/phpunit -c tests/phpunit/phpunit.xml --no-coverage
     - ./bin/console doctrine:mapping:info
+    - cd ./tests/phpcs && composer install && ./vendor/bin/phpcs --standard=phpcs.xml
 
 matrix:
     allow_failures:
