@@ -1,6 +1,5 @@
 {
     "require": {
-        "robmorgan/phinx": "^0.10.7",
-        "symfony/finder": "^4.3"
+        "robmorgan/phinx": "^0.10.7"
     }
 }
