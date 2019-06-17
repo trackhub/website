@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Track\Point;
+use App\Repository\TrackRepository;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\QueryBuilder;
 use Symfony\Component\HttpFoundation\Request;
@@ -13,21 +14,29 @@ class Home extends AbstractController
 {
     public function home()
     {
-        $entityManager = $this->getDoctrine()->getManager();
-        $qb = $entityManager->createQueryBuilder();
-        /* @var $qb QueryBuilder*/
-        $qb->select('t');
-        $qb->from(\App\Entity\Track::class, 't');
-        $qb->andWhere('t.visibility = 0');
-        $qb->orderBy('t.createdAt', 'desc');
-        $qb->setMaxResults(10);
+        $trackRepo = $this->getDoctrine()->getRepository(\App\Entity\Track::class);
+        /* @var $trackRepo TrackRepository */
+        $qbMtb = $trackRepo->createQueryBuilder('t');
+        $trackRepo->filterAccess($qbMtb);
+        $qbMtb->orderBy('t.createdAt', 'desc');
+        $qbMtb->andWhere($qbMtb->expr()->eq('t.type', \App\Entity\Track::TYPE_CYCLING));
+        $qbMtb->setMaxResults(10);
 
-        $latestTracks = $qb->getQuery()->getResult();
+        $latestTracks = $qbMtb->getQuery()->getResult();
+
+        $qbHike = $trackRepo->createQueryBuilder('t');
+        $trackRepo->filterAccess($qbHike);
+        $qbHike->andWhere($qbMtb->expr()->eq('t.type', \App\Entity\Track::TYPE_HIKING));
+        $qbHike->orderBy('t.createdAt', 'desc');
+        $qbHike->setMaxResults(10);
+
+        $latestTracksHike = $qbHike->getQuery()->getResult();
 
         return $this->render(
             'home/home.html.twig',
             [
                 'latestTracks' => $latestTracks,
+                'latestTracksHike' => $latestTracksHike,
             ]
         );
     }

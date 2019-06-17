@@ -10,6 +10,8 @@ return [
     'GPS tracks by track-hub.com' => 'GPS следи от track-hub.com',
 
     'Latest tracks' => 'Най-нови следи',
+    'Latest tracks by bicycle' => 'Най-нови следи с колело',
+    'Latest tracks by foot' => 'Най-нови пешеходни следи',
 
     // user menu
     'logout' => 'изход',
