@@ -1,6 +1,5 @@
 <?php
 
-
 use Phinx\Seed\AbstractSeed;
 
 class VersionSeeder extends AbstractSeed
@@ -12,12 +11,11 @@ class VersionSeeder extends AbstractSeed
         ];
     }
 
-
     public function run()
     {
-
-        if (!$this->hasTable('version'))
+        if (!$this->hasTable('version')) {
             return;
+        }
 
         $version = $this->table('version');
 
