@@ -16,7 +16,6 @@
         "chart.js": "^2.8.0",
         "jquery": "^3.4.1",
         "node-sass": "^4.12.0",
-        "sass-loader": "^7.1.0",
-        "toastr": "^2.1.4"
+        "sass-loader": "^7.1.0"
     }
 }

@@ -9,21 +9,40 @@
     </div>
 
     <hr>
-    <div>
-        <div>{{ "Latest tracks"|trans }}:</div>
-        <ul>
-            {% for track in latestTracks %}
-                <li>
-                    <a href="{{ path('gps-view', { id: track.slugOrId}) }}">
-                        {% if track.name is empty %}
-                            {{ track.id }}
-                        {% else %}
-                            {{ track.name }}
-                        {% endif %}
-                    </a>
-                </li>
-            {% endfor %}
-        </ul>
+    <div class="row">
+        <div class="col">
+            <div>{{ "Latest tracks by bicycle"|trans }}:</div>
+            <ul>
+                {% for track in latestTracks %}
+                    <li>
+                        <a href="{{ path('gps-view', { id: track.slugOrId}) }}">
+                            {% if track.name is empty %}
+                                {{ track.id }}
+                            {% else %}
+                                {{ track.name }}
+                            {% endif %}
+                        </a>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <div class="col">
+            <div>{{ "Latest tracks by foot"|trans }}:</div>
+            <ul>
+                {% for track in latestTracksHike %}
+                    <li>
+                        <a href="{{ path('gps-view', { id: track.slugOrId}) }}">
+                            {% if track.name is empty %}
+                                {{ track.id }}
+                            {% else %}
+                                {{ track.name }}
+                            {% endif %}
+                        </a>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
     </div>
 
     <script>
@@ -90,7 +109,7 @@
 
         var loadedTracks = {};
 
-        map.on('moveend', function() {
+        var moveEndListener = function() {
             var ajax = new XMLHttpRequest();
             ajax.onreadystatechange = function() {
                 if (this.readyState != 4 || this.status != 200) {
@@ -101,12 +120,7 @@
 
                 var responseStatus = responseAsJson.status;
 
-                if (responseStatus == 2) {
-                    appNotification.error('Too many track found, please zoom in');
-                    return;
-                }
-
-                if (responseStatus != 1) {
+                if (responseStatus != 1 && responseStatus != 2) {
                     // unknown error
                     // @FIXME show error
                     return;
@@ -160,6 +174,10 @@
 
                     loadedTracks[id] = track;
                 }
+
+                if (responseStatus == 2) {
+                    moveEndListener();
+                }
             };
             let url = '/{{ app.request.locale }}/gps/list';
             url += '/' + map.getBounds().getNorthEast().lat;
@@ -177,7 +195,9 @@
 
             ajax.open('POST', url);
             ajax.send(postData);
-        });
+        };
+
+        map.on('moveend', moveEndListener);
 
         map.panTo(new L.LatLng(42.15, 24.75));
         if (navigator.geolocation) {

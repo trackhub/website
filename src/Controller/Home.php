@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Track\Point;
+use App\Repository\TrackRepository;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\QueryBuilder;
 use Symfony\Component\HttpFoundation\Request;
@@ -13,21 +14,29 @@ class Home extends AbstractController
 {
     public function home()
     {
-        $entityManager = $this->getDoctrine()->getManager();
-        $qb = $entityManager->createQueryBuilder();
-        /* @var $qb QueryBuilder*/
-        $qb->select('t');
-        $qb->from(\App\Entity\Track::class, 't');
-        $qb->andWhere('t.visibility = 0');
-        $qb->orderBy('t.createdAt', 'desc');
-        $qb->setMaxResults(10);
+        $trackRepo = $this->getDoctrine()->getRepository(\App\Entity\Track::class);
+        /* @var $trackRepo TrackRepository */
+        $qbMtb = $trackRepo->createQueryBuilder('t');
+        $trackRepo->filterAccess($qbMtb);
+        $qbMtb->orderBy('t.createdAt', 'desc');
+        $qbMtb->andWhere($qbMtb->expr()->eq('t.type', \App\Entity\Track::TYPE_CYCLING));
+        $qbMtb->setMaxResults(10);
 
-        $latestTracks = $qb->getQuery()->getResult();
+        $latestTracks = $qbMtb->getQuery()->getResult();
+
+        $qbHike = $trackRepo->createQueryBuilder('t');
+        $trackRepo->filterAccess($qbHike);
+        $qbHike->andWhere($qbMtb->expr()->eq('t.type', \App\Entity\Track::TYPE_HIKING));
+        $qbHike->orderBy('t.createdAt', 'desc');
+        $qbHike->setMaxResults(10);
+
+        $latestTracksHike = $qbHike->getQuery()->getResult();
 
         return $this->render(
             'home/home.html.twig',
             [
                 'latestTracks' => $latestTracks,
+                'latestTracksHike' => $latestTracksHike,
             ]
         );
     }
@@ -67,48 +76,42 @@ class Home extends AbstractController
         $count = current($data);
 
         if ($count > 10) {
-            // status 2 = too many tracks found
-            return new Response(
-                json_encode([
-                    'status' => 2,
-                ]),
-                Response::HTTP_OK,
-                [
-                    'Content-Type' => 'text/json',
-                ]
-            );
+            $status = 2; // 2 = too many tracks
         } else {
-            $qb = $em->createQueryBuilder('g');
-            $this->applyTrackSearchFilters($qb, $skipTracksAsArray, $neLat, $swLat, $neLat, $swLon);
+            $status = 1; // 1 = ok
+        }
 
-            $qb->select('g');
-            $q = $qb->getQuery();
-            $qResult = $q->getResult();
-            /* @var $qResult \App\Entity\Track[] */
+        $qb = $em->createQueryBuilder('g');
+        $this->applyTrackSearchFilters($qb, $skipTracksAsArray, $neLat, $swLat, $neLat, $swLon);
 
-            $responseData = [];
+        $qb->select('g');
+        $qb->setMaxResults(10);
+        $q = $qb->getQuery();
+        $qResult = $q->getResult();
+        /* @var $qResult \App\Entity\Track[] */
 
-            foreach($qResult as $gps) {
-                $gpsArrayData = [];
-                $gpsArrayData['id'] = $gps->getId();
-                $gpsArrayData['name'] = $gps->getName();
-                $gpsArrayData['slugOrId'] = $gps->getSlugOrId();
-                $gpsArrayData['type'] = $gps->getType();
-                foreach ($gps->getOptimizedPoints() as $point) {
-                    /* @var $point Point */
-                    $gpsArrayData['points'][$point->getVersionIndex()][] = [
-                        'lat' => $point->getLat(),
-                        'lng' => $point->getLng(),
-                    ];
-                }
+        $responseData = [];
 
-                $responseData[] = $gpsArrayData;
+        foreach ($qResult as $gps) {
+            $gpsArrayData = [];
+            $gpsArrayData['id'] = $gps->getId();
+            $gpsArrayData['name'] = $gps->getName();
+            $gpsArrayData['slugOrId'] = $gps->getSlugOrId();
+            $gpsArrayData['type'] = $gps->getType();
+            foreach ($gps->getOptimizedPoints() as $point) {
+                /* @var $point Point */
+                $gpsArrayData['points'][$point->getVersionIndex()][] = [
+                    'lat' => $point->getLat(),
+                    'lng' => $point->getLng(),
+                ];
             }
+
+            $responseData[] = $gpsArrayData;
         }
 
         return new Response(
             json_encode([
-                'status' => 1,
+                'status' => $status,
                 'data' => $responseData,
             ]),
             Response::HTTP_OK,

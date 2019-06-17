@@ -17,42 +17,30 @@ class TrackSeeder extends AbstractSeed
         $this->query("UPDATE version SET file_id = NULL");
         $this->query("DELETE FROM point");
         $this->query("DELETE FROM version");
+        $this->query("DELETE FROM track_file");
         $this->query("DELETE FROM optimized_point");
         $this->query("DELETE FROM track");
 
         $track = $this->table('track');
 
-
-
-        $finder = new \Symfony\Component\Finder\Finder();
-        $finder->in(__DIR__ . '/tracks');
-        $finder->directories();
-
-        $processedTracks = 0;
-        foreach ($finder as $trackDirectory) {
-            $this->output->writeln("Processing track {$trackDirectory->getFilename()}");
+        for ($i = 0; $i < 15; $i ++) {
             $trackId = uniqid();
             $data = [
                 'id' => $trackId,
-                'name' => $trackDirectory->getFilename(),
-                'last_check' => date('Y-m-d H:i:s',  strtotime(sprintf("-%d hours", $processedTracks))),
+                'last_check' => date('Y-m-d H:i:s',  strtotime(sprintf("-%d hours", $i))),
+                'name' => 'Dummy track ' . $i,
                 'point_north_east_lat' => 0,
                 'point_north_east_lng' => 0,
                 'point_south_west_lat' => 0,
                 'point_south_west_lng' => 0,
-                'type' => $this::TYPE_CYCLING,
-                'created_at' => date('Y-m-d H:i:s',  strtotime(sprintf("-%d hours", $processedTracks))),
-                'visibility' => $this::VISIBILITY_PUBLIC,
+                'type' => self::TYPE_CYCLING,
+                'created_at' => date('Y-m-d H:i:s',  strtotime(sprintf("-%d hours", $i))),
+                'visibility' => self::VISIBILITY_PUBLIC,
             ];
 
-            $track->insert($data)->save();
+            $track->insert($data)->saveData();
 
-            $finderTrackFiles = new \Symfony\Component\Finder\Finder();
-            $finderTrackFiles->in($trackDirectory->getPathname());
-
-            foreach ($finderTrackFiles as $trackFile) {
-                $this->getOutput()->writeln("Processing gpx file " . $trackFile->getFilename());
-                $gpxFileData = file_get_contents($trackFile->getPathname());
+            for ($j = 0; $j <= $i; $j += 5) {
                 $version = $this->table('version');
                 $fileTable = $this->table('track_file');
 
@@ -60,15 +48,23 @@ class TrackSeeder extends AbstractSeed
 
                 $this->getOutput()->writeln("Version id: {$versionId}", OutputInterface::VERBOSITY_VERY_VERBOSE);
 
-                $data = [
+                $versionData = [
                     'id' => $versionId,
                     'track_id' => $trackId,
                     'name' => "Version",
                     'positive_elevation' => 0,
                     'negative_elevation' => 0,
+                    'file_id' => null,
                 ];
 
-                $version->insert($data)->saveData();
+                $version->insert($versionData)->saveData();
+
+                $gpxFileData = $this->generateGpxFile(
+                    100 + 5 * ($i + $j),
+                    42 + $i / 1000.0,
+                    24 + $i / 15.0,
+                    100
+                );
 
                 $versionFileData = [
                     'id' => uniqid(),
@@ -83,8 +79,35 @@ class TrackSeeder extends AbstractSeed
 
                 $this->query("UPDATE version SET file_id = '{$versionFileData['id']}' WHERE id = '{$versionId}'");
             }
-
-            $processedTracks++;
         }
+    }
+
+    protected function generateGpxFile(int $pintsCount, float $latStart, float $lonStart, float $elevStart): string
+    {
+        $data = '<?xml version="1.0"?>
+            <gpx version="1.1" creator="track-hub.com: http://track-hub.com/">
+            <trk>
+            <name>Dummy</name>
+            <trkseg>
+        ';
+
+        $lat = $latStart;
+        $lon = $lonStart;
+
+        for ($i = 0; $i < $pintsCount; $i++) {
+            $lat = $lat + $i * 0.00001 * rand(1, 3);
+            $lon = $lon + $i * 0.00001 * rand(1, 3);
+            $elev = $elevStart + $i / 10;
+
+           $data .= '<trkpt lat = "' . $lat . '" lon = "' . $lon . '" ><ele>' . $elev . '</ele ></trkpt>';
+        }
+
+        $data .= ';
+            </trkseg>
+            </trk>
+            </gpx>
+        ';
+
+        return $data;
     }
 }

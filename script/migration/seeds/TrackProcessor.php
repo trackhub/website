@@ -16,7 +16,7 @@ class TrackProcessor extends AbstractSeed
         $output = $this->getOutput();
         $returnCode = null;
         \exec(
-            "cd " . __DIR__ . '/../../../ && ./bin/console app:gps:reprocess',
+            "cd " . __DIR__ . '/../../../ && ./bin/console app:gps:reprocess -vvv',
             $output,
             $returnCode
         );

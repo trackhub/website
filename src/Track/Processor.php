@@ -52,11 +52,11 @@ class Processor
                      * Same applies for longtitude, but the range is -180, 180.
                      */
                     if ($lat < -90 || $lat > 90) {
-                        throw new \UnexpectedValueException("Invalid latitude value");
+                        throw new \UnexpectedValueException("Invalid latitude value " . $lat);
                     }
 
                     if ($lon < -180 || $lon > 180) {
-                        throw new \UnexpectedValueException("Invalid longitude value");
+                        throw new \UnexpectedValueException("Invalid longitude value " . $lon);
                     }
 
                     $point = new Point(
@@ -187,7 +187,7 @@ class Processor
         $collectionsCount = count($pointCollection);
 
         foreach ($lables as $labelIndex => $labelDistance) {
-            for($q = 0; $q < $collectionsCount; $q++) {
+            for ($q = 0; $q < $collectionsCount; $q++) {
                 $currentPoint = current($pointCollection[$q]);
 
                 // case: skip point

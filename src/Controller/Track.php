@@ -247,11 +247,11 @@ class Track extends AbstractController
         foreach ($labels as &$label) {
             $label = number_format($label, 0, '', ' ') . ' m';
         }
-        unset ($label);
+        unset($label);
 
         $dataSets = [];
         reset($values);
-        for($q = 0; $q < $gps->getVersions()->count(); $q++) {
+        for ($q = 0; $q < $gps->getVersions()->count(); $q++) {
             $currentValues = current($values);
             foreach ($currentValues as &$value) {
                 $value = (int) $value;
@@ -267,7 +267,7 @@ class Track extends AbstractController
             next($values);
         }
 
-        for($q = 0; $q < count($gps->getDownhillVersions()); $q++) {
+        for ($q = 0; $q < count($gps->getDownhillVersions()); $q++) {
             $currentValues = current($values);
             foreach ($currentValues as &$value) {
                 $value = (int) $value;
@@ -283,7 +283,7 @@ class Track extends AbstractController
             next($values);
         }
 
-        for($q = 0; $q < count($gps->getUphillVersions()); $q++) {
+        for ($q = 0; $q < count($gps->getUphillVersions()); $q++) {
             $currentValues = current($values);
             foreach ($currentValues as &$value) {
                 $value = (int) $value;
