@@ -43,6 +43,8 @@ WHERE @some_condition@
 ```
 
 # Using facebook login
+Make sure that you are using the facebook token from `.env.dist`
+
 You have to manually set [hostname](https://linux.die.net/man/1/hostname) `gps.test` to match your container ip. Then you must access the project via gps.test instead of the container IP
 > if you need different hostname - please create an issue.
 
