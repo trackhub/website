@@ -41,3 +41,11 @@ UPDATE `user`
 SET `roles` = 'roles: a:1:{i:0;s:10:"ROLE_ADMIN";}'
 WHERE @some_condition@
 ```
+
+# Using facebook login
+You have to manually set [hostname](https://linux.die.net/man/1/hostname) `gps.test` to match your container ip. Then you must access the project via gps.test instead of the container IP
+
+Example config in `/etc/hosts`
+```
+172.20.0.3 gps.test
+```
