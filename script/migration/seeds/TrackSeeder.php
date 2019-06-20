@@ -27,14 +27,14 @@ class TrackSeeder extends AbstractSeed
             $trackId = uniqid();
             $data = [
                 'id' => $trackId,
-                'last_check' => date('Y-m-d H:i:s',  strtotime(sprintf("-%d hours", $i))),
+                'last_check' => date('Y-m-d H:i:s', strtotime(sprintf("-%d hours", $i))),
                 'name' => 'Dummy track ' . $i,
                 'point_north_east_lat' => 0,
                 'point_north_east_lng' => 0,
                 'point_south_west_lat' => 0,
                 'point_south_west_lng' => 0,
                 'type' => self::TYPE_CYCLING,
-                'created_at' => date('Y-m-d H:i:s',  strtotime(sprintf("-%d hours", $i))),
+                'created_at' => date('Y-m-d H:i:s', strtotime(sprintf("-%d hours", $i))),
                 'visibility' => self::VISIBILITY_PUBLIC,
             ];
 
@@ -99,7 +99,7 @@ class TrackSeeder extends AbstractSeed
             $lon = $lon + $i * 0.00001 * rand(1, 3);
             $elev = $elevStart + $i / 10;
 
-           $data .= '<trkpt lat = "' . $lat . '" lon = "' . $lon . '" ><ele>' . $elev . '</ele ></trkpt>';
+            $data .= '<trkpt lat = "' . $lat . '" lon = "' . $lon . '" ><ele>' . $elev . '</ele></trkpt>';
         }
 
         $data .= ';
