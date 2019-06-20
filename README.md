@@ -41,3 +41,14 @@ UPDATE `user`
 SET `roles` = 'roles: a:1:{i:0;s:10:"ROLE_ADMIN";}'
 WHERE @some_condition@
 ```
+
+# Using facebook login
+Make sure that you are using the facebook token from `.env.dist`
+
+You have to manually set [hostname](https://linux.die.net/man/1/hostname) `gps.test` to match your container ip. Then you must access the project via https://gps.test instead of the container IP
+> if you need different hostname - please create an issue.
+
+Example config in `/etc/hosts`
+```
+172.20.0.3 gps.test
+```
