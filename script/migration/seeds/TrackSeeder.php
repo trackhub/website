@@ -14,7 +14,7 @@ class TrackSeeder extends AbstractSeed
     /**
      * How many track to generate
      */
-    const TRACK_COUNT = 30;
+    const TRACK_COUNT = 40;
 
     /**
      * Every N-th track will have 1 more version.
@@ -23,9 +23,9 @@ class TrackSeeder extends AbstractSeed
      * track3, track4, track5 - 2 versions
      * track5 - 3 versions
      */
-    const NEW_VERSION_EVERY_NTH_TRACK = 7;
+    const NEW_VERSION_EVERY_NTH_TRACK = self::TRACK_COUNT / 3;
 
-    protected function getVisibility($index)
+    protected function getVisibility($index): int
     {
         if ($index % 4 === 1) {
             return self::VISIBILITY_UNLISTED;
@@ -34,7 +34,7 @@ class TrackSeeder extends AbstractSeed
         return self::VISIBILITY_PUBLIC;
     }
 
-    protected function getType($index)
+    protected function getType($index): int
     {
         if ($index % 3 == 1) {
             return self::TYPE_HIKING;
@@ -92,7 +92,7 @@ class TrackSeeder extends AbstractSeed
                 $version->insert($versionData)->saveData();
 
                 $gpxFileData = $this->generateGpxFile(
-                    100 + 2 * ($i + $j),
+                    150 + 5 * (4 * $i - $j),
                     42 + $i / 1000.0,
                     24 + $i / 15.0,
                     100
@@ -127,9 +127,9 @@ class TrackSeeder extends AbstractSeed
         $lon = $lonStart;
 
         for ($i = 0; $i < $pintsCount; $i++) {
-            $lat = $lat + $i * 0.00001 * rand(1, 3);
-            $lon = $lon + $i * 0.00001 * rand(1, 3);
-            $elev = $elevStart + $i / 10;
+            $lat += 0.00001 * rand(1, 10);
+            $lon += 0.00001 * rand(1, 10);
+            $elev = $elevStart + $i / 4.0;
 
             $data .= '<trkpt lat = "' . $lat . '" lon = "' . $lon . '" ><ele>' . $elev . '</ele></trkpt>';
         }
