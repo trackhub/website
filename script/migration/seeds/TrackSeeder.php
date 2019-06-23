@@ -11,6 +11,38 @@ class TrackSeeder extends AbstractSeed
     const VISIBILITY_PUBLIC = 0;
     const VISIBILITY_UNLISTED = 1;
 
+    /**
+     * How many track to generate
+     */
+    const TRACK_COUNT = 30;
+
+    /**
+     * Every N-th track will have 1 more version.
+     * If NEW_VERSION_EVERY_NTH_TRACK = 3
+     * track0, track1, track2 - 1 version
+     * track3, track4, track5 - 2 versions
+     * track5 - 3 versions
+     */
+    const NEW_VERSION_EVERY_NTH_TRACK = 7;
+
+    protected function getVisibility($index)
+    {
+        if ($index % 4 === 1) {
+            return self::VISIBILITY_UNLISTED;
+        }
+
+        return self::VISIBILITY_PUBLIC;
+    }
+
+    protected function getType($index)
+    {
+        if ($index % 3 == 1) {
+            return self::TYPE_HIKING;
+        }
+
+        return self::TYPE_CYCLING;
+    }
+
     public function run()
     {
         $this->query("UPDATE track_file SET version_id = NULL");
@@ -23,7 +55,7 @@ class TrackSeeder extends AbstractSeed
 
         $track = $this->table('track');
 
-        for ($i = 0; $i < 15; $i ++) {
+        for ($i = 0; $i < self::TRACK_COUNT; $i ++) {
             $trackId = uniqid();
             $data = [
                 'id' => $trackId,
@@ -33,14 +65,14 @@ class TrackSeeder extends AbstractSeed
                 'point_north_east_lng' => 0,
                 'point_south_west_lat' => 0,
                 'point_south_west_lng' => 0,
-                'type' => self::TYPE_CYCLING,
+                'type' => $this->getType($i),
                 'created_at' => date('Y-m-d H:i:s', strtotime(sprintf("-%d hours", $i))),
-                'visibility' => self::VISIBILITY_PUBLIC,
+                'visibility' => $this->getVisibility($i),
             ];
 
             $track->insert($data)->saveData();
 
-            for ($j = 0; $j <= $i; $j += 5) {
+            for ($j = 0; $j <= $i; $j += self::NEW_VERSION_EVERY_NTH_TRACK) {
                 $version = $this->table('version');
                 $fileTable = $this->table('track_file');
 
@@ -60,7 +92,7 @@ class TrackSeeder extends AbstractSeed
                 $version->insert($versionData)->saveData();
 
                 $gpxFileData = $this->generateGpxFile(
-                    100 + 5 * ($i + $j),
+                    100 + 2 * ($i + $j),
                     42 + $i / 1000.0,
                     24 + $i / 15.0,
                     100
