@@ -2,10 +2,9 @@
 
 namespace App\Controller;
 
+use App\Entity\Track\OptimizedPoint;
 use App\Entity\Track\Point;
 use App\Repository\TrackRepository;
-use Doctrine\ORM\EntityRepository;
-use Doctrine\ORM\QueryBuilder;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -14,65 +13,57 @@ class Home extends AbstractController
 {
     public function home()
     {
-        $trackRepo = $this->getDoctrine()->getRepository(\App\Entity\Track::class);
-        /* @var $trackRepo TrackRepository */
-        $qbMtb = $trackRepo->createQueryBuilder('t');
-        $trackRepo->filterAccess($qbMtb);
-        $qbMtb->orderBy('t.createdAt', 'desc');
-        $qbMtb->andWhere($qbMtb->expr()->eq('t.type', \App\Entity\Track::TYPE_CYCLING));
-        $qbMtb->setMaxResults(10);
+        $data = [];
+        $repo = $this
+            ->getDoctrine()
+            ->getRepository(\App\Entity\Track::class);
+        /* @var $repo TrackRepository */
 
-        $latestTracks = $qbMtb->getQuery()->getResult();
+        foreach (\App\Entity\Track::VALID_TYPES as $type) {
+            $qb = $repo->createQueryBuilder('t');
 
-        $qbHike = $trackRepo->createQueryBuilder('t');
-        $trackRepo->filterAccess($qbHike);
-        $qbHike->andWhere($qbMtb->expr()->eq('t.type', \App\Entity\Track::TYPE_HIKING));
-        $qbHike->orderBy('t.createdAt', 'desc');
-        $qbHike->setMaxResults(10);
+            $repo
+                ->filterAccess($qb)
+                ->filterType($qb, $type);
+            $data[$type] = $qb
+                ->orderBy('t.createdAt', 'desc')
+                ->setMaxResults(10)
+                ->getQuery()
+                ->getResult();
+        }
 
-        $latestTracksHike = $qbHike->getQuery()->getResult();
+        /* TODO: keys may not exists in $data */
 
         return $this->render(
             'home/home.html.twig',
             [
-                'latestTracks' => $latestTracks,
-                'latestTracksHike' => $latestTracksHike,
+                'latestTracks' => $data[\App\Entity\Track::TYPE_CYCLING],
+                'latestTracksHike' => $data[\App\Entity\Track::TYPE_HIKING],
             ]
-        );
-    }
-
-    private function applyTrackSearchFilters(QueryBuilder $qb, array $skipTracks, $neLat, $swLat, $neLon, $swLon)
-    {
-        $qb->andWhere($qb->expr()->eq('g.visibility', \App\Entity\Track::VISIBILITY_PUBLIC));
-        $qb->andWhere(
-            $qb->expr()->andX(
-                $qb->expr()->lte('g.pointNorthEastLat', $neLat),
-                $qb->expr()->gte('g.pointSouthWestLat', $swLat),
-                $qb->expr()->lte('g.pointNorthEastLng', $neLon),
-                $qb->expr()->gte('g.pointSouthWestLng', $swLon)
-            )
-        );
-
-        $qb->andWhere(
-            $qb->expr()->notIn('g.id', $skipTracks)
         );
     }
 
     public function find($neLat, $neLon, $swLat, $swLon, Request $request)
     {
-        $skipTracks = $request->request->get('skipTracks', []);
-        $skipTracksAsArray = explode(',', $skipTracks);
+        /* FIXME: Make this work */
+//        $skipTracks = $request->request->get('skipTracks', []);
+//        $skipTracksAsArray = explode(',', $skipTracks);
+        $skipTracksAsArray = [];
 
-        $doctrine = $this->getDoctrine();
-        $em = $doctrine->getRepository(\App\Entity\Track::class);
-        /* @var $em EntityRepository */
+        $repo = $this
+            ->getDoctrine()
+            ->getRepository(\App\Entity\Track::class);
+        /* @var $repo TrackRepository */
 
-        $qb = $em->createQueryBuilder('g');
-        $this->applyTrackSearchFilters($qb, $skipTracksAsArray, $neLat, $swLat, $neLat, $swLon);
-        $qb->select('count(g.id)');
+        $qb = $repo->createQueryBuilder('g');
+        $repo
+            ->filterAccess($qb)
+            ->filterSearch($qb, $skipTracksAsArray, $neLat, $swLat, $neLon, $swLon);
 
-        $q = $qb->getQuery();
-        $data = $q->getSingleResult();
+        $data = $qb
+            ->select($qb->expr()->count('g.id'))
+            ->getQuery()
+            ->getSingleResult();
         $count = current($data);
 
         if ($count > 10) {
@@ -81,13 +72,17 @@ class Home extends AbstractController
             $status = 1; // 1 = ok
         }
 
-        $qb = $em->createQueryBuilder('g');
-        $this->applyTrackSearchFilters($qb, $skipTracksAsArray, $neLat, $swLat, $neLat, $swLon);
+        $qb = $repo->createQueryBuilder('g');
 
-        $qb->select('g');
-        $qb->setMaxResults(10);
-        $q = $qb->getQuery();
-        $qResult = $q->getResult();
+        $repo
+            ->filterAccess($qb)
+            ->filterSearch($qb, $skipTracksAsArray, $neLat, $swLat, $neLon, $swLon);
+
+        $qResult = $qb
+            ->select('g')
+            ->setMaxResults(10)
+            ->getQuery()
+            ->getResult();
         /* @var $qResult \App\Entity\Track[] */
 
         $responseData = [];
@@ -98,8 +93,9 @@ class Home extends AbstractController
             $gpsArrayData['name'] = $gps->getName();
             $gpsArrayData['slugOrId'] = $gps->getSlugOrId();
             $gpsArrayData['type'] = $gps->getType();
+
             foreach ($gps->getOptimizedPoints() as $point) {
-                /* @var $point Point */
+                /* @var $point OptimizedPoint */
                 $gpsArrayData['points'][$point->getVersionIndex()][] = [
                     'lat' => $point->getLat(),
                     'lng' => $point->getLng(),
