@@ -22,7 +22,6 @@ class TrackRepository extends EntityRepository
         );
 
         return $this;
-
     }
 
     /**
@@ -36,10 +35,10 @@ class TrackRepository extends EntityRepository
     public function filterType(QueryBuilder $qb, int $type)
     {
         $qb->andWhere(
-            $qb->expr()->eq($qb->getRootAliases()[0] . '.type', $type));
+            $qb->expr()->eq($qb->getRootAliases()[0] . '.type', $type)
+        );
 
         return $this;
-
     }
 
     /**
@@ -67,10 +66,11 @@ class TrackRepository extends EntityRepository
             )
         );
 
-        if (!empty($skipTracks))
+        if (!empty($skipTracks)) {
             $qb->andWhere(
                 $qb->expr()->notIn($alias . '.id', $skipTracks)
             );
+        }
 
         return $this;
     }

@@ -14,10 +14,11 @@ class Home extends AbstractController
     public function home()
     {
         $data = [];
+
+        /* @var $repo TrackRepository */
         $repo = $this
             ->getDoctrine()
             ->getRepository(\App\Entity\Track::class);
-        /* @var $repo TrackRepository */
 
         foreach (\App\Entity\Track::VALID_TYPES as $type) {
             $qb = $repo->createQueryBuilder('t');
@@ -25,6 +26,7 @@ class Home extends AbstractController
             $repo
                 ->filterAccess($qb)
                 ->filterType($qb, $type);
+
             $data[$type] = $qb
                 ->orderBy('t.createdAt', 'desc')
                 ->setMaxResults(10)
@@ -50,12 +52,13 @@ class Home extends AbstractController
 //        $skipTracksAsArray = explode(',', $skipTracks);
         $skipTracksAsArray = [];
 
+        /* @var $repo TrackRepository */
         $repo = $this
             ->getDoctrine()
             ->getRepository(\App\Entity\Track::class);
-        /* @var $repo TrackRepository */
 
         $qb = $repo->createQueryBuilder('g');
+
         $repo
             ->filterAccess($qb)
             ->filterSearch($qb, $skipTracksAsArray, $neLat, $swLat, $neLon, $swLon);
@@ -64,6 +67,7 @@ class Home extends AbstractController
             ->select($qb->expr()->count('g.id'))
             ->getQuery()
             ->getSingleResult();
+
         $count = current($data);
 
         if ($count > 10) {
@@ -74,6 +78,7 @@ class Home extends AbstractController
 
         $qb = $repo->createQueryBuilder('g');
 
+        /* @var $qResult \App\Entity\Track[] */
         $repo
             ->filterAccess($qb)
             ->filterSearch($qb, $skipTracksAsArray, $neLat, $swLat, $neLon, $swLon);
@@ -83,7 +88,6 @@ class Home extends AbstractController
             ->setMaxResults(10)
             ->getQuery()
             ->getResult();
-        /* @var $qResult \App\Entity\Track[] */
 
         $responseData = [];
 
@@ -94,8 +98,8 @@ class Home extends AbstractController
             $gpsArrayData['slugOrId'] = $gps->getSlugOrId();
             $gpsArrayData['type'] = $gps->getType();
 
+            /* @var $point OptimizedPoint */
             foreach ($gps->getOptimizedPoints() as $point) {
-                /* @var $point OptimizedPoint */
                 $gpsArrayData['points'][$point->getVersionIndex()][] = [
                     'lat' => $point->getLat(),
                     'lng' => $point->getLng(),
