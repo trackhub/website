@@ -12,6 +12,9 @@ return [
     'Latest tracks' => 'Най-нови следи',
     'Latest tracks by bicycle' => 'Най-нови следи с колело',
     'Latest tracks by foot' => 'Най-нови пешеходни следи',
+    'View details' => 'Виж детайли',
+    'by bike' => 'с колело',
+    'by foot' => 'пешеходно',
 
     // user menu
     'logout' => 'изход',
