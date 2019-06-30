@@ -11,13 +11,8 @@ use App\Entity\Track;
 
 class Home extends AbstractController
 {
-    public function home()
+    public function home(TrackRepository $repo)
     {
-        /* @var $repo TrackRepository */
-        $repo = $this
-            ->getDoctrine()
-            ->getRepository(Track::class);
-
         $data = $repo->findLatestTrackTypes();
 
         return $this->render(
@@ -31,7 +26,6 @@ class Home extends AbstractController
 
     public function find($neLat, $neLon, $swLat, $swLon, Request $request, TrackRepository $repo)
     {
-        /* FIXME: Make this work */
         $skipTracks = $request->request->get('skipTracks', []);
         $skipTracksAsArray = explode(',', $skipTracks);
 
@@ -54,11 +48,10 @@ class Home extends AbstractController
 
         $qb = $repo->createQueryBuilder('g');
 
-        /* @var $qResult Track[] */
-        $repo
-            ->andWhereTrackIsPublic($qb)
-            ->andWhereInCoordinates($qb, $skipTracksAsArray, $neLat, $swLat, $neLon, $swLon);
+        $repo->andWhereTrackIsPublic($qb)
+             ->andWhereInCoordinates($qb, $skipTracksAsArray, $neLat, $swLat, $neLon, $swLon);
 
+        /* @var $qResult Track[] */
         $qResult = $qb
             ->select('g')
             ->setMaxResults(10)
