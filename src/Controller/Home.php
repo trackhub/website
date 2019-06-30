@@ -3,70 +3,46 @@
 namespace App\Controller;
 
 use App\Entity\Track\OptimizedPoint;
-use App\Entity\Track\Point;
 use App\Repository\TrackRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use App\Entity\Track;
 
 class Home extends AbstractController
 {
     public function home()
     {
-        $data = [];
-
         /* @var $repo TrackRepository */
         $repo = $this
             ->getDoctrine()
-            ->getRepository(\App\Entity\Track::class);
+            ->getRepository(Track::class);
 
-        foreach (\App\Entity\Track::VALID_TYPES as $type) {
-            $qb = $repo->createQueryBuilder('t');
-
-            $repo
-                ->filterAccess($qb)
-                ->filterType($qb, $type);
-
-            $data[$type] = $qb
-                ->orderBy('t.createdAt', 'desc')
-                ->setMaxResults(10)
-                ->getQuery()
-                ->getResult();
-        }
-
-        /* TODO: keys may not exists in $data */
+        $data = $repo->findLatestTrackTypes();
 
         return $this->render(
             'home/home.html.twig',
             [
-                'latestTracks' => $data[\App\Entity\Track::TYPE_CYCLING],
-                'latestTracksHike' => $data[\App\Entity\Track::TYPE_HIKING],
+                'latestTracks' => $data[Track::TYPE_CYCLING],
+                'latestTracksHike' => $data[Track::TYPE_HIKING],
             ]
         );
     }
 
-    public function find($neLat, $neLon, $swLat, $swLon, Request $request)
+    public function find($neLat, $neLon, $swLat, $swLon, Request $request, TrackRepository $repo)
     {
         /* FIXME: Make this work */
-//        $skipTracks = $request->request->get('skipTracks', []);
-//        $skipTracksAsArray = explode(',', $skipTracks);
-        $skipTracksAsArray = [];
-
-        /* @var $repo TrackRepository */
-        $repo = $this
-            ->getDoctrine()
-            ->getRepository(\App\Entity\Track::class);
+        $skipTracks = $request->request->get('skipTracks', []);
+        $skipTracksAsArray = explode(',', $skipTracks);
 
         $qb = $repo->createQueryBuilder('g');
 
-        $repo
-            ->filterAccess($qb)
-            ->filterSearch($qb, $skipTracksAsArray, $neLat, $swLat, $neLon, $swLon);
+        $repo->andWhereTrackIsPublic($qb)
+             ->andWhereInCoordinates($qb, $skipTracksAsArray, $neLat, $swLat, $neLon, $swLon);
 
-        $data = $qb
-            ->select($qb->expr()->count('g.id'))
-            ->getQuery()
-            ->getSingleResult();
+        $data = $qb->select($qb->expr()->count('g.id'))
+                   ->getQuery()
+                   ->getSingleResult();
 
         $count = current($data);
 
@@ -78,10 +54,10 @@ class Home extends AbstractController
 
         $qb = $repo->createQueryBuilder('g');
 
-        /* @var $qResult \App\Entity\Track[] */
+        /* @var $qResult Track[] */
         $repo
-            ->filterAccess($qb)
-            ->filterSearch($qb, $skipTracksAsArray, $neLat, $swLat, $neLon, $swLon);
+            ->andWhereTrackIsPublic($qb)
+            ->andWhereInCoordinates($qb, $skipTracksAsArray, $neLat, $swLat, $neLon, $swLon);
 
         $qResult = $qb
             ->select('g')
