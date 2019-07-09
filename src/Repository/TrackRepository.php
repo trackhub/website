@@ -9,13 +9,9 @@ use Doctrine\ORM\QueryBuilder;
 class TrackRepository extends EntityRepository
 {
     /**
-     * Filter tracks based on visibility
-     *
-     * @param QueryBuilder $qb
-     *
-     * @return self
+     * Apply filter to return only public tracks
      */
-    public function filterAccess(QueryBuilder $qb)
+    public function andWhereTrackIsPublic(QueryBuilder $qb): self
     {
         $qb->andWhere(
             $qb->expr()->eq($qb->getRootAliases()[0] . '.visibility', Track::VISIBILITY_PUBLIC)
@@ -25,35 +21,9 @@ class TrackRepository extends EntityRepository
     }
 
     /**
-     * Filter tracks based on type
-     *
-     * @param QueryBuilder $qb
-     * @param int $type
-     *
-     * @return self
-     */
-    public function filterType(QueryBuilder $qb, int $type)
-    {
-        $qb->andWhere(
-            $qb->expr()->eq($qb->getRootAliases()[0] . '.type', $type)
-        );
-
-        return $this;
-    }
-
-    /**
      * Filter tracks by coordinates
-     *
-     * @param QueryBuilder $qb
-     * @param array $skipTracks
-     * @param $neLat
-     * @param $swLat
-     * @param $neLon
-     * @param $swLon
-     *
-     * @return self
      */
-    public function filterSearch(QueryBuilder $qb, array $skipTracks, $neLat, $swLat, $neLon, $swLon)
+    public function andWhereInCoordinates(QueryBuilder $qb, array $skipTracks, float $neLat, float $swLat, float $neLon, float $swLon): self
     {
         $alias = $qb->getRootAliases()[0];
 
@@ -73,5 +43,31 @@ class TrackRepository extends EntityRepository
         }
 
         return $this;
+    }
+
+    /**
+     * Used in the index page
+     */
+    public function findLatestTrackTypes(): array
+    {
+        $data = [];
+
+        foreach (Track::VALID_TYPES as $type) {
+            $qb = $this->createQueryBuilder('t');
+
+            $this->andWhereTrackIsPublic($qb);
+
+            $qb->andWhere(
+                $qb->expr()->eq($qb->getRootAliases()[0] . '.type', $type)
+            );
+
+            $data[$type] = $qb
+                ->orderBy('t.createdAt', 'desc')
+                ->setMaxResults(10)
+                ->getQuery()
+                ->getResult();
+        }
+
+        return $data;
     }
 }

@@ -47,3 +47,9 @@ services:
         arguments: [~, App\Entity\User\User, Sonata\AdminBundle\Controller\CRUDController]
         tags:
             - { name: sonata.admin, manager_type: orm, group: user, label: 'User' }
+
+    App\Repository\TrackRepository:
+        class: App\Repository\TrackRepository
+        factory: ['@doctrine.orm.default_entity_manager', getRepository]
+        arguments:
+            - App\Entity\Track
