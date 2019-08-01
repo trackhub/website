@@ -43,6 +43,13 @@ class TrackSeeder extends AbstractSeed
         return self::TYPE_CYCLING;
     }
 
+    public function getDependencies()
+    {
+        return [
+            'UserSeeder'
+        ];
+    }
+
     public function run()
     {
         $this->query("UPDATE track_file SET version_id = NULL");
@@ -77,6 +84,8 @@ class TrackSeeder extends AbstractSeed
                 $fileTable = $this->table('track_file');
 
                 $versionId = uniqid();
+                $user = $this->fetchRow("SELECT id FROM user ORDER BY RAND()");
+
 
                 $this->getOutput()->writeln("Version id: {$versionId}", OutputInterface::VERBOSITY_VERY_VERBOSE);
 
@@ -87,6 +96,7 @@ class TrackSeeder extends AbstractSeed
                     'positive_elevation' => 0,
                     'negative_elevation' => 0,
                     'file_id' => null,
+                    'send_by_id' => $user['id']
                 ];
 
                 $version->insert($versionData)->saveData();
