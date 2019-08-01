@@ -14,7 +14,7 @@ bash run.sh
 
 Attaching to the `web` container
 ```sh
-docker exec -it track_web_1 bash
+docker exec -it -u www-data track_web_1 bash
 ```
 
 ### Install web components (done automatically on container startup)
