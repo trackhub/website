@@ -91,6 +91,19 @@ class Processor
 
         $version->setPositiveElevation($positiveElevation);
         $version->setNegativeElevation($negativeElevation);
+        
+        // way points
+        foreach ($xml->wpt as $wayPointXml) {
+            $wayPointXmlAttr = $wayPointXml->attributes();
+            $wayPoint = new Track\WayPoint((float)$wayPointXmlAttr['lat'], (float)$wayPointXmlAttr['lon']);
+
+            if ($wayPointXml->ele) {
+                $wayPoint->setElevation(floatval($wayPointXml->ele));
+            }
+
+            // @FIXME finish the wp logic
+            dump($wayPoint);
+        }
     }
 
     private function calculateDistance(Point $a, Point $b)
