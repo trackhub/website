@@ -3,6 +3,7 @@ class AppTrack {
         this.map = map;
         this.polylines = polylines;
         this.type = null;
+        this.wayPoints = [];
 
         let points = this.polylines[0].getLatLngs();
         let firstPoint = points[0];
@@ -29,6 +30,10 @@ class AppTrack {
         this.markers.push(startMarker, endMarker);
     }
 
+    addWaypoint(waypoint) {
+        this.wayPoints.push(waypoint);
+    }
+
     setType(type) {
         this.type = type;
     }
@@ -47,6 +52,11 @@ class AppTrack {
         for (marker in this.markers) {
             this.markers[marker].addTo(this.map);
         }
+
+        let waypoint;
+        for (waypoint in this.wayPoints) {
+            this.wayPoints[waypoint].addTo(this.map);
+        }
     }
 
     hide() {
@@ -58,6 +68,11 @@ class AppTrack {
         var marker;
         for (marker in this.markers) {
             this.markers[marker].remove();
+        }
+
+        let waypoint;
+        for (waypoint in this.wayPoints) {
+            this.wayPoints[waypoint].remove();
         }
     }
 

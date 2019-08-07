@@ -125,6 +125,14 @@
                     [L.polyline(latlngs, {color: 'red'})]
                 );
 
+                {% for waypoint in version.waypoints %}
+                    {
+                        let waypoint = L.marker([{{ waypoint.lat }}, {{ waypoint.lng }}]);
+                        waypoint.bindPopup({{ waypoint.name|json_encode|raw }});
+                        track.addWaypoint(waypoint);
+                    }
+                {% endfor %}
+
                 track.show();
 
                 var buttonToggle = document.querySelectorAll("[data-type=track-toggle")[{{ trackIndex }}];
@@ -152,6 +160,14 @@
                     map,
                     [L.polyline(latlngs, {color: 'green'})]
                 );
+
+                {% for waypoint in version.waypoints %}
+                    {
+                        let waypoint = L.marker([{{ waypoint.lat }}, {{ waypoint.lng }}]);
+                        waypoint.bindPopup({{ waypoint.name|json_encode|raw }});
+                        track.addWaypoint(waypoint);
+                    }
+                {% endfor %}
 
                 track.show();
 
@@ -182,6 +198,14 @@
                     map,
                     [L.polyline(latlngs, {color: 'orange'})]
                 );
+
+                {% for waypoint in version.waypoints %}
+                    {
+                        let waypoint = L.marker([{{ waypoint.lat }}, {{ waypoint.lng }}]);
+                        waypoint.bindPopup({{ waypoint.name|json_encode|raw }});
+                        track.addWaypoint(waypoint);
+                    }
+                {% endfor %}
 
                 track.show();
 

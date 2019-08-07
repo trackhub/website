@@ -46,6 +46,11 @@ class Version
     private $points;
 
     /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Track\WayPoint", mappedBy="version", cascade={"persist", "remove"}, orphanRemoval=true)
+     */
+    private $wayPoints;
+
+    /**
      * @ORM\Column(type="integer")
      */
     private $positiveElevation = 0;
@@ -59,6 +64,7 @@ class Version
     {
         $this->sendBy = $sendBy;
         $this->points = new ArrayCollection();
+        $this->wayPoints = new ArrayCollection();
     }
 
     public function getId(): ?string
@@ -88,6 +94,20 @@ class Version
     {
         $p->setVersion($this);
         $this->points->add($p);
+    }
+
+    public function addWayPoint(WayPoint $wp)
+    {
+        $wp->setVersion($this);
+        $this->wayPoints->add($wp);
+    }
+
+    /**
+     * @return WayPoint[]|ArrayCollection
+     */
+    public function getWayPoints()
+    {
+        return $this->wayPoints;
     }
 
     public function getFile(): ?TrackFile

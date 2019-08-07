@@ -26,6 +26,7 @@ class Processor
         $order = 0;
         $positiveElevation = 0;
         $negativeElevation = 0;
+        $version->getWayPoints()->clear();
 
         foreach ($xml->trk as $track) {
             foreach ($track->trkseg as $trackSegment) {
@@ -101,8 +102,10 @@ class Processor
                 $wayPoint->setElevation(floatval($wayPointXml->ele));
             }
 
-            // @FIXME finish the wp logic
-            dump($wayPoint);
+            if ($wayPointXml->name) {
+                $wayPoint->setName($wayPointXml->name);
+            }
+            $version->addWayPoint($wayPoint);
         }
     }
 
