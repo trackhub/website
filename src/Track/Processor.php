@@ -26,6 +26,7 @@ class Processor
         $order = 0;
         $positiveElevation = 0;
         $negativeElevation = 0;
+        $version->getWayPoints()->clear();
 
         foreach ($xml->trk as $track) {
             foreach ($track->trkseg as $trackSegment) {
@@ -91,6 +92,21 @@ class Processor
 
         $version->setPositiveElevation($positiveElevation);
         $version->setNegativeElevation($negativeElevation);
+        
+        // way points
+        foreach ($xml->wpt as $wayPointXml) {
+            $wayPointXmlAttr = $wayPointXml->attributes();
+            $wayPoint = new Track\WayPoint((float)$wayPointXmlAttr['lat'], (float)$wayPointXmlAttr['lon']);
+
+            if ($wayPointXml->ele) {
+                $wayPoint->setElevation(floatval($wayPointXml->ele));
+            }
+
+            if ($wayPointXml->name) {
+                $wayPoint->setName($wayPointXml->name);
+            }
+            $version->addWayPoint($wayPoint);
+        }
     }
 
     private function calculateDistance(Point $a, Point $b)

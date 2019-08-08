@@ -9,6 +9,9 @@ use App\Entity\User\User;
 use PHPUnit\Framework\Error\Warning;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @covers App\Track\Processor
+ */
 class ProcessorTest extends TestCase
 {
     /**
@@ -16,8 +19,6 @@ class ProcessorTest extends TestCase
      *
      * When passing non-xml file to simplexml_load_string a parser error
      * occurs. This can be catched as Warning exception.
-     *
-     * @covers Processor::process
      */
     public function testProcessorInvalidFile()
     {
@@ -46,8 +47,6 @@ class ProcessorTest extends TestCase
      *
      * The root node of a GPX file is <gpx>. If it missing we assume, that
      * the file is with invalid format.
-     *
-     * @covers Processor::process
      */
     public function testProcessorInvalidFormat()
     {
@@ -69,8 +68,6 @@ class ProcessorTest extends TestCase
      *
      * Each <trkpt> element has lat and lon attributes. If one is not found,
      * the point should be skipped.
-     *
-     * @covers Processor::process
      */
     public function testProcessorCorrupedFile()
     {
@@ -112,8 +109,6 @@ class ProcessorTest extends TestCase
      * Test for points count
      *
      * Pass valid input data and count processed points.
-     *
-     * @covers Processor::process
      */
     public function testProcessorCount()
     {
@@ -151,6 +146,59 @@ class ProcessorTest extends TestCase
         $this->assertCount(3, $version->getPoints());
     }
 
+    public function testProcessWaypoints()
+    {
+        $xml = '
+        <gpx>
+            <wpt lat="42.6928578" lon="24.4498812">
+                <ele>738.0000000</ele>
+                <name>01_test</name>
+            </wpt>
+            
+            <wpt lat="42.6906328" lon="24.4460737">
+                <ele>718.7058105</ele>
+            </wpt>
+        
+            <trk>
+                <name>Example GPX Document</name>
+                
+                <trkseg>
+                  <trkpt lat="47.644548" lon="-122.326897">
+                    <ele>4.46</ele>
+                    <time>2009-10-17T18:37:26Z</time>
+                  </trkpt>
+                  <trkpt lat="47.644548" lon="-122.326897">
+                    <ele>4.94</ele>
+                    <time>2009-10-17T18:37:31Z</time>
+                  </trkpt>
+                  <trkpt lat="47.644548" lon="-122.326897">
+                    <ele>6.87</ele>
+                    <time>2009-10-17T18:37:34Z</time>
+                  </trkpt>
+                </trkseg>
+            </trk>
+        </gpx>
+        ';
+
+        $processor = new Processor();
+        $user = new User();
+        $version = new Version($user);
+
+        $processor->process($xml, $version);
+
+        $wayPoints = $version->getWayPoints();
+        $this->assertSame(2, $wayPoints->count());
+
+        $firstPoint = $wayPoints[0];
+        $secondPoint = $wayPoints[1];
+
+        $this->assertSame(42.6928578, $firstPoint->getLat());
+        $this->assertSame(24.4498812, $firstPoint->getLng());
+
+        $this->assertSame(42.6906328, $secondPoint->getLat());
+        $this->assertSame(24.4460737, $secondPoint->getLng());
+    }
+
     public function processorInvalidValueProvider()
     {
         return [
@@ -174,7 +222,6 @@ class ProcessorTest extends TestCase
      * Pass invalid values and catch exception
      *
      * @dataProvider processorInvalidValueProvider
-     * @covers Processor::process
      */
     public function testProcessorInvalidValue(string $xml)
     {
@@ -233,7 +280,6 @@ class ProcessorTest extends TestCase
      * https://en.wikipedia.org/wiki/Haversine_formula
      *
      * @dataProvider processorDistanceProvider
-     * @covers Processor::calculateDistance
      */
     public function testProcessorDisatance($a, $b, $expected)
     {

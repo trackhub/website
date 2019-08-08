@@ -9,6 +9,8 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Point
 {
+    use PointTrait;
+
     /**
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="UUID")
@@ -20,21 +22,6 @@ class Point
      * @ORM\Column(type="integer", name="`order`")
      */
     private $order;
-
-    /**
-     * @ORM\Column(type="float")
-     */
-    private $lat;
-
-    /**
-     * @ORM\Column(type="float")
-     */
-    private $lng;
-
-    /**
-     * @ORM\Column(type="float")
-     */
-    private $elevation = 0;
 
     /**
      * Distance so far
@@ -63,26 +50,6 @@ class Point
     public function setVersion(Version $version): void
     {
         $this->version = $version;
-    }
-
-    public function getLat(): float
-    {
-        return $this->lat;
-    }
-
-    public function getLng(): float
-    {
-        return $this->lng;
-    }
-
-    public function setElevation(float $elev)
-    {
-        $this->elevation = $elev;
-    }
-
-    public function getElevation(): ?float
-    {
-        return $this->elevation;
     }
 
     public function getDistance(): ?float
