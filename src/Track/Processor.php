@@ -241,7 +241,7 @@ class Processor
 
     /**
      * Return point elevation.
-     * If there is no elevation data, it uses siblings to generate the elevation
+     * If there is no elevation data then use siblings to generate the elevation
      */
     public function getPointElevation(Point $point, iterable $pointCollection, $defaultElevation = 0): ?float
     {
@@ -250,18 +250,18 @@ class Processor
         }
 
         reset($pointCollection);
-        while($point === current($pointCollection)) {
+        while ($point === current($pointCollection)) {
             next($pointCollection);
         }
         next($pointCollection);
 
-        while($previousPoint = prev($pointCollection)) {
+        while ($previousPoint = prev($pointCollection)) {
             if ($previousPoint->getElevation()) {
                 return $previousPoint->getElevation();
             }
         }
 
-        while($nextPoint = next($pointCollection)) {
+        while ($nextPoint = next($pointCollection)) {
             if ($nextPoint->getElevation()) {
                 return $nextPoint->getElevation();
             }
