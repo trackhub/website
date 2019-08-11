@@ -15,11 +15,11 @@ trait PointTrait
     private $lng;
 
     /**
-     * @ORM\Column(type="float")
+     * @ORM\Column(type="float", nullable=true)
      */
-    private $elevation = 0;
+    private $elevation;
 
-    public function getLat(): float
+    public function getLat(): ?float
     {
         return $this->lat;
     }
@@ -29,9 +29,11 @@ trait PointTrait
         return $this->lng;
     }
 
-    public function setElevation(float $elev)
+    public function setElevation(float $elev = null): self
     {
         $this->elevation = $elev;
+
+        return $this;
     }
 
     public function getElevation(): ?float
