@@ -1,9 +1,7 @@
 <?php
 
-
 namespace App\Track;
 
-use App\Entity\Track;
 use App\Entity\Track\Version;
 
 class Exporter
@@ -23,6 +21,9 @@ class Exporter
         return $result;
     }
 
+    /**
+     * @param iterable|Version[] $versionCollection
+     */
     public function exportGpx(iterable $versionCollection): string
     {
         $xml = new \SimpleXMLElement('<gpx/>');
@@ -42,6 +43,13 @@ class Exporter
                 if ($point->getElevation()) {
                     $trkSegPointXml->addChild('ele', $point->getElevation());
                 }
+            }
+
+            foreach ($version->getWayPoints() as $wayPoint) {
+                $wayPointXml = $xml->addChild('wpt');
+                $wayPointXml->addAttribute('lat', $wayPoint->getLat());
+                $wayPointXml->addAttribute('lon', $wayPoint->getLng());
+                $wayPointXml->addChild('name', $wayPointXml->getName());
             }
         }
 
