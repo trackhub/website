@@ -60,6 +60,14 @@ class Version
      */
     private $negativeElevation = 0;
 
+    /**
+     * @ORM\OneToMany(
+     *     targetEntity="App\Entity\Track\Rating",
+     *     mappedBy="version"
+     * )
+     */
+    private $rating;
+
     public function __construct(User $sendBy)
     {
         $this->sendBy = $sendBy;

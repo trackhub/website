@@ -28,6 +28,14 @@ class User extends BaseUser
      */
     private $facebookId;
 
+    /**
+     * @ORM\OneToMany(
+     *     targetEntity="App\Entity\Track\Rating",
+     *     mappedBy="user"
+     * )
+     */
+    private $rating;
+
     public function getFacebookId(): ?string
     {
         return $this->facebookId;
