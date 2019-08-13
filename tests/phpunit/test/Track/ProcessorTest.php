@@ -4,7 +4,6 @@ namespace App\Tests\test\Track;
 
 use App\Track\Processor;
 use App\Entity\Track\Version;
-use App\Entity\Track\Point;
 use App\Entity\User\User;
 use PHPUnit\Framework\Error\Warning;
 use PHPUnit\Framework\TestCase;
@@ -281,7 +280,7 @@ class ProcessorTest extends TestCase
      *
      * @dataProvider processorDistanceProvider
      */
-    public function testProcessorDisatance($a, $b, $expected)
+    public function testProcessorDistance($a, $b, $expected)
     {
         $processor = new Processor();
         $user = new User();
