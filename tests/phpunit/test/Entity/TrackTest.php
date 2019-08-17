@@ -12,7 +12,7 @@ class TrackTest extends TestCase
     {
         $user = new User();
 
-        $track = new Track();
+        $track = new Track($user);
         for ($q = 0; $q < $versionsCount; $q++) {
             $version = new Track\Version($user);
             $track->addVersion($version);
@@ -51,7 +51,7 @@ class TrackTest extends TestCase
      */
     public function testGetDownhillVersions($addTrackMethod, $getVersionsMethod)
     {
-        $track = new Track();
+        $track = new Track(new User());
 
         $expectedVersions = [];
 
@@ -68,7 +68,7 @@ class TrackTest extends TestCase
      */
     public function testGetDownhillVersionsMultiple($addTrackMethod, $getVersionsMethod)
     {
-        $track = new Track();
+        $track = new Track(new User());
 
         $expectedVersions = [];
 
@@ -90,7 +90,7 @@ class TrackTest extends TestCase
      */
     public function testGetDownhillVersionsRecursive($addTrackMethod, $getVersionsMethod)
     {
-        $track = new Track();
+        $track = new Track(new User());
 
         $expectedVersions = [];
 
@@ -115,7 +115,7 @@ class TrackTest extends TestCase
      */
     public function testGetDownhillVersionsInfinitiveLoop($addTrackMethod, $getVersionsMethod)
     {
-        $track = new Track();
+        $track = new Track(new User());
 
         $expectedVersions = [];
 
