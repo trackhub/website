@@ -25,6 +25,8 @@ class TrackVoter extends Voter
 
     protected function voteOnAttribute($attribute, $subject, TokenInterface $token)
     {
+        /* @var $subject Track */
+
         $user = $token->getUser();
 
         if (!$user instanceof User) {
@@ -32,6 +34,10 @@ class TrackVoter extends Voter
         }
 
         if (in_array('ROLE_ADMIN', $user->getRoles())) {
+            return true;
+        }
+
+        if ($subject->getSendBy() === $token->getUser()) {
             return true;
         }
 
