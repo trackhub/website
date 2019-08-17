@@ -5,6 +5,7 @@ namespace App\Entity;
 
 use App\Entity\Track\OptimizedPoint;
 use App\Entity\Track\Version;
+use App\Entity\User\User;
 use App\Entity\Video\Youtube;
 use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -89,6 +90,11 @@ class Track
     private $createdAt;
 
     /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\User\User")
+     */
+    private $sendBy;
+
+    /**
      * @ORM\Column(type="integer")
      */
     private $type = self::TYPE_CYCLING;
@@ -114,8 +120,9 @@ class Track
      */
     private $videosYoutube;
 
-    public function __construct()
+    public function __construct(User $sendBy)
     {
+        $this->sendBy = $sendBy;
         $this->lastCheck = new DateTime();
         $this->optimizedPoints = new ArrayCollection();
         $this->versions = new ArrayCollection();
@@ -123,6 +130,11 @@ class Track
         $this->uphills = new ArrayCollection();
         $this->downhills = new ArrayCollection();
         $this->videosYoutube = new ArrayCollection();
+    }
+
+    public function getSendBy(): User
+    {
+        return $this->sendBy;
     }
 
     public function getName(): ?string

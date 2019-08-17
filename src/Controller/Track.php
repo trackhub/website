@@ -38,7 +38,7 @@ class Track extends AbstractController
              */
 
 
-            $track = new \App\Entity\Track();
+            $track = new \App\Entity\Track($this->getUser());
             // we should have service for gpx processing
             $processor = new Processor();
             $trackVersion = new Version($this->getUser());
