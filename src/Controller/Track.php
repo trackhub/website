@@ -47,6 +47,7 @@ class Track extends AbstractController
                 $processor->process($c, $trackVersion);
             } catch (\Exception $e) {
                 $formIsValid = false;
+                $logger->error("Track file parsing error", ['content' => $c, 'e' => $e]);
                 $form->get('file')->addError(
                     new FormError('cannot parse the file')
                 );
@@ -80,8 +81,7 @@ class Track extends AbstractController
             $processor->postProcess($track);
 
             if ($track->getOptimizedPoints()->isEmpty()) {
-                $formIsValid = true;
-                $logger->error("Track file parsing error", ['content' => $c]);
+                $formIsValid = false;
                 $form->get('file')->addError(
                     new FormError('error') // @FIXME translate and add specific error
                 );
