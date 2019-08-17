@@ -1,6 +1,5 @@
 <?php
 
-
 namespace App\Admin;
 
 use App\Entity\Track;
@@ -8,11 +7,19 @@ use Sonata\AdminBundle\Admin\AbstractAdmin;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Form\FormMapper;
+use Sonata\AdminBundle\Route\RouteCollection;
 use Sonata\AdminBundle\Show\ShowMapper;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 
 class TrackAdmin extends AbstractAdmin
 {
+    protected function configureRoutes(RouteCollection $collection)
+    {
+        parent::configureRoutes($collection);
+        $collection->remove('create');
+        $collection->remove('delete');
+    }
+
     protected function configureShowFields(ShowMapper $showMapper)
     {
         $showMapper
@@ -27,10 +34,11 @@ class TrackAdmin extends AbstractAdmin
         $listMapper
             ->addIdentifier('id')
             ->add('name')
+            ->add('slug')
+            ->add('sendBy')
             ->add('_action', 'actions', [
                 'actions' => [
                     'edit' => [],
-                    'delete' => [],
                 ]
             ]);
     }
@@ -57,6 +65,7 @@ class TrackAdmin extends AbstractAdmin
                 ]
             )
             ->add('slug')
+            ->add('sendBy')
             ->end();
     }
 
@@ -65,6 +74,7 @@ class TrackAdmin extends AbstractAdmin
         $datagridMapper
             ->add('id')
             ->add('name')
+            ->add('slug')
         ;
     }
 }
