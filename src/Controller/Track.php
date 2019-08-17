@@ -136,6 +136,8 @@ class Track extends AbstractController
             }
 
             $track->setvideosYoutube($youtubeVideos);
+            $track->setName($form->get('name')->getData());
+            $track->setType($form->get('type')->getData());
 
             $this->getDoctrine()->getManager()
                 ->flush();
