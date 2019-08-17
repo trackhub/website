@@ -39,7 +39,7 @@ class Track extends AbstractController
              */
 
 
-            $track = new \App\Entity\Track();
+            $track = new \App\Entity\Track($this->getUser());
             // we should have service for gpx processing
             $processor = new Processor();
             $trackVersion = new Version($this->getUser());
@@ -150,6 +150,7 @@ class Track extends AbstractController
             $track->setvideosYoutube($youtubeVideos);
             $track->setName($form->get('name')->getData());
             $track->setType($form->get('type')->getData());
+            $track->setVisibility($form->get('visibility')->getData());
 
             $this->getDoctrine()->getManager()
                 ->flush();
