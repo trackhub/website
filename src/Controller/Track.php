@@ -28,6 +28,7 @@ class Track extends AbstractController
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
+            $formIsValid = true;
             $file = $form->get('file');
             $fileData = $file->getData();
             /* @var $fileData UploadedFile */
@@ -42,7 +43,15 @@ class Track extends AbstractController
             // we should have service for gpx processing
             $processor = new Processor();
             $trackVersion = new Version($this->getUser());
-            $processor->process($c, $trackVersion);
+            try {
+                $processor->process($c, $trackVersion);
+            } catch (\Exception $e) {
+                $formIsValid = false;
+                $logger->error("Track file parsing error", ['content' => $c, 'e' => $e]);
+                $form->get('file')->addError(
+                    new FormError('cannot parse the file')
+                );
+            }
 
             $optimizedPoints = $processor->generateOptimizedPoints($trackVersion);
 
@@ -72,10 +81,13 @@ class Track extends AbstractController
             $processor->postProcess($track);
 
             if ($track->getOptimizedPoints()->isEmpty()) {
+                $formIsValid = false;
                 $form->get('file')->addError(
                     new FormError('error') // @FIXME translate and add specific error
                 );
-            } else {
+            }
+
+            if ($formIsValid) {
                 $trackFile = new TrackFile($trackVersion, $c);
                 $trackVersion->setFile($trackFile);
 

@@ -1,14 +1,9 @@
 <?php
 
-
 namespace App\Form\Type;
 
-use App\Entity\Video\Youtube;
 use App\Form\Type\Track\Video\YoutubeType;
-use Doctrine\ORM\EntityRepository;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\CallbackTransformer;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
@@ -63,7 +58,7 @@ class Track extends AbstractType
                 FileType::class,
                 [
                     'mapped' => false,
-                    'label' => '.gpx file'
+                    'label' => 'Track file. Supported formats: .gpx',
                 ]
             );
         }
