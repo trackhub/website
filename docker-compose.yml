@@ -12,6 +12,8 @@ services:
   sql:
     restart: unless-stopped
     image: mariadb:10.3
+    ports:
+      - 33066:3306
     environment:
       MYSQL_ROOT_PASSWORD: 1
       MYSQL_USER: gps
