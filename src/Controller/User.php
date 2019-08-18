@@ -56,7 +56,7 @@ class User extends AbstractController
             ]
         );
         rewind($fp);
-        $csvAsString = fread($fp, 1024*1024);
+        $csvAsString = fread($fp, 1024 * 1024);
         // ... close the "file"...
         fclose($fp);
 

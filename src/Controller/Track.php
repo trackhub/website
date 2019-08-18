@@ -6,6 +6,7 @@ use App\Entity\File\TrackFile;
 use App\Entity\Track\Version;
 use App\Entity\Video\Youtube;
 use App\Form\Type\TrackVersion;
+use App\Repository\TrackRepository;
 use App\Track\Exporter;
 use App\Track\Processor;
 use Psr\Log\LoggerInterface;
@@ -32,22 +33,16 @@ class Track extends AbstractController
             $file = $form->get('file');
             $fileData = $file->getData();
             /* @var $fileData UploadedFile */
-            $c = file_get_contents($fileData->getRealPath());
-
-            /* @FIXME
-             - only gps!
-             */
-
-
+            $fileContent = file_get_contents($fileData->getRealPath());
             $track = new \App\Entity\Track($this->getUser());
             // we should have service for gpx processing
             $processor = new Processor();
             $trackVersion = new Version($this->getUser());
             try {
-                $processor->process($c, $trackVersion);
+                $processor->process($fileContent, $trackVersion);
             } catch (\Exception $e) {
                 $formIsValid = false;
-                $logger->error("Track file parsing error", ['content' => $c, 'e' => $e]);
+                $logger->error("Track file parsing error", ['content' => $fileContent, 'e' => $e]);
                 $form->get('file')->addError(
                     new FormError('cannot parse the file')
                 );
@@ -88,16 +83,15 @@ class Track extends AbstractController
             }
 
             if ($formIsValid) {
-                $trackFile = new TrackFile($trackVersion, $c);
+                $trackFile = new TrackFile($trackVersion, $fileContent);
                 $trackVersion->setFile($trackFile);
-
 
                 $this->getDoctrine()->getManager()
                     ->persist($track);
                 $this->getDoctrine()->getManager()
                     ->flush();
 
-                return $this->redirectToRoute('home');
+                return $this->redirectToRoute('gps-view', ['id' => $track->getId()]);
             }
         }
 
@@ -219,12 +213,8 @@ class Track extends AbstractController
         );
     }
 
-    public function view($id)
+    public function view($id, TrackRepository $repo)
     {
-        $repo = $this->getDoctrine()
-            ->getManager()
-                ->getRepository(\App\Entity\Track::class);
-
         $gps = $repo->findOneBy(['id' => $id]);
 
         $canonicalUrl = null;
@@ -333,11 +323,8 @@ class Track extends AbstractController
         );
     }
 
-    public function download($id)
+    public function download($id, TrackRepository $repo)
     {
-        $repo = $this->getDoctrine()
-            ->getManager()
-                ->getRepository(\App\Entity\Track::class);
         $track = $repo->findOneBy(['id' => $id]);
 
         $exporter = new Exporter();

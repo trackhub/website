@@ -67,7 +67,7 @@ class TrackSeeder extends AbstractSeed
 
         $track = $this->table('track');
 
-        for ($i = 0; $i < self::TRACK_COUNT; $i ++) {
+        for ($i = 0; $i < self::TRACK_COUNT; $i++) {
             $trackId = uniqid();
             $data = [
                 'id' => $trackId,
