@@ -21,7 +21,6 @@ class ReprocessGpsData extends Command
         parent::__construct();
     }
 
-
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $processor = new Processor();
@@ -50,8 +49,6 @@ class ReprocessGpsData extends Command
 
                 $optimizedVersionIndex++;
             }
-
-
 
             $processor->postProcess($track);
 
