@@ -15,6 +15,7 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Tekstove\UrlVideoParser\Exception\ParseException;
@@ -359,5 +360,18 @@ class Track extends AbstractController
         );
 
         return $response;
+    }
+
+    public function addImage($id, Request $request)
+    {
+        return new Response(
+            json_encode([
+                'status' => 'ok',
+            ]),
+            Response::HTTP_OK,
+            [
+                'Content-Type' => 'text/json',
+            ]
+        );
     }
 }

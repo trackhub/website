@@ -7,6 +7,21 @@
     {% if canEdit %}
         <a href="{{ path('app_track_edit', {id: track.id}) }}" class="btn btn-info">Edit</a>
         <a href="{{ path('gps-new-version', {id:track.id}) }}" class="btn btn-info">add new version</a>
+        <form id="file_upload">
+            <input type="file">
+        </form>
+
+        <button id="file_upload_send">send</button>
+        <script>
+            document.getElementById('file_upload_send').addEventListener('click', function() {
+                console.log('asdasd');
+                let form = document.getElementById('file_upload');
+                let formData = new FormData(form);
+                let xhr = new XMLHttpRequest();
+                xhr.open('POST', {{ path('gps-new-image', {id: track.id})|json_encode|raw }}, true);
+                xhr.send(formData);
+            });
+        </script>
     {% endif %}
 
     <hr>
