@@ -60,6 +60,11 @@ class TrackSeeder extends AbstractSeed
         $this->query("DELETE FROM optimized_point");
         $this->query("DELETE FROM track");
 
+        /**
+         * Fetch random users
+         */
+        $user = $this->fetchRow("SELECT id FROM user ORDER BY RAND()");
+
         $track = $this->table('track');
 
         for ($i = 0; $i < self::TRACK_COUNT; $i ++) {
@@ -75,6 +80,7 @@ class TrackSeeder extends AbstractSeed
                 'type' => $this->getType($i),
                 'created_at' => date('Y-m-d H:i:s', strtotime(sprintf("-%d hours", $i))),
                 'visibility' => $this->getVisibility($i),
+                'send_by_id' => $user['id']
             ];
 
             $track->insert($data)->saveData();
@@ -84,8 +90,6 @@ class TrackSeeder extends AbstractSeed
                 $fileTable = $this->table('track_file');
 
                 $versionId = uniqid();
-                $user = $this->fetchRow("SELECT id FROM user ORDER BY RAND()");
-
 
                 $this->getOutput()->writeln("Version id: {$versionId}", OutputInterface::VERBOSITY_VERY_VERBOSE);
 
