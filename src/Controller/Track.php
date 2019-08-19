@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\File\TrackFile;
+use App\Entity\Track\Rating;
 use App\Entity\Track\Version;
 use App\Entity\Video\Youtube;
 use App\Form\Type\TrackVersion;
@@ -13,8 +14,10 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Tekstove\UrlVideoParser\Exception\ParseException;
 use Tekstove\UrlVideoParser\Youtube\YoutubeParser;
@@ -215,6 +218,42 @@ class Track extends AbstractController
             [
                 'track' => $track,
                 'form' => $form->createView(),
+            ]
+        );
+    }
+
+    public function rate(Request $request, $id, LoggerInterface $logger)
+    {
+        if (!$request->isXmlHttpRequest()) {
+            throw new AccessDeniedHttpException();
+        }
+
+        $version = $this->getDoctrine()
+            ->getManager()
+            ->getRepository(\App\Entity\Track\Version::class)
+            ->findOneBy(['id' => $id]);
+
+        $user = $this->getDoctrine()
+            ->getManager()
+            ->getRepository(\App\Entity\User\User::class)
+            ->findOneBy(['id' => $request->request->get('user')]);
+
+        $rating = new Rating();
+        /* TODO: Check if fields are set */
+        $rating->setRating($request->request->get('rating'));
+        $rating->setUser($user);
+        $rating->setVersion($version);
+
+        $em = $this->getDoctrine()
+            ->getManager();
+
+        $em->persist($rating);
+        $em->flush();
+
+        return new JsonResponse(
+            [
+                'user' => $request->request->get('user'),
+                'rating' => $request->request->get('rating'),
             ]
         );
     }

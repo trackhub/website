@@ -39,44 +39,9 @@
                         <div class="stars-inner"></div>
                     </div>
                     {% if app.user %}
-                    <button type="button" class="btn" data-toggle="modal" data-target="#exampleModal">
+                    <button type="button" class="btn" data-toggle="modal" data-target="#ratingModal" data-version="{{ version.id }}">
                         <i class="fas fa-bars"></i>
                     </button>
-
-                    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                        <div class="modal-dialog" role="document">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="exampleModalLabel">Rate track version</h5>
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                        <span aria-hidden="true">&times;</span>
-                                    </button>
-                                </div>
-                                <div class="modal-body">
-                                    <form>
-                                        <div class="form-group">
-                                            <label for="exampleFormControlSelect1">Select rating</label>
-                                            <select class="form-control" id="exampleFormControlSelect1">
-                                                <option>1</option>
-                                                <option>2</option>
-                                                <option>3</option>
-                                                <option>4</option>
-                                                <option>5</option>
-                                            </select>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="exampleFormControlTextarea1">Comment (optional)</label>
-                                            <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
-                                        </div>
-                                    </form>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-primary">Send</button>
-                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
                     {% endif %}
                 </td>
                 <td>
@@ -89,6 +54,40 @@
                 </td>
             </tr>
         {% endfor %}
+            <div class="modal fade" id="ratingModal" tabindex="-1" role="dialog" aria-labelledby="ratingModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="ratingModalLabel">Rate track version</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <form>
+                                <div class="form-group">
+                                    <label for="ratingSelect">Select rating</label>
+                                    <select class="form-control" id="ratingSelect">
+                                        <option>1</option>
+                                        <option>2</option>
+                                        <option>3</option>
+                                        <option>4</option>
+                                        <option>5</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="ratingComment">Comment (optional)</label>
+                                    <textarea class="form-control" id="ratingComment" rows="3"></textarea>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-primary" id="sendRating">Send</button>
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         {% for version in track.getUphillVersions(true) %}
             <tr>
                 <td>uphill version #{{ loop.index }}</td>
@@ -294,7 +293,7 @@
             }
         });
 
-        /* Display ratings */
+        /* Display star ratings */
         {% for version in track.versions %}
         {
             let rating = {{ version.rating }};
@@ -304,6 +303,44 @@
             document.querySelector(`#rating-{{ loop.index }} .stars-inner`).style.width = starPercentageRounded;
         }
         {% endfor %}
+
+
+
+        /* Handle rating submition */
+        $(document).ready(function () {
+            $('#sendRating').click(function (e) {
+                const rating = $('#ratingSelect').val();
+
+                $.ajax({
+                    type: "POST",
+                    url: "{{ path('gps-rate', {id: "5d598e0052be4"}) }}",
+                    data: {
+                        user: "{{ app.user.id }}",
+                        rating: rating
+                    }
+                }).done(function(data){
+                    console.log(data);
+                });
+
+                /* Close modal */
+                $('#ratingModal').modal('hide');
+
+
+            });
+
+            $('#ratingModal').on('show.bs.modal', function (event) {
+                var button = $(event.relatedTarget) // Button that triggered the modal
+                var recipient = button.data('version') // Extract info from data-* attributes
+                // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
+                // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
+                console.log(recipient);
+                // var modal = $(this)
+                // modal.find('.modal-title').text('New message to ' + recipient)
+                // modal.find('.modal-body input').val(recipient)
+            })
+        });
+
+
 
     </script>
 {% endblock %}

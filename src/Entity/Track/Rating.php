@@ -2,6 +2,8 @@
 
 namespace App\Entity\Track;
 
+use App\Entity\User\User;
+
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -40,6 +42,39 @@ class Rating
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getVersion()
+    {
+        return $this->version;
+    }
+
+    /**
+     * @param mixed $version
+     */
+    public function setVersion(Version $version): void
+    {
+        $this->version = $version;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getUser()
+    {
+        return $this->user;
+    }
+
+
+    /**
+     * @param User $user
+     */
+    public function setUser(User $user): void
+    {
+        $this->user = $user;
     }
 
     public function getRating(): int

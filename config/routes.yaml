@@ -20,6 +20,10 @@ gps-view:
   path: /{_locale}/gps/view/{id}
   controller: App\Controller\Track::view
 
+gps-rate:
+  path: /{_locale}/gps/view/{id}/rate
+  controller: App\Controller\Track::rate
+
 gps-list:
   path: /{_locale}/gps/list/{neLat}/{neLon}/{swLat}/{swLon}/{size}
   defaults:

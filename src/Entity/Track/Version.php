@@ -157,11 +157,16 @@ class Version
         if ($this->rating->isEmpty())
             return 0;
 
+
         $sum = 0;
         $total = $this->rating->count();
 
+
+        /**
+         * @var $rating Rating
+         */
         foreach ($this->rating as $rating) {
-            $sum += $rating;
+            $sum += $rating->getRating();
         }
 
         return round($sum/$total, 1);
