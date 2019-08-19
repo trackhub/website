@@ -21,13 +21,20 @@
                 <td></td>
                 <td>climb</td>
                 <td>descent</td>
+                <td>Rating</td>
                 <td>include in export</td>
             </tr>
         {% for version in track.versions %}
-            <tr>
+            <tr id="rating-{{ loop.index }}">
                 <td>main track #{{ loop.index }}</td>
                 <td>{{ version.positiveElevation|number_format(0, '', '\'') }} m</td>
                 <td>{{ version.negativeElevation|number_format(0, '', '\'') }} m</td>
+                <td>
+                    <div class="stars-outer">
+                        <div class="stars-inner"></div>
+                    </div>
+                    <span class="number-rating"></span>
+                </td>
                 <td>
                     <input type="checkbox" data-type="track-toggle" checked
                            id="{{ 'version_export_id' }}{{ loop.index }}"
@@ -91,13 +98,14 @@
         {% endfor %}
     </div>
 
+{% endblock %}
+
+{% block javascripts %}
     <script>
-        var map = L.map(
-            'map',
-            {
-                gestureHandling: true,
-                center:[
-                    ({{ track.pointNorthEastLat }} + {{ track.pointSouthWestLat }}) / 2,
+        var map = L.map('map', {
+            gestureHandling: true,
+            center:[
+            ({{ track.pointNorthEastLat }} + {{ track.pointSouthWestLat }}) / 2,
                     ({{ track.pointSouthWestLng + track.pointNorthEastLng}}) / 2
                 ],
                 zoom: 12
@@ -241,5 +249,20 @@
                 }
             }
         });
+
+        /* Display ratings */
+        {% for version in track.versions %}
+        {
+            let rating = {{ version.rating }};
+            const starPercentage = (rating / 5) * 100;
+            const starPercentageRounded = `${Math.round(starPercentage / 10) * 10}%`;
+
+
+            document.querySelector(`#rating-{{ loop.index }} .stars-inner`).style.width = starPercentageRounded;
+            document.querySelector(`#rating-{{ loop.index }} .number-rating`).innerHTML = rating;
+
+        }
+        {% endfor %}
+
     </script>
 {% endblock %}
