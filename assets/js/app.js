@@ -9,6 +9,8 @@
 require('../css/app.css');
 require('../css/global.scss');
 
+require('bootstrap');
+
 // Need jQuery? Install it with "yarn add jquery", then uncomment to require it.
 // var $ = require('jquery');
 
@@ -16,3 +18,9 @@ window.jQuery = require('jquery');
 window.chartJs = require('chart.js');
 
 window.AppTrack = require('./track.js');
+
+$(document).ready(function() {
+    $('[data-toggle="tooltip"]').tooltip();
+    $('[data-toggle="popover"]').popover();
+});
+
