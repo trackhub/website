@@ -73,6 +73,7 @@ class Version
         $this->sendBy = $sendBy;
         $this->points = new ArrayCollection();
         $this->wayPoints = new ArrayCollection();
+        $this->rating = new ArrayCollection();
     }
 
     public function getId(): ?string
@@ -149,5 +150,25 @@ class Version
     public function setNegativeElevation(int $negativeElevation): void
     {
         $this->negativeElevation = $negativeElevation;
+    }
+
+    public function getRating(): float
+    {
+        if ($this->rating->isEmpty())
+            return 0;
+
+        $sum = 0;
+        $total = $this->rating->count();
+
+        foreach ($this->rating as $rating) {
+            $sum += $rating;
+        }
+
+        return round($sum/$total, 1);
+    }
+
+    public function getVotes(): int
+    {
+        return $this->rating->count();
     }
 }

@@ -25,15 +25,19 @@
                 <td>include in export</td>
             </tr>
         {% for version in track.versions %}
-            <tr id="rating-{{ loop.index }}">
+            <tr>
                 <td>main track #{{ loop.index }}</td>
                 <td>{{ version.positiveElevation|number_format(0, '', '\'') }} m</td>
                 <td>{{ version.negativeElevation|number_format(0, '', '\'') }} m</td>
                 <td>
-                    <div class="stars-outer">
+                    <div class="stars-outer" id="rating-{{ loop.index }}"
+                        {% if version.votes > 0 %}
+                         data-toggle="tooltip" data-html="true"
+                         title="Rating: {{ version.rating }}<br>Votes: {{ version.votes }}"
+                        {% endif %}
+                    >
                         <div class="stars-inner"></div>
                     </div>
-                    <span class="number-rating"></span>
                 </td>
                 <td>
                     <input type="checkbox" data-type="track-toggle" checked
@@ -257,10 +261,7 @@
             const starPercentage = (rating / 5) * 100;
             const starPercentageRounded = `${Math.round(starPercentage / 10) * 10}%`;
 
-
             document.querySelector(`#rating-{{ loop.index }} .stars-inner`).style.width = starPercentageRounded;
-            document.querySelector(`#rating-{{ loop.index }} .number-rating`).innerHTML = rating;
-
         }
         {% endfor %}
 
