@@ -362,8 +362,39 @@ class Track extends AbstractController
         return $response;
     }
 
-    public function addImage($id, Request $request)
+    public function addImage($id, Request $request, TrackRepository $trackRepo)
     {
+        $track = $trackRepo->findOneBy(['id' => $id]);
+
+        $token = $request->request->get('token');
+        if (!$this->isCsrfTokenValid('file_upload', $token)) {
+            throw $this->createAccessDeniedException('csrf check failed');
+        }
+
+        foreach ($request->files->get('files') as $file) {
+            /* @var $file UploadedFile */
+            if (!$file->isValid()) {
+                // @FIXME add error?
+                continue;
+            }
+
+            $extension = $file->getClientOriginalExtension();
+            $extension = mb_strtolower($extension);
+
+            if (!in_array($extension, ['jpeg', 'jpg', 'png', 'gif'])) {
+                // @FIXME add error?
+                continue;
+            }
+
+            $uploadDirectory = $this->getParameter('track_images_directory') . DIRECTORY_SEPARATOR;
+            $uploadDirectory .= $track->getCreatedAt()->format('Y') . DIRECTORY_SEPARATOR . $track->getId();
+
+            $file->move(
+                 $uploadDirectory,
+                uniqid() . '.' . $extension
+            );
+        }
+
         return new Response(
             json_encode([
                 'status' => 'ok',

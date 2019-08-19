@@ -10,6 +10,7 @@ use App\Entity\Video\Youtube;
 use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints\Date;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\TrackRepository")
@@ -389,6 +390,11 @@ class Track
     {
         $video->setTrack($this);
         $this->videosYoutube->add($video);
+    }
+
+    public function getCreatedAt(): DateTime
+    {
+        return $this->createdAt;
     }
 
     public function __toString(): string
