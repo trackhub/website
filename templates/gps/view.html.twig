@@ -7,20 +7,21 @@
     {% if canEdit %}
         <a href="{{ path('app_track_edit', {id: track.id}) }}" class="btn btn-info">Edit</a>
         <a href="{{ path('gps-new-version', {id:track.id}) }}" class="btn btn-info">add new version</a>
-        <form id="file_upload">
-            <input type="file" name="files[]" multiple>
-        </form>
-
-        <button id="file_upload_send">send</button>
+        <input id="file_input" type="file" name="files[]" multiple accept="image/jpeg, image/png">
         <script>
-            document.getElementById('file_upload_send').addEventListener('click', function() {
-                let form = document.getElementById('file_upload');
-                let formData = new FormData(form);
-                formData.append('token', {{ csrf_token('file_upload')|json_encode|raw }})
-                console.log(formData);
-                let xhr = new XMLHttpRequest();
-                xhr.open('POST', {{ path('gps-new-image', {id: track.id})|json_encode|raw }}, true);
-                xhr.send(formData);
+            document.getElementById('file_input').addEventListener('change', function() {
+                for (let i = 0; i < this.files.length; i++) {
+                    console.log(i);
+                    console.log(this.files[i]);
+
+                    let formData = new FormData();
+                    formData.append('file', this.files[i]);
+                    formData.append('token', {{ csrf_token('file_upload')|json_encode|raw }})
+                    console.log(formData);
+                    let xhr = new XMLHttpRequest();
+                    xhr.open('POST', {{ path('gps-new-image', {id: track.id})|json_encode|raw }}, true);
+                    xhr.send(formData);
+                }
             });
         </script>
     {% endif %}

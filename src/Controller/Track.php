@@ -372,47 +372,44 @@ class Track extends AbstractController
             throw $this->createAccessDeniedException('csrf check failed');
         }
 
-        foreach ($request->files->get('files') as $file) {
-            /* @var $file UploadedFile */
-            if (!$file->isValid()) {
-                echo $file->getError();
-                echo $file->getErrorMessage();
-                // @FIXME add error?
-                echo "Error 1";
-                die;
-                continue;
-            }
-
-            $extension = $file->getClientOriginalExtension();
-            $extension = mb_strtolower($extension);
-
-            if (!in_array($extension, ['jpeg', 'jpg', 'png', 'gif'])) {
-                // @FIXME add error?
-                echo "Error";
-                die;
-                continue;
-            }
-
-            $uploadDirectory = $this->getParameter('track_images_directory') . DIRECTORY_SEPARATOR;
-            $sqlFilepath = $track->getCreatedAt()->format('Y') . DIRECTORY_SEPARATOR . $track->getId();
-            $uploadDirectory .= $sqlFilepath;
-
-            $uploadFilename = uniqid() . '.' . $extension;
-            $sqlFilepath .= DIRECTORY_SEPARATOR . $uploadFilename;
-
-            $file->move(
-                $uploadDirectory,
-                $uploadFilename
-            );
-
-            $image = new Image(
-                $sqlFilepath,
-                $this->getUser(),
-                $track
-            );
-
-            $this->getDoctrine()->getManager()->persist($image);
+        $file = $request->files->get('file');
+        /* @var $file UploadedFile */
+        if (!$file->isValid()) {
+            echo $file->getError();
+            echo $file->getErrorMessage();
+            // @FIXME add error?
+            echo "Error 1";
+            throw new \Exception('@TODO');
         }
+
+        $extension = $file->getClientOriginalExtension();
+        $extension = mb_strtolower($extension);
+
+        if (!in_array($extension, ['jpeg', 'jpg', 'png', 'gif'])) {
+            // @FIXME add error?
+            echo "Error";
+            throw new \Exception('@TODO');
+        }
+
+        $uploadDirectory = $this->getParameter('track_images_directory') . DIRECTORY_SEPARATOR;
+        $sqlFilepath = $track->getCreatedAt()->format('Y') . DIRECTORY_SEPARATOR . $track->getId();
+        $uploadDirectory .= $sqlFilepath;
+
+        $uploadFilename = uniqid() . '.' . $extension;
+        $sqlFilepath .= DIRECTORY_SEPARATOR . $uploadFilename;
+
+        $file->move(
+            $uploadDirectory,
+            $uploadFilename
+        );
+
+        $image = new Image(
+            $sqlFilepath,
+            $this->getUser(),
+            $track
+        );
+
+        $this->getDoctrine()->getManager()->persist($image);
 
         $this->getDoctrine()->getManager()->flush();
 
