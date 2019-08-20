@@ -224,38 +224,46 @@ class Track extends AbstractController
 
     public function rate(Request $request, $id, LoggerInterface $logger)
     {
+
         if (!$request->isXmlHttpRequest()) {
             throw new AccessDeniedHttpException();
         }
 
-        $version = $this->getDoctrine()
-            ->getManager()
-            ->getRepository(\App\Entity\Track\Version::class)
-            ->findOneBy(['id' => $id]);
+        $em = $this->getDoctrine()
+            ->getManager();
 
-        $user = $this->getDoctrine()
-            ->getManager()
-            ->getRepository(\App\Entity\User\User::class)
-            ->findOneBy(['id' => $request->request->get('user')]);
+        /**
+         * @var $user \App\Entity\User\User
+         */
+        $user = $this->getUser();
+
+        /**
+         * @var $version \App\Entity\Track\Version
+         */
+        $version = $em->getRepository(\App\Entity\Track\Version::class)
+            ->findOneBy(['id' => $id]);
+        if (is_null($version)) {
+            $logger->error("Invalid version id " , [ 'id' => $id]);
+            return new JsonResponse(
+                [
+                    'message' => "Invalid track version"
+                ],
+                400
+            );
+        }
 
         $rating = new Rating();
-        /* TODO: Check if fields are set */
         $rating->setRating($request->request->get('rating'));
         $rating->setUser($user);
         $rating->setVersion($version);
 
-        $em = $this->getDoctrine()
-            ->getManager();
-
         $em->persist($rating);
         $em->flush();
 
-        return new JsonResponse(
-            [
-                'user' => $request->request->get('user'),
-                'rating' => $request->request->get('rating'),
-            ]
-        );
+        return new JsonResponse([
+            'rating' => $version->getRating(),
+            'votes' => $version->getVotes()
+        ]);
     }
 
     public function view($id)

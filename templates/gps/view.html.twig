@@ -30,12 +30,9 @@
                 <td>{{ version.positiveElevation|number_format(0, '', '\'') }} m</td>
                 <td>{{ version.negativeElevation|number_format(0, '', '\'') }} m</td>
                 <td>
-                    <div class="stars-outer" id="rating-{{ loop.index }}"
-                        {% if version.votes > 0 %}
+                    <div class="stars-outer" id="rating-{{ version.id }}"
                          data-toggle="tooltip" data-html="true"
-                         title="Rating: {{ version.rating }}<br>Votes: {{ version.votes }}"
-                        {% endif %}
-                    >
+                         title="Rating: {{ version.rating }}<br>Votes: {{ version.votes }}">
                         <div class="stars-inner"></div>
                     </div>
                     {% if app.user %}
@@ -298,49 +295,62 @@
         {
             let rating = {{ version.rating }};
             const starPercentage = (rating / 5) * 100;
-            const starPercentageRounded = `${Math.round(starPercentage / 10) * 10}%`;
+            const starPercentageRounded = Math.round(starPercentage / 10) * 10 + '%';
 
-            document.querySelector(`#rating-{{ loop.index }} .stars-inner`).style.width = starPercentageRounded;
+            document.querySelector('#rating-{{ version.id }} .stars-inner').style.width = starPercentageRounded;
+
+            {% if version.votes == 0 %}
+            $('#rating-{{ version.id }}').tooltip('disable');
+            {% endif %}
         }
         {% endfor %}
 
 
+        {% if app.user %}
+            /* Handle rating submission */
+            $(document).ready(function () {
 
-        /* Handle rating submition */
-        $(document).ready(function () {
-            $('#sendRating').click(function (e) {
-                const rating = $('#ratingSelect').val();
+                $('#ratingModal').on('show.bs.modal', function (event) {
+                    const button = $(event.relatedTarget)
+                    const version = button.data('version')
 
-                $.ajax({
-                    type: "POST",
-                    url: "{{ path('gps-rate', {id: "5d598e0052be4"}) }}",
-                    data: {
-                        user: "{{ app.user.id }}",
-                        rating: rating
-                    }
-                }).done(function(data){
-                    console.log(data);
+                    let url = '{{ path('gps-rate', {'id': 'id'}) }}';
+                    url = url.replace("id", version);
+
+                    $('#sendRating').click(function (e) {
+                        const rating = $('#ratingSelect').val();
+
+                        $.ajax({
+                            type: "POST",
+                            url: url,
+                            data: {
+                                rating: rating
+                            },
+                            success: function(data) {
+
+                                const rating = data.rating;
+                                const votes = data.votes;
+
+                                /* Update star rating */
+                                const starPercentage = (rating / 5) * 100;
+                                const starPercentageRounded = Math.round(starPercentage / 10) * 10 + '%';
+
+                                $('#rating-' + version)
+                                    .attr('data-original-title', 'Rating: ' + rating + '<br>Votes: ' + votes)
+                                    .tooltip('enable');
+                                document.querySelector('#rating-' + version + ' .stars-inner').style.width = starPercentageRounded;
+
+                                $('#ratingModal').modal('hide');
+                            }
+                        });
+                    });
                 });
 
-                /* Close modal */
-                $('#ratingModal').modal('hide');
-
-
+                $('#ratingModal').on('hide.bs.modal', function () {
+                    $('#sendRating').off('click');
+                });
             });
-
-            $('#ratingModal').on('show.bs.modal', function (event) {
-                var button = $(event.relatedTarget) // Button that triggered the modal
-                var recipient = button.data('version') // Extract info from data-* attributes
-                // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
-                // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
-                console.log(recipient);
-                // var modal = $(this)
-                // modal.find('.modal-title').text('New message to ' + recipient)
-                // modal.find('.modal-body input').val(recipient)
-            })
-        });
-
-
+        {% endif %}
 
     </script>
 {% endblock %}
