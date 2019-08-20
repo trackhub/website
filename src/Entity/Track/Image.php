@@ -8,6 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity
+ * @ORM\Table(name="track_image")
  */
 class Image
 {
@@ -43,10 +44,27 @@ class Image
         $this->file = $file;
         $this->sendBy = $sendBy;
         $this->track = $track;
+        $track->addImage($this);
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getId()
+    {
+        return $this->id;
     }
 
     public function setVersion(Version $version = null)
     {
         $this->version = $version;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getFile()
+    {
+        return $this->file;
     }
 }

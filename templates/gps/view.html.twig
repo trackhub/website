@@ -107,6 +107,13 @@
         {% endfor %}
     </div>
 
+    <div>
+        {% for image in track.images %}
+            {# @FIXME style #}
+            <img src="{{ app_track_images_directory }}/{{ image.file }}" style="max-width: 400px;">
+        {% endfor %}
+    </div>
+
     <script>
         var map = L.map(
             'map',

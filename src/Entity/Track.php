@@ -3,6 +3,7 @@
 
 namespace App\Entity;
 
+use App\Entity\Track\Image;
 use App\Entity\Track\OptimizedPoint;
 use App\Entity\Track\Version;
 use App\Entity\User\User;
@@ -10,7 +11,6 @@ use App\Entity\Video\Youtube;
 use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Validator\Constraints\Date;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\TrackRepository")
@@ -121,6 +121,11 @@ class Track
      */
     private $videosYoutube;
 
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Track\Image", mappedBy="track", cascade={"persist", "remove"}, orphanRemoval=true)
+     */
+    private $images;
+
     public function __construct(User $sendBy)
     {
         $this->sendBy = $sendBy;
@@ -131,6 +136,7 @@ class Track
         $this->uphills = new ArrayCollection();
         $this->downhills = new ArrayCollection();
         $this->videosYoutube = new ArrayCollection();
+        $this->images = new ArrayCollection();
     }
 
     public function getSendBy(): User
@@ -228,6 +234,11 @@ class Track
     {
         $version->setTrack($this);
         $this->versions->add($version);
+    }
+
+    public function addImage(Image $image)
+    {
+        $this->images->add($image);
     }
 
     /**
@@ -395,6 +406,14 @@ class Track
     public function getCreatedAt(): DateTime
     {
         return $this->createdAt;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getImages()
+    {
+        return $this->images;
     }
 
     public function __toString(): string

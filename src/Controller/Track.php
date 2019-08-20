@@ -3,12 +3,14 @@
 namespace App\Controller;
 
 use App\Entity\File\TrackFile;
+use App\Entity\Track\Image;
 use App\Entity\Track\Version;
 use App\Entity\Video\Youtube;
 use App\Form\Type\TrackVersion;
 use App\Repository\TrackRepository;
 use App\Track\Exporter;
 use App\Track\Processor;
+use Doctrine\Common\Annotations\IndexedReader;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -374,7 +376,11 @@ class Track extends AbstractController
         foreach ($request->files->get('files') as $file) {
             /* @var $file UploadedFile */
             if (!$file->isValid()) {
+                echo $file->getError();
+                echo $file->getErrorMessage();
                 // @FIXME add error?
+                echo "Error 1";
+                die;
                 continue;
             }
 
@@ -383,17 +389,33 @@ class Track extends AbstractController
 
             if (!in_array($extension, ['jpeg', 'jpg', 'png', 'gif'])) {
                 // @FIXME add error?
+                echo "Error";
+                die;
                 continue;
             }
 
             $uploadDirectory = $this->getParameter('track_images_directory') . DIRECTORY_SEPARATOR;
-            $uploadDirectory .= $track->getCreatedAt()->format('Y') . DIRECTORY_SEPARATOR . $track->getId();
+            $sqlFilepath = $track->getCreatedAt()->format('Y') . DIRECTORY_SEPARATOR . $track->getId();
+            $uploadDirectory .= $sqlFilepath;
+
+            $uploadFilename = uniqid() . '.' . $extension;
+            $sqlFilepath .= DIRECTORY_SEPARATOR . $uploadFilename;
 
             $file->move(
-                 $uploadDirectory,
-                uniqid() . '.' . $extension
+                $uploadDirectory,
+                $uploadFilename
             );
+
+            $image = new Image(
+                $sqlFilepath,
+                $this->getUser(),
+                $track
+            );
+
+            $this->getDoctrine()->getManager()->persist($image);
         }
+
+        $this->getDoctrine()->getManager()->flush();
 
         return new Response(
             json_encode([
