@@ -10,7 +10,6 @@ use App\Form\Type\TrackVersion;
 use App\Repository\TrackRepository;
 use App\Track\Exporter;
 use App\Track\Processor;
-use Doctrine\Common\Annotations\IndexedReader;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;

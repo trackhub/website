@@ -9,7 +9,6 @@
         <a href="{{ path('gps-new-version', {id:track.id}) }}" class="btn btn-info">add new version</a>
         <form id="file_upload">
             <input type="file" name="files[]" multiple>
-            <input type="hidden" name="token" value="{{ csrf_token('file_upload') }}"/>
         </form>
 
         <button id="file_upload_send">send</button>
@@ -17,6 +16,7 @@
             document.getElementById('file_upload_send').addEventListener('click', function() {
                 let form = document.getElementById('file_upload');
                 let formData = new FormData(form);
+                formData.append('token', {{ csrf_token('file_upload')|json_encode|raw }})
                 console.log(formData);
                 let xhr = new XMLHttpRequest();
                 xhr.open('POST', {{ path('gps-new-image', {id: track.id})|json_encode|raw }}, true);
