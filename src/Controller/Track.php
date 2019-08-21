@@ -363,7 +363,7 @@ class Track extends AbstractController
         return $response;
     }
 
-    public function addImage($id, Request $request, TrackRepository $trackRepo)
+    public function addImage(string $id, Request $request, TrackRepository $trackRepo)
     {
         $track = $trackRepo->findOneBy(['id' => $id]);
 
@@ -375,20 +375,30 @@ class Track extends AbstractController
         $file = $request->files->get('file');
         /* @var $file UploadedFile */
         if (!$file->isValid()) {
-            echo $file->getError();
-            echo $file->getErrorMessage();
-            // @FIXME add error?
-            echo "Error 1";
-            throw new \Exception('@TODO');
+            // @FIXME error handling
+            return new Response(
+                json_encode([
+                    'status' => 1,
+                    'error' => 'upload failed',
+                ]),
+                Response::HTTP_BAD_REQUEST,
+                ['Content-Type' => 'text/json']
+            );
         }
 
         $extension = $file->getClientOriginalExtension();
         $extension = mb_strtolower($extension);
 
         if (!in_array($extension, ['jpeg', 'jpg', 'png', 'gif'])) {
-            // @FIXME add error?
-            echo "Error";
-            throw new \Exception('@TODO');
+            // @FIXME error handling
+            return new Response(
+                json_encode([
+                    'status' => 1,
+                    'error' => 'format not allowed',
+                ]),
+                Response::HTTP_BAD_REQUEST,
+                ['Content-Type' => 'text/json']
+            );
         }
 
         $uploadDirectory = $this->getParameter('track_images_directory') . DIRECTORY_SEPARATOR;
@@ -414,13 +424,9 @@ class Track extends AbstractController
         $this->getDoctrine()->getManager()->flush();
 
         return new Response(
-            json_encode([
-                'status' => 'ok',
-            ]),
+            json_encode(['status' => 0]),
             Response::HTTP_OK,
-            [
-                'Content-Type' => 'text/json',
-            ]
+            ['Content-Type' => 'text/json']
         );
     }
 }
