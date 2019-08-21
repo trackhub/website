@@ -51,40 +51,42 @@
                 </td>
             </tr>
         {% endfor %}
-            <div class="modal fade" id="ratingModal" tabindex="-1" role="dialog" aria-labelledby="ratingModalLabel" aria-hidden="true">
-                <div class="modal-dialog" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="ratingModalLabel">Rate track version</h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
+        <div class="modal fade" id="ratingModal" tabindex="-1" role="dialog" aria-labelledby="ratingModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="ratingModalLabel">Rate track version</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="alert" id="ratingAlert" role="alert">
                         </div>
-                        <div class="modal-body">
-                            <form>
-                                <div class="form-group">
-                                    <label for="ratingSelect">Select rating</label>
-                                    <select class="form-control" id="ratingSelect">
-                                        <option>1</option>
-                                        <option>2</option>
-                                        <option>3</option>
-                                        <option>4</option>
-                                        <option>5</option>
-                                    </select>
-                                </div>
-                                <div class="form-group">
-                                    <label for="ratingComment">Comment (optional)</label>
-                                    <textarea class="form-control" id="ratingComment" rows="3"></textarea>
-                                </div>
-                            </form>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-primary" id="sendRating">Send</button>
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        </div>
+                        <form>
+                            <div class="form-group">
+                                <label for="ratingSelect">Select rating</label>
+                                <select class="form-control" id="ratingSelect">
+                                    <option>1</option>
+                                    <option>2</option>
+                                    <option>3</option>
+                                    <option>4</option>
+                                    <option>5</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="ratingComment">Comment (optional)</label>
+                                <textarea class="form-control" id="ratingComment" rows="3" disabled></textarea>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" id="sendRating">Rate</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                     </div>
                 </div>
             </div>
+        </div>
         {% for version in track.getUphillVersions(true) %}
             <tr>
                 <td>uphill version #{{ loop.index }}</td>
@@ -293,7 +295,7 @@
         /* Display star ratings */
         {% for version in track.versions %}
         {
-            let rating = {{ version.rating }};
+            let rating = {{ version.OverallRating }};
             const starPercentage = (rating / 5) * 100;
             const starPercentageRounded = Math.round(starPercentage / 10) * 10 + '%';
 
@@ -319,6 +321,13 @@
 
                     $('#sendRating').click(function (e) {
                         const rating = $('#ratingSelect').val();
+                        let but = $(this);
+
+                        but.prop('disabled', true);
+                        but.html(
+                            '<span class="spinner-border spinner-border-sm m-1" role="status" aria-hidden="true"></span>' +
+                            'Sending...'
+                        );
 
                         $.ajax({
                             type: "POST",
@@ -342,12 +351,22 @@
 
                                 $('#ratingModal').modal('hide');
                             }
+                        }).done(function(){
+                            but.text("Done");
                         });
                     });
                 });
 
                 $('#ratingModal').on('hide.bs.modal', function () {
                     $('#sendRating').off('click');
+                    $('#ratingAlert')
+                        .removeClass('alert-success')
+                        .removeClass('alert-danger')
+                        .hide();
+                    $('#sendRating')
+                        .prop('disabled', false)
+                        .text('Rate');
+
                 });
             });
         {% endif %}

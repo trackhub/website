@@ -222,7 +222,7 @@ class Track extends AbstractController
         );
     }
 
-    public function rate(Request $request, $id, LoggerInterface $logger)
+    public function rate(Request $request, $id)
     {
 
         if (!$request->isXmlHttpRequest()) {
@@ -243,7 +243,6 @@ class Track extends AbstractController
         $version = $em->getRepository(\App\Entity\Track\Version::class)
             ->findOneBy(['id' => $id]);
         if (is_null($version)) {
-            $logger->error("Invalid version id " , [ 'id' => $id]);
             return new JsonResponse(
                 [
                     'message' => "Invalid track version"
@@ -252,16 +251,37 @@ class Track extends AbstractController
             );
         }
 
-        $rating = new Rating();
-        $rating->setRating($request->request->get('rating'));
-        $rating->setUser($user);
-        $rating->setVersion($version);
+        if ($request->getRealMethod() === 'POST') {
 
-        $em->persist($rating);
-        $em->flush();
+            $rating = null;
+
+            /**
+             * Check if user has already submitted rating
+             * @var $r Rating
+             */
+            foreach ($user->getRating() as $r) {
+                if ($r->getVersion()->getId() === $id) {
+                    $rating = $r;
+                }
+            }
+
+            /**
+             * If $rating is null, create new row
+             */
+            if (is_null($rating)) {
+                $rating = new Rating();
+                $rating->setUser($user);
+                $rating->setVersion($version);
+            }
+
+            $rating->setRating($request->request->get('rating'));
+
+            $em->persist($rating);
+            $em->flush();
+        }
 
         return new JsonResponse([
-            'rating' => $version->getRating(),
+            'rating' => $version->getOverallRating(),
             'votes' => $version->getVotes()
         ]);
     }

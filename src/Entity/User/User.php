@@ -2,6 +2,9 @@
 
 namespace App\Entity\User;
 
+use App\Entity\Track\Rating;
+use App\Entity\Track\Version;
+use Doctrine\Common\Collections\ArrayCollection;
 use FOS\UserBundle\Model\User as BaseUser;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -36,6 +39,11 @@ class User extends BaseUser
      */
     private $rating;
 
+    public function __construct()
+    {
+        $this->rating = new ArrayCollection();
+    }
+
     public function getFacebookId(): ?string
     {
         return $this->facebookId;
@@ -61,5 +69,34 @@ class User extends BaseUser
     public function acceptTerms()
     {
         $this->termsAccepted = new \DateTime();
+    }
+
+    /**
+     * @return ArrayCollection|Rating[]
+     */
+    public function getRating()
+    {
+        return $this->rating;
+    }
+
+    public function addRating(Version $version)
+    {
+        if ($this->rating->contains($version)) {
+            return;
+        }
+
+        $this->rating[] = $version;
+        $version->addRating($this);
+    }
+
+    public function removeRating(Version $version)
+    {
+        if (!$this->rating->contains($version)) {
+            return;
+        }
+
+        $this->rating->removeElement($version);
+        $version->removeRating($this);
+
     }
 }

@@ -45,7 +45,7 @@ class Rating
     }
 
     /**
-     * @return mixed
+     * @return \App\Entity\Track\Version|null
      */
     public function getVersion()
     {

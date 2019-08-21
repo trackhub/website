@@ -152,15 +152,41 @@ class Version
         $this->negativeElevation = $negativeElevation;
     }
 
-    public function getRating(): float
+    public function getRating()
+    {
+        return $this->rating;
+    }
+
+    public function addRating(User $user)
+    {
+        if ($this->rating->contains($user))
+            return;
+
+        $this->rating[] = $user;
+        $user->addRating($this);
+    }
+
+    public function removeRating(User $user)
+    {
+        if (!$this->rating->contains($user))
+            return;
+
+        $this->rating->removeElement($user);
+        $user->removeRating($this);
+    }
+
+    /**
+     * Get overall rating by all users
+     *
+     * @return float
+     */
+    public function getOverallRating(): float
     {
         if ($this->rating->isEmpty())
             return 0;
 
-
         $sum = 0;
         $total = $this->rating->count();
-
 
         /**
          * @var $rating Rating
@@ -172,6 +198,11 @@ class Version
         return round($sum/$total, 1);
     }
 
+    /**
+     * Get total number of votes
+     *
+     * @return int
+     */
     public function getVotes(): int
     {
         return $this->rating->count();
