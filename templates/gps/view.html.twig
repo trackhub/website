@@ -19,6 +19,10 @@
                 max-height: 300px;
             }
 
+            #file_upload_progress div {
+                padding-top: 10px;
+            }
+
             .upload_progress_text {
                 background-color: black;
                 color: white;
@@ -156,10 +160,9 @@
         {% endfor %}
     </div>
 
-    <div>
+    <div style="height400px; overflow-x: scroll; overflow-y: hidden;white-space:nowrap;">
         {% for image in track.images %}
-            {# @FIXME style #}
-            <img src="{{ app_track_images_directory }}/{{ image.file }}" style="max-width: 400px;">
+            <img src="{{ app_track_images_directory }}/{{ image.file }}" style="max-width: 400px; max-height: 400px;">
         {% endfor %}
     </div>
 
