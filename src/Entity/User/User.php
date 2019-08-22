@@ -78,25 +78,4 @@ class User extends BaseUser
     {
         return $this->rating;
     }
-
-    public function addRating(Version $version)
-    {
-        if ($this->rating->contains($version)) {
-            return;
-        }
-
-        $this->rating[] = $version;
-        $version->addRating($this);
-    }
-
-    public function removeRating(Version $version)
-    {
-        if (!$this->rating->contains($version)) {
-            return;
-        }
-
-        $this->rating->removeElement($version);
-        $version->removeRating($this);
-
-    }
 }

@@ -157,24 +157,6 @@ class Version
         return $this->rating;
     }
 
-    public function addRating(User $user)
-    {
-        if ($this->rating->contains($user))
-            return;
-
-        $this->rating[] = $user;
-        $user->addRating($this);
-    }
-
-    public function removeRating(User $user)
-    {
-        if (!$this->rating->contains($user))
-            return;
-
-        $this->rating->removeElement($user);
-        $user->removeRating($this);
-    }
-
     /**
      * Get overall rating by all users
      *
