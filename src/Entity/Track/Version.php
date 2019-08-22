@@ -164,8 +164,9 @@ class Version
      */
     public function getOverallRating(): float
     {
-        if ($this->ratings->isEmpty())
+        if ($this->ratings->isEmpty()) {
             return 0;
+        }
 
         $sum = 0;
         $total = $this->ratings->count();
@@ -177,7 +178,7 @@ class Version
             $sum += $rating->getRating();
         }
 
-        return round($sum/$total, 1);
+        return round($sum / $total, 1);
     }
 
     /**

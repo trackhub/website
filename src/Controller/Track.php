@@ -246,7 +246,6 @@ class Track extends AbstractController
         }
 
         if ($request->getRealMethod() === 'POST') {
-
             $rating = null;
 
             /**
