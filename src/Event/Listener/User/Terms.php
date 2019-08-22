@@ -36,16 +36,16 @@ class Terms
             return;
         }
 
-        $alloweUrls = [
+        $allowedUrls = [
             '/user/terms',
             '/privacy-policy',
             '/terms-of-service',
         ];
 
         $urlAllowed = false;
-        $pathinfo = $event->getRequest()->getPathInfo();
-        foreach ($alloweUrls as $url) {
-            if (strpos($pathinfo, $url) === 3) {
+        $pathInfo = $event->getRequest()->getPathInfo();
+        foreach ($allowedUrls as $url) {
+            if (strpos($pathInfo, $url) === 3) {
                 $urlAllowed = true;
                 break;
             }

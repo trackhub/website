@@ -1,6 +1,5 @@
 <?php
 
-
 namespace App\Controller;
 
 use App\Form\Type\User\Terms;
@@ -11,7 +10,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 class User extends AbstractController
 {
-    public function terms(Request $requesst)
+    public function terms(Request $request)
     {
         if (!$this->getUser()) {
             return $this->redirectToRoute('hwi_oauth_connect');
@@ -20,7 +19,7 @@ class User extends AbstractController
         $form = $this->createForm(Terms::class);
         $form->add('submit', SubmitType::class);
 
-        $form->handleRequest($requesst);
+        $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $this->getUser()->acceptTerms();
             $this->getDoctrine()->getManager()->flush();
@@ -56,7 +55,7 @@ class User extends AbstractController
             ]
         );
         rewind($fp);
-        $csvAsString = fread($fp, 1024*1024);
+        $csvAsString = fread($fp, 1024 * 1024);
         // ... close the "file"...
         fclose($fp);
 

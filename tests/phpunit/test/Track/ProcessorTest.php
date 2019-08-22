@@ -287,8 +287,8 @@ class ProcessorTest extends TestCase
         $version = new Version($user);
 
         $xml = '<gpx><trk><trkseg>
-            <trkpt lat="'.$a['lat'].'" lon="'.$a['lon'].'"></trkpt>
-            <trkpt lat="'.$b['lat'].'" lon="'.$b['lon'].'"></trkpt>
+            <trkpt lat="' . $a['lat'] . '" lon="' . $a['lon'] . '"></trkpt>
+            <trkpt lat="' . $b['lat'] . '" lon="' . $b['lon'] . '"></trkpt>
         </trkseg></trk></gpx>';
 
         $processor->process($xml, $version);
