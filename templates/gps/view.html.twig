@@ -31,8 +31,11 @@
                 <td>{{ version.negativeElevation|number_format(0, '', '\'') }} m</td>
                 <td>
                     <div class="stars-outer" id="rating-{{ version.id }}"
+                        {% if version.votes > 0 %}
                          data-toggle="tooltip" data-html="true"
-                         title="Rating: {{ version.rating }}<br>Votes: {{ version.votes }}">
+                         title="Rating: {{ version.overallRating }}<br>Votes: {{ version.votes }}"
+                        {% endif %}
+                    >
                         <div class="stars-inner"></div>
                     </div>
                     {% if app.user %}
@@ -300,10 +303,6 @@
             const starPercentageRounded = Math.round(starPercentage / 10) * 10 + '%';
 
             document.querySelector('#rating-{{ version.id }} .stars-inner').style.width = starPercentageRounded;
-
-            {% if version.votes == 0 %}
-            $('#rating-{{ version.id }}').tooltip('disable');
-            {% endif %}
         }
         {% endfor %}
 
@@ -311,6 +310,8 @@
         {% if app.user %}
             /* Handle rating submission */
             $(document).ready(function () {
+
+                $('#ratingAlert').hide();
 
                 $('#ratingModal').on('show.bs.modal', function (event) {
                     const button = $(event.relatedTarget)
@@ -344,12 +345,27 @@
                                 const starPercentage = (rating / 5) * 100;
                                 const starPercentageRounded = Math.round(starPercentage / 10) * 10 + '%';
 
-                                $('#rating-' + version)
-                                    .attr('data-original-title', 'Rating: ' + rating + '<br>Votes: ' + votes)
-                                    .tooltip('enable');
+                                $('#rating-' + version).attr('data-original-title', 'Rating: ' + rating + '<br>Votes: ' + votes);
                                 document.querySelector('#rating-' + version + ' .stars-inner').style.width = starPercentageRounded;
 
-                                $('#ratingModal').modal('hide');
+                                /* Display 'thank you' message and close modal */
+                                $('#ratingAlert').html("" +
+                                    '<h4 class="alert-heading">Thank you!</h4>' +
+                                    '<p>You\'re make this site even better.</p>' +
+                                    "");
+                                $('#ratingAlert').addClass('alert-success').show(100);
+                            },
+                            error: function (xhr, ajaxOptions, thrownError) {
+
+                                let msg = JSON.parse(xhr.responseText)['message'];
+
+                                $('#ratingAlert').html("" +
+                                    '<h4 class="alert-heading">Ooops!</h4>' +
+                                    '<p>Something went wrong.</p>' +
+                                    '<hr>' +
+                                    '<p class="mb-0">' + msg + '.</p>' +
+                                    "");
+                                $('#ratingAlert').addClass('alert-danger').show(100);
                             }
                         }).done(function(){
                             but.text("Done");
