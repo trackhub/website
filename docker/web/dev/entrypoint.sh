@@ -14,6 +14,7 @@ su www-data bash -c "cd /var/www/script/migration && composer install --no-dev &
 su www-data bash -c "composer install -d /var/www"
 
 su www-data bash -c "cd /var/www && yarn install"
+su www-data bash -c "cd /var/www && yarn encore dev"
 su www-data bash -c "cd /var/www && yarn encore dev --watch &"
 
 apachectl -D FOREGROUND
