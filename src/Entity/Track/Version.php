@@ -66,14 +66,14 @@ class Version
      *     mappedBy="version"
      * )
      */
-    private $rating;
+    private $ratings;
 
     public function __construct(User $sendBy)
     {
         $this->sendBy = $sendBy;
         $this->points = new ArrayCollection();
         $this->wayPoints = new ArrayCollection();
-        $this->rating = new ArrayCollection();
+        $this->ratings = new ArrayCollection();
     }
 
     public function getId(): ?string
@@ -152,9 +152,9 @@ class Version
         $this->negativeElevation = $negativeElevation;
     }
 
-    public function getRating()
+    public function getRatings()
     {
-        return $this->rating;
+        return $this->ratings;
     }
 
     /**
@@ -164,16 +164,16 @@ class Version
      */
     public function getOverallRating(): float
     {
-        if ($this->rating->isEmpty())
+        if ($this->ratings->isEmpty())
             return 0;
 
         $sum = 0;
-        $total = $this->rating->count();
+        $total = $this->ratings->count();
 
         /**
          * @var $rating Rating
          */
-        foreach ($this->rating as $rating) {
+        foreach ($this->ratings as $rating) {
             $sum += $rating->getRating();
         }
 
@@ -187,6 +187,6 @@ class Version
      */
     public function getVotes(): int
     {
-        return $this->rating->count();
+        return $this->ratings->count();
     }
 }

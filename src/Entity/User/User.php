@@ -3,7 +3,6 @@
 namespace App\Entity\User;
 
 use App\Entity\Track\Rating;
-use App\Entity\Track\Version;
 use Doctrine\Common\Collections\ArrayCollection;
 use FOS\UserBundle\Model\User as BaseUser;
 use Doctrine\ORM\Mapping as ORM;
@@ -37,11 +36,13 @@ class User extends BaseUser
      *     mappedBy="user"
      * )
      */
-    private $rating;
+    private $ratings;
 
     public function __construct()
     {
-        $this->rating = new ArrayCollection();
+        parent::__construct();
+
+        $this->ratings = new ArrayCollection();
     }
 
     public function getFacebookId(): ?string
@@ -74,8 +75,8 @@ class User extends BaseUser
     /**
      * @return ArrayCollection|Rating[]
      */
-    public function getRating()
+    public function getRatings()
     {
-        return $this->rating;
+        return $this->ratings;
     }
 }

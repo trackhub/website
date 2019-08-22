@@ -21,7 +21,7 @@ class Rating
     /**
      * @ORM\ManyToOne(
      *     targetEntity="App\Entity\Track\Version",
-     *     inversedBy="rating"
+     *     inversedBy="ratings"
      * )
      */
     private $version;
@@ -29,7 +29,7 @@ class Rating
     /**
      * @ORM\ManyToOne(
      *     targetEntity="App\Entity\User\User",
-     *     inversedBy="rating"
+     *     inversedBy="ratings"
      *     )
      */
     private $user;

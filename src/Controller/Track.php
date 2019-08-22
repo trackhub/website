@@ -253,7 +253,7 @@ class Track extends AbstractController
              * Check if user has already submitted rating
              * @var $r Rating
              */
-            foreach ($user->getRating() as $r) {
+            foreach ($user->getRatings() as $r) {
                 if ($r->getVersion()->getId() === $id) {
                     $rating = $r;
                 }
