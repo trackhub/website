@@ -37,20 +37,17 @@ class Image
     /**
      * @ORM\Column(type="string", nullable=false)
      */
-    private $file;
+    private $filepath;
 
     public function __construct(string $file, User $sendBy, Track $track)
     {
-        $this->file = $file;
+        $this->filepath = $file;
         $this->sendBy = $sendBy;
         $this->track = $track;
         $track->addImage($this);
     }
 
-    /**
-     * @return mixed
-     */
-    public function getId()
+    public function getId(): ?string
     {
         return $this->id;
     }
@@ -60,11 +57,8 @@ class Image
         $this->version = $version;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getFile()
+    public function getFilepath(): string
     {
-        return $this->file;
+        return $this->filepath;
     }
 }

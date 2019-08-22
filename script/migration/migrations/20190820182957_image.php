@@ -12,7 +12,7 @@ class Image extends AbstractMigration
                 track_id CHAR(36) DEFAULT NULL COMMENT '(DC2Type:guid)', 
                 version_id CHAR(36) DEFAULT NULL COMMENT '(DC2Type:guid)', 
                 send_by_id INT DEFAULT NULL, 
-                file VARCHAR(255) NOT NULL, 
+                filepath VARCHAR(255) NOT NULL, 
                 INDEX IDX_TRACK_ID (track_id), 
                 INDEX IDX_VERSION_ID (version_id), 
                 INDEX IDX_SEND_BY (send_by_id), 
