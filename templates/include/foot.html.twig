@@ -1,9 +1,4 @@
 <!--- Scripts import --->
-<script src="https://unpkg.com/leaflet@1.3.4/dist/leaflet.js"
-        integrity="sha512-nMMmRyTVoLYqjP9hrbed9S+FzjZHW5gY1TWCHA5ckwXZBadntCNs8kEqAWdrb9O7rxbCaA4lKTIWjDXZxflOcA=="
-        crossorigin=""></script>
-<script src="https://unpkg.com/leaflet-gesture-handling@1.1.8/dist/leaflet-gesture-handling.js"
-        crossorigin=""></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.1.0/cookieconsent.min.js"
         crossorigin=""></script>
 <!-- Global site tag (gtag.js) - Google Analytics -->
@@ -33,4 +28,12 @@
     }
     gtag('js', new Date());
     gtag('config', 'UA-140320045-1', { 'anonymize_ip': true });
+</script>
+
+<script>
+    jQuery(document).ready(function() {
+        jQuery('[data-toggle="tooltip"]').tooltip();
+        jQuery('[data-toggle="popover"]').popover();
+    });
+
 </script>
