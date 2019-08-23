@@ -305,25 +305,23 @@
 
         {% if app.user %}
             /* Handle rating submission */
-            jQuery(document).ready(function () {
-                jQuery('#ratingAlert').hide();
+            document.addEventListener('DOMContentLoaded', function() {
+                document.getElementById('ratingAlert').style.display = 'none';
 
                 jQuery('#ratingModal').on('show.bs.modal', function (event) {
-                    const button = jQuery(event.relatedTarget)
-                    const version = button.data('version')
+                    const button = jQuery(event.relatedTarget);
+                    const version = button.data('version');
 
                     let url = '{{ path('gps-rate', {'id': 'id'}) }}';
                     url = url.replace("id", version);
 
-                    jQuery('#sendRating').click(function (e) {
-                        const rating = jQuery('#ratingSelect').val();
-                        let but = jQuery(this);
+                    document.getElementById('sendRating').addEventListener('click', function () {
+                        const rating = document.getElementById('ratingSelect').value;
+                        let but = this;
 
-                        but.prop('disabled', true);
-                        but.html(
-                            '<span class="spinner-border spinner-border-sm m-1" role="status" aria-hidden="true"></span>' +
-                            'Sending...'
-                        );
+                        this.disabled = true;
+                        this.innerHTML = '<span class="spinner-border spinner-border-sm m-1" role="status" aria-hidden="true"></span>';
+                        this.innerHTML += 'Sending...';
 
                         jQuery.ajax({
                             type: "POST",
@@ -332,7 +330,6 @@
                                 rating: rating
                             },
                             success: function(data) {
-
                                 const rating = data.rating;
                                 const votes = data.votes;
 
@@ -351,7 +348,6 @@
                                 jQuery('#ratingAlert').addClass('alert-success').show(100);
                             },
                             error: function (xhr, ajaxOptions, thrownError) {
-
                                 let msg = JSON.parse(xhr.responseText)['message'];
 
                                 jQuery('#ratingAlert').html("" +
@@ -363,7 +359,7 @@
                                 jQuery('#ratingAlert').addClass('alert-danger').show(100);
                             }
                         }).done(function(){
-                            but.text("Done");
+                            but.innerText = "Done";
                         });
                     });
                 });
