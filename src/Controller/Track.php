@@ -247,12 +247,15 @@ class Track extends AbstractController
 
         if ($request->getRealMethod() === 'POST') {
             $ratingRepo = $em->getRepository(Rating::class);
+            /*
+             * Check if user has already submitted rating
+             */
             $rating = $ratingRepo->findOneBy([
                 'version' => $id,
                 'user' => $user,
             ]);
 
-            /**
+            /*
              * If $rating is null, create new row
              */
             if (is_null($rating)) {
