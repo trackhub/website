@@ -13,10 +13,8 @@ require('bootstrap');
 
 // Need jQuery? Install it with "yarn add jquery", then uncomment to require it.
 // var $ = require('jquery');
-// global.$ = $;
 
 window.jQuery = require('jquery');
 window.chartJs = require('chart.js');
 
 window.AppTrack = require('./track.js');
-
