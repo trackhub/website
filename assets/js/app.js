@@ -13,6 +13,8 @@ require('../css/global.scss');
 // var $ = require('jquery');
 
 window.jQuery = require('jquery');
+window.bootstrap = require('bootstrap');
 window.chartJs = require('chart.js');
+window.lighBox = require('ekko-lightbox/dist/ekko-lightbox.js');
 
 window.AppTrack = require('./track.js');

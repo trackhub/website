@@ -179,7 +179,13 @@
 
     <div class="track_images" >
         {% for image in track.images %}
-            <img src="{{ app_track_images_directory }}/{{ image.filepath }}">
+            <a href="{{ app_track_images_directory }}/{{ image.filepath }}"
+               data-toggle="lightbox"
+               data-gallery="track-images"
+               data-footer="&lt;a href=&quot;{{ app_track_images_directory }}/{{ image.filepath }}#&quot;&gt;view full size&lt;/a&gt;"
+            >
+                <img src="{{ app_track_images_directory }}/{{ image.filepath }}">
+            </a>
         {% endfor %}
     </div>
 
