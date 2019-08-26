@@ -322,7 +322,7 @@
                     let url = '{{ path('gps-rate', {'id': 'id'}) }}';
                     url = url.replace("id", version);
 
-                    document.getElementById('sendRating').addEventListener('click', function () {
+                    jQuery('#sendRating').on('click', function() {
                         const rating = document.getElementById('ratingSelect').value;
                         let but = this;
 
