@@ -274,8 +274,9 @@ class Track extends AbstractController
         /**
          * @var $r VersionRating
          */
-        foreach ($version->getRatings() as $r)
+        foreach ($version->getRatings() as $r) {
             $average += $r->getRating();
+        }
         $average = $average / $version->getVotes();
 
         return new JsonResponse([
