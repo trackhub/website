@@ -12,6 +12,7 @@ use App\Track\Exporter;
 use App\Track\Processor;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -427,5 +428,29 @@ class Track extends AbstractController
             Response::HTTP_OK,
             ['Content-Type' => 'text/json']
         );
+    }
+
+    public function generateThumbnail(int $year, string $trackId, $imagePath)
+    {
+        $originalImagePath = $this->getParameter('track_images_directory') . DIRECTORY_SEPARATOR;
+        $originalImagePath .= $year . DIRECTORY_SEPARATOR . $trackId . DIRECTORY_SEPARATOR . $imagePath;
+
+        $image = new \Imagick($originalImagePath);
+        $image->adaptiveResizeImage(400,400);
+
+        $thumbnailPathDir = $this->getParameter('track_images_thumbnails_directory');
+        $thumbnailPathDir .= DIRECTORY_SEPARATOR . $year . DIRECTORY_SEPARATOR . $trackId;
+        $thumbnailPath = $thumbnailPathDir . DIRECTORY_SEPARATOR . $imagePath;
+
+        $fs = new Filesystem();
+
+        $fs->mkdir($thumbnailPathDir);
+
+        file_put_contents(
+            $thumbnailPath,
+            $image
+        );
+
+
     }
 }
