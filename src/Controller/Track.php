@@ -430,13 +430,17 @@ class Track extends AbstractController
         );
     }
 
-    public function generateThumbnail(int $year, string $trackId, $imagePath)
+    /**
+     * This method is called when thumbnails doesn't exists.
+     * Thumbnail will be created and saved in the "public" directory.
+     */
+    public function generateThumbnail(int $year, string $trackId, string $imagePath)
     {
         $originalImagePath = $this->getParameter('track_images_directory') . DIRECTORY_SEPARATOR;
         $originalImagePath .= $year . DIRECTORY_SEPARATOR . $trackId . DIRECTORY_SEPARATOR . $imagePath;
 
         $image = new \Imagick($originalImagePath);
-        $image->adaptiveResizeImage(400,400);
+        $image->adaptiveResizeImage(800,300, true);
 
         $thumbnailPathDir = $this->getParameter('track_images_thumbnails_directory');
         $thumbnailPathDir .= DIRECTORY_SEPARATOR . $year . DIRECTORY_SEPARATOR . $trackId;
@@ -451,6 +455,12 @@ class Track extends AbstractController
             $image
         );
 
-
+        return new Response(
+            $image,
+            Response::HTTP_OK,
+            [
+                'Content-Type' => 'image/jpeg',
+            ]
+        );
     }
 }
