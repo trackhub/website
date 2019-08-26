@@ -19,6 +19,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Translation\TranslatorInterface;
 use Tekstove\UrlVideoParser\Exception\ParseException;
 use Tekstove\UrlVideoParser\Youtube\YoutubeParser;
 
@@ -363,7 +364,7 @@ class Track extends AbstractController
         return $response;
     }
 
-    public function addImage(string $id, Request $request, TrackRepository $trackRepo)
+    public function addImage(string $id, Request $request, TrackRepository $trackRepo, TranslatorInterface $translator)
     {
         $track = $trackRepo->findOneBy(['id' => $id]);
 
@@ -375,11 +376,10 @@ class Track extends AbstractController
         $file = $request->files->get('file');
         /* @var $file UploadedFile */
         if (!$file->isValid()) {
-            // @FIXME error handling
             return new Response(
                 json_encode([
                     'status' => 1,
-                    'error' => 'upload failed',
+                    'error' => $translator->trans('Upload failed'),
                 ]),
                 Response::HTTP_BAD_REQUEST,
                 ['Content-Type' => 'text/json']
@@ -390,11 +390,10 @@ class Track extends AbstractController
         $extension = mb_strtolower($extension);
 
         if (!in_array($extension, ['jpeg', 'jpg', 'png', 'gif'])) {
-            // @FIXME error handling
             return new Response(
                 json_encode([
                     'status' => 1,
-                    'error' => 'format not allowed',
+                    'error' => $translator->trans('Image format is not allowed'),
                 ]),
                 Response::HTTP_BAD_REQUEST,
                 ['Content-Type' => 'text/json']
