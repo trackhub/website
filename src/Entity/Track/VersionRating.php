@@ -23,7 +23,12 @@ class VersionRating
      * @ORM\ManyToOne(
      *     targetEntity="App\Entity\Track\Version",
      *     inversedBy="ratings"
-     *     )
+     * )
+     * @ORM\JoinColumn(
+     *     name="version_id",
+     *     referencedColumnName="id",
+     *     nullable=false
+     * )
      */
     private $version;
 
@@ -31,7 +36,12 @@ class VersionRating
      * @ORM\ManyToOne(
      *     targetEntity="App\Entity\User\User",
      *     inversedBy="ratings"
-     *     )
+     * )
+     * @ORM\JoinColumn(
+     *     name="user_id",
+     *     referencedColumnName="id",
+     *     nullable=false
+     * )
      */
     private $user;
 
