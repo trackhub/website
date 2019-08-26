@@ -40,7 +40,10 @@ class VersionRating
      */
     private $rating;
 
-    public function getId(): ?int
+    /**
+     * @return string|null
+     */
+    public function getId(): ?string
     {
         return $this->id;
     }
