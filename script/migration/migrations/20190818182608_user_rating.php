@@ -10,10 +10,11 @@ class UserRating extends AbstractMigration
          * Create 'rating' table
          */
         $this->query("
-            CREATE TABLE rating (
+            CREATE TABLE version_rating (
                 id CHAR(36) NOT NULL COMMENT '(DC2Type:guid)',
-                version_id CHAR(36) DEFAULT NULL COMMENT '(DC2Type:guid)',
-                user_id INT DEFAULT NULL, rating INT NOT NULL,
+                version_id CHAR(36) NOT NULL COMMENT '(DC2Type:guid)',
+                user_id INT NOT NULL,
+                rating INT NOT NULL,
                 INDEX IDX_D88926224BBC2705 (version_id),
                 INDEX IDX_D8892622A76ED395 (user_id),
                 PRIMARY KEY(id)
@@ -24,14 +25,14 @@ class UserRating extends AbstractMigration
          * Add constraints
          */
         $this->query("
-            ALTER TABLE rating
+            ALTER TABLE version_rating
             ADD CONSTRAINT FK_D88926224BBC2705
             FOREIGN KEY (version_id)
             REFERENCES version (id);
         ");
 
         $this->query("
-            ALTER TABLE rating
+            ALTER TABLE version_rating
             ADD CONSTRAINT FK_D8892622A76ED395
             FOREIGN KEY (user_id)
             REFERENCES `user` (id);
@@ -45,7 +46,7 @@ class UserRating extends AbstractMigration
          */
         $this->query("
             DROP TABLE
-                rating
+                version_rating
         ");
     }
 }
