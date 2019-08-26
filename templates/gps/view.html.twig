@@ -37,7 +37,7 @@
                             {% for r in version.ratings %}
                                 {% set sum = sum + r.rating %}
                             {% endfor %}
-                         title="Rating: {{ sum }}<br>Votes: {{ version.votes }}"
+                         title="Rating: {{ sum / version.votes }}<br>Votes: {{ version.votes }}"
                         {% endif %}
                     >
                         <div class="stars-inner"></div>

@@ -264,8 +264,20 @@ class Track extends AbstractController
                 $rating->setVersion($version);
             }
 
-            $rating->setRating($request->request->get('rating'));
+            /**
+             * Check if rating is within range of 1 to 5
+             */
+            $newRating = $request->request->get('rating');
+            if ($newRating < 1 || $newRating > 5) {
+                return new JsonResponse(
+                    [
+                        'message' => 'Invalid rating: ' . $newRating
+                    ],
+                    Response::HTTP_BAD_REQUEST
+                );
+            }
 
+            $rating->setRating($newRating);
             $em->persist($rating);
             $em->flush();
         }
