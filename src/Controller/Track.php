@@ -3,7 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\File\TrackFile;
-use App\Entity\Track\Rating;
+use App\Entity\Track\VersionRating;
 use App\Entity\Track\Version;
 use App\Entity\Video\Youtube;
 use App\Form\Type\TrackVersion;
@@ -246,7 +246,7 @@ class Track extends AbstractController
         }
 
         if ($request->getRealMethod() === 'POST') {
-            $ratingRepo = $em->getRepository(Rating::class);
+            $ratingRepo = $em->getRepository(VersionRating::class);
             /*
              * Check if user has already submitted rating
              */
@@ -259,7 +259,7 @@ class Track extends AbstractController
              * If $rating is null, create new row
              */
             if (is_null($rating)) {
-                $rating = new Rating();
+                $rating = new VersionRating();
                 $rating->setUser($user);
                 $rating->setVersion($version);
             }

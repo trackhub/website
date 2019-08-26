@@ -62,8 +62,10 @@ class Version
 
     /**
      * @ORM\OneToMany(
-     *     targetEntity="App\Entity\Track\Rating",
-     *     mappedBy="version"
+     *     targetEntity="App\Entity\Track\VersionRating",
+     *     mappedBy="version",
+     *     cascade={"persist", "remove"},
+     *     orphanRemoval=true
      * )
      */
     private $ratings;
@@ -172,7 +174,7 @@ class Version
         $total = $this->ratings->count();
 
         /**
-         * @var $rating Rating
+         * @var $rating VersionRating
          */
         foreach ($this->ratings as $rating) {
             $sum += $rating->getRating();

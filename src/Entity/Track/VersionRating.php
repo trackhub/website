@@ -8,8 +8,9 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity
+ * @ORM\Table(name="version_rating")
  */
-class Rating
+class VersionRating
 {
     /**
      * @ORM\Id()
@@ -22,7 +23,7 @@ class Rating
      * @ORM\ManyToOne(
      *     targetEntity="App\Entity\Track\Version",
      *     inversedBy="ratings"
-     * )
+     *     )
      */
     private $version;
 
@@ -45,7 +46,7 @@ class Rating
     }
 
     /**
-     * @return \App\Entity\Track\Version|null
+     * @return Version|null
      */
     public function getVersion()
     {
@@ -53,7 +54,7 @@ class Rating
     }
 
     /**
-     * @param mixed $version
+     * @param Version $version
      */
     public function setVersion(Version $version): void
     {
@@ -61,13 +62,12 @@ class Rating
     }
 
     /**
-     * @return mixed
+     * @return User
      */
     public function getUser()
     {
         return $this->user;
     }
-
 
     /**
      * @param User $user
@@ -77,11 +77,17 @@ class Rating
         $this->user = $user;
     }
 
+    /**
+     * @return int
+     */
     public function getRating(): int
     {
         return $this->rating;
     }
 
+    /**
+     * @param int $rating
+     */
     public function setRating(int $rating)
     {
         $this->rating = $rating;

@@ -2,7 +2,7 @@
 
 namespace App\Entity\User;
 
-use App\Entity\Track\Rating;
+use App\Entity\Track\VersionRating;
 use Doctrine\Common\Collections\ArrayCollection;
 use FOS\UserBundle\Model\User as BaseUser;
 use Doctrine\ORM\Mapping as ORM;
@@ -32,8 +32,10 @@ class User extends BaseUser
 
     /**
      * @ORM\OneToMany(
-     *     targetEntity="App\Entity\Track\Rating",
-     *     mappedBy="user"
+     *     targetEntity="App\Entity\Track\VersionRating",
+     *     mappedBy="user",
+     *     cascade={"persist", "remove"},
+     *     orphanRemoval=true
      * )
      */
     private $ratings;
@@ -73,7 +75,7 @@ class User extends BaseUser
     }
 
     /**
-     * @return ArrayCollection|Rating[]
+     * @return ArrayCollection|VersionRating[]
      */
     public function getRatings()
     {
