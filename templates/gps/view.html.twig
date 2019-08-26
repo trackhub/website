@@ -88,7 +88,7 @@
                         }
                     });
 
-                    xhr.open('POST', {{ path('gps-new-image', {id: track.id})|json_encode|raw }}, true);
+                    xhr.open('POST', {{ path('track-new-image', {id: track.id})|json_encode|raw }}, true);
                     xhr.send(formData);
                 }
             });

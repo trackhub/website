@@ -16,10 +16,9 @@ gps-new:
   path: /{_locale}/gps/new
   controller: App\Controller\Track::new
 
-gps-new-image:
+track-new-image:
   path: /{_locale}/gps/add-image/{id}
   controller: App\Controller\Track::addImage
-
 
 gps-view:
   path: /{_locale}/gps/view/{id}
