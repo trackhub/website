@@ -232,7 +232,7 @@ class Track extends AbstractController
         $user = $this->getUser();
 
         /**
-         * @var $version \App\Entity\Track\Version
+         * @var $version Version
          */
         $version = $em->getRepository(\App\Entity\Track\Version::class)
             ->findOneBy(['id' => $id]);
@@ -270,8 +270,16 @@ class Track extends AbstractController
             $em->flush();
         }
 
+        $average = 0;
+        /**
+         * @var $r VersionRating
+         */
+        foreach ($version->getRatings() as $r)
+            $average += $r->getRating();
+        $average = $average / $version->getVotes();
+
         return new JsonResponse([
-            'rating' => $version->getOverallRating(),
+            'rating' => round($average, 2),
             'votes' => $version->getVotes(),
         ]);
     }

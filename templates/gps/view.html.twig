@@ -33,7 +33,11 @@
                     <div class="stars-outer" id="rating-{{ version.id }}"
                         {% if version.votes > 0 %}
                          data-toggle="tooltip" data-html="true"
-                         title="Rating: {{ version.overallRating }}<br>Votes: {{ version.votes }}"
+                            {% set sum = 0 %}
+                            {% for r in version.ratings %}
+                                {% set sum = sum + r.rating %}
+                            {% endfor %}
+                         title="Rating: {{ sum }}<br>Votes: {{ version.votes }}"
                         {% endif %}
                     >
                         <div class="stars-inner"></div>
@@ -294,14 +298,17 @@
         /* Display star ratings */
         {% for version in track.versions %}
         {
-            let rating = {{ version.OverallRating }};
+            {% set sum = 0 %}
+            {%  for r in version.ratings %}
+                {% set sum = sum + r.rating %}
+            {% endfor %}
+            rating = {{ sum }} / {{ version.votes }};
             const starPercentage = (rating / 5) * 100;
             const starPercentageRounded = Math.round(starPercentage / 10) * 10 + '%';
 
             document.querySelector('#rating-{{ version.id }} .stars-inner').style.width = starPercentageRounded;
         }
         {% endfor %}
-
 
         {% if app.user %}
             /* Handle rating submission */
