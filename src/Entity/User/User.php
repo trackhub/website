@@ -2,6 +2,8 @@
 
 namespace App\Entity\User;
 
+use App\Entity\Track\VersionRating;
+use Doctrine\Common\Collections\ArrayCollection;
 use FOS\UserBundle\Model\User as BaseUser;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -28,6 +30,23 @@ class User extends BaseUser
      */
     private $facebookId;
 
+    /**
+     * @ORM\OneToMany(
+     *     targetEntity="App\Entity\Track\VersionRating",
+     *     mappedBy="user",
+     *     cascade={"persist", "remove"},
+     *     orphanRemoval=true
+     * )
+     */
+    private $ratings;
+
+    public function __construct()
+    {
+        parent::__construct();
+
+        $this->ratings = new ArrayCollection();
+    }
+
     public function getFacebookId(): ?string
     {
         return $this->facebookId;
@@ -53,5 +72,13 @@ class User extends BaseUser
     public function acceptTerms()
     {
         $this->termsAccepted = new \DateTime();
+    }
+
+    /**
+     * @return ArrayCollection|VersionRating[]
+     */
+    public function getRatings()
+    {
+        return $this->ratings;
     }
 }
