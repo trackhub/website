@@ -77,10 +77,6 @@
                                     <option>5</option>
                                 </select>
                             </div>
-                            <div class="form-group">
-                                <label for="ratingComment">Comment (optional)</label>
-                                <textarea class="form-control" id="ratingComment" rows="3" disabled></textarea>
-                            </div>
                         </form>
                     </div>
                     <div class="modal-footer">
@@ -309,35 +305,31 @@
 
         {% if app.user %}
             /* Handle rating submission */
-            $(document).ready(function () {
+            document.addEventListener('DOMContentLoaded', function() {
+                document.getElementById('ratingAlert').style.display = 'none';
 
-                $('#ratingAlert').hide();
-
-                $('#ratingModal').on('show.bs.modal', function (event) {
-                    const button = $(event.relatedTarget)
-                    const version = button.data('version')
+                jQuery('#ratingModal').on('show.bs.modal', function (event) {
+                    const button = jQuery(event.relatedTarget);
+                    const version = button.data('version');
 
                     let url = '{{ path('gps-rate', {'id': 'id'}) }}';
                     url = url.replace("id", version);
 
-                    $('#sendRating').click(function (e) {
-                        const rating = $('#ratingSelect').val();
-                        let but = $(this);
+                    document.getElementById('sendRating').addEventListener('click', function () {
+                        const rating = document.getElementById('ratingSelect').value;
+                        let but = this;
 
-                        but.prop('disabled', true);
-                        but.html(
-                            '<span class="spinner-border spinner-border-sm m-1" role="status" aria-hidden="true"></span>' +
-                            'Sending...'
-                        );
+                        this.disabled = true;
+                        this.innerHTML = '<span class="spinner-border spinner-border-sm m-1" role="status" aria-hidden="true"></span>';
+                        this.innerHTML += 'Sending...';
 
-                        $.ajax({
+                        jQuery.ajax({
                             type: "POST",
                             url: url,
                             data: {
                                 rating: rating
                             },
                             success: function(data) {
-
                                 const rating = data.rating;
                                 const votes = data.votes;
 
@@ -345,47 +337,44 @@
                                 const starPercentage = (rating / 5) * 100;
                                 const starPercentageRounded = Math.round(starPercentage / 10) * 10 + '%';
 
-                                $('#rating-' + version).attr('data-original-title', 'Rating: ' + rating + '<br>Votes: ' + votes);
+                                jQuery('#rating-' + version).attr('data-original-title', 'Rating: ' + rating + '<br>Votes: ' + votes);
                                 document.querySelector('#rating-' + version + ' .stars-inner').style.width = starPercentageRounded;
 
                                 /* Display 'thank you' message and close modal */
-                                $('#ratingAlert').html("" +
+                                jQuery('#ratingAlert').html("" +
                                     '<h4 class="alert-heading">Thank you!</h4>' +
                                     '<p>You\'re make this site even better.</p>' +
                                     "");
-                                $('#ratingAlert').addClass('alert-success').show(100);
+                                jQuery('#ratingAlert').addClass('alert-success').show(100);
                             },
                             error: function (xhr, ajaxOptions, thrownError) {
-
                                 let msg = JSON.parse(xhr.responseText)['message'];
 
-                                $('#ratingAlert').html("" +
+                                jQuery('#ratingAlert').html("" +
                                     '<h4 class="alert-heading">Ooops!</h4>' +
                                     '<p>Something went wrong.</p>' +
                                     '<hr>' +
                                     '<p class="mb-0">' + msg + '.</p>' +
                                     "");
-                                $('#ratingAlert').addClass('alert-danger').show(100);
+                                jQuery('#ratingAlert').addClass('alert-danger').show(100);
                             }
                         }).done(function(){
-                            but.text("Done");
+                            but.innerText = "Done";
                         });
                     });
                 });
 
-                $('#ratingModal').on('hide.bs.modal', function () {
-                    $('#sendRating').off('click');
-                    $('#ratingAlert')
+                jQuery('#ratingModal').on('hide.bs.modal', function () {
+                    jQuery('#sendRating').off('click');
+                    jQuery('#ratingAlert')
                         .removeClass('alert-success')
                         .removeClass('alert-danger')
                         .hide();
-                    $('#sendRating')
+                    jQuery('#sendRating')
                         .prop('disabled', false)
                         .text('Rate');
-
                 });
             });
         {% endif %}
-
     </script>
 {% endblock %}

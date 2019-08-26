@@ -17,6 +17,7 @@ use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -218,7 +219,6 @@ class Track extends AbstractController
 
     public function rate(Request $request, $id)
     {
-
         if (!$request->isXmlHttpRequest()) {
             throw new AccessDeniedHttpException();
         }
@@ -241,24 +241,21 @@ class Track extends AbstractController
                 [
                     'message' => "Invalid track version"
                 ],
-                400
+                Response::HTTP_BAD_REQUEST
             );
         }
 
         if ($request->getRealMethod() === 'POST') {
-            $rating = null;
-
-            /**
+            $ratingRepo = $em->getRepository(Rating::class);
+            /*
              * Check if user has already submitted rating
-             * @var $r Rating
              */
-            foreach ($user->getRatings() as $r) {
-                if ($r->getVersion()->getId() === $id) {
-                    $rating = $r;
-                }
-            }
+            $rating = $ratingRepo->findOneBy([
+                'version' => $id,
+                'user' => $user,
+            ]);
 
-            /**
+            /*
              * If $rating is null, create new row
              */
             if (is_null($rating)) {
@@ -275,7 +272,7 @@ class Track extends AbstractController
 
         return new JsonResponse([
             'rating' => $version->getOverallRating(),
-            'votes' => $version->getVotes()
+            'votes' => $version->getVotes(),
         ]);
     }
 
