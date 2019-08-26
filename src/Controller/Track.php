@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\File\TrackFile;
 use App\Entity\Track\Image;
+use App\Entity\Track\VersionRating;
 use App\Entity\Track\Version;
 use App\Entity\Video\Youtube;
 use App\Form\Type\TrackVersion;
@@ -16,9 +17,11 @@ use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Translation\TranslatorInterface;
 use Tekstove\UrlVideoParser\Exception\ParseException;
@@ -215,6 +218,86 @@ class Track extends AbstractController
                 'form' => $form->createView(),
             ]
         );
+    }
+
+    public function rate(Request $request, $id)
+    {
+        if (!$request->isXmlHttpRequest()) {
+            throw new AccessDeniedHttpException();
+        }
+
+        $em = $this->getDoctrine()
+            ->getManager();
+
+        /**
+         * @var $user \App\Entity\User\User
+         */
+        $user = $this->getUser();
+
+        /**
+         * @var $version Version
+         */
+        $version = $em->getRepository(\App\Entity\Track\Version::class)
+            ->findOneBy(['id' => $id]);
+        if (is_null($version)) {
+            return new JsonResponse(
+                [
+                    'message' => "Invalid track version"
+                ],
+                Response::HTTP_BAD_REQUEST
+            );
+        }
+
+        if ($request->getRealMethod() === 'POST') {
+            $ratingRepo = $em->getRepository(VersionRating::class);
+            /*
+             * Check if user has already submitted rating
+             */
+            $rating = $ratingRepo->findOneBy([
+                'version' => $id,
+                'user' => $user,
+            ]);
+
+            /*
+             * If $rating is null, create new row
+             */
+            if (is_null($rating)) {
+                $rating = new VersionRating();
+                $rating->setUser($user);
+                $rating->setVersion($version);
+            }
+
+            /**
+             * Check if rating is within range of 1 to 5
+             */
+            $newRating = $request->request->get('rating');
+            if ($newRating < 1 || $newRating > 5) {
+                return new JsonResponse(
+                    [
+                        'message' => 'Invalid rating: ' . $newRating
+                    ],
+                    Response::HTTP_BAD_REQUEST
+                );
+            }
+
+            $rating->setRating($newRating);
+            $em->persist($rating);
+            $em->flush();
+        }
+
+        $average = 0;
+        /**
+         * @var $r VersionRating
+         */
+        foreach ($version->getRatings() as $r) {
+            $average += $r->getRating();
+        }
+        $average = $average / $version->getVotes();
+
+        return new JsonResponse([
+            'rating' => round($average, 2),
+            'votes' => $version->getVotes(),
+        ]);
     }
 
     public function view($id, TrackRepository $repo)

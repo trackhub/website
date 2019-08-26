@@ -60,11 +60,22 @@ class Version
      */
     private $negativeElevation = 0;
 
+    /**
+     * @ORM\OneToMany(
+     *     targetEntity="App\Entity\Track\VersionRating",
+     *     mappedBy="version",
+     *     cascade={"persist", "remove"},
+     *     orphanRemoval=true
+     * )
+     */
+    private $ratings;
+
     public function __construct(User $sendBy)
     {
         $this->sendBy = $sendBy;
         $this->points = new ArrayCollection();
         $this->wayPoints = new ArrayCollection();
+        $this->ratings = new ArrayCollection();
     }
 
     public function getId(): ?string
@@ -141,5 +152,20 @@ class Version
     public function setNegativeElevation(int $negativeElevation): void
     {
         $this->negativeElevation = $negativeElevation;
+    }
+
+    public function getRatings()
+    {
+        return $this->ratings;
+    }
+
+    /**
+     * Get total number of votes
+     *
+     * @return int
+     */
+    public function getVotes(): int
+    {
+        return $this->ratings->count();
     }
 }
