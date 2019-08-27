@@ -17,4 +17,5 @@ require('bootstrap');
 window.jQuery = require('jquery');
 window.chartJs = require('chart.js');
 
-window.AppTrack = require('./track.js');
+window.AppTrack = require('./components/appTrack.js');
+window.StarRating = require('./components/starRating');

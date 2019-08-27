@@ -43,7 +43,7 @@
                         <div class="stars-inner"></div>
                     </div>
                     {% if app.user %}
-                    <button type="button" class="btn" data-toggle="modal" data-target="#ratingModal" data-version="{{ version.id }}">
+                    <button type="button" class="btn" data-toggle="modal" data-target="#ratingModal" data-version="{{ version.id }}" data-path="{{ path('gps-rate', {'id': 'id'}) }}">
                         <i class="fas fa-bars"></i>
                     </button>
                     {% endif %}
@@ -302,86 +302,15 @@
             {%  for r in version.ratings %}
                 {% set sum = sum + r.rating %}
             {% endfor %}
-            rating = {{ sum }} / {{ version.votes }};
-            const starPercentage = (rating / 5) * 100;
-            const starPercentageRounded = Math.round(starPercentage / 10) * 10 + '%';
-
-            document.querySelector('#rating-{{ version.id }} .stars-inner').style.width = starPercentageRounded;
+            const starRating = new StarRating("#rating-{{ version.id }}");
+            starRating.setRating({{ sum / version.votes }});
         }
         {% endfor %}
-
-        {% if app.user %}
-            /* Handle rating submission */
-            document.addEventListener('DOMContentLoaded', function() {
-                document.getElementById('ratingAlert').style.display = 'none';
-
-                jQuery('#ratingModal').on('show.bs.modal', function (event) {
-                    const button = jQuery(event.relatedTarget);
-                    const version = button.data('version');
-
-                    let url = '{{ path('gps-rate', {'id': 'id'}) }}';
-                    url = url.replace("id", version);
-
-                    jQuery('#sendRating').on('click', function() {
-                        const rating = document.getElementById('ratingSelect').value;
-                        let but = this;
-
-                        this.disabled = true;
-                        this.innerHTML = '<span class="spinner-border spinner-border-sm m-1" role="status" aria-hidden="true"></span>';
-                        this.innerHTML += 'Sending...';
-
-                        jQuery.ajax({
-                            type: "POST",
-                            url: url,
-                            data: {
-                                rating: rating
-                            },
-                            success: function(data) {
-                                const rating = data.rating;
-                                const votes = data.votes;
-
-                                /* Update star rating */
-                                const starPercentage = (rating / 5) * 100;
-                                const starPercentageRounded = Math.round(starPercentage / 10) * 10 + '%';
-
-                                jQuery('#rating-' + version).attr('data-original-title', 'Rating: ' + rating + '<br>Votes: ' + votes);
-                                document.querySelector('#rating-' + version + ' .stars-inner').style.width = starPercentageRounded;
-
-                                /* Display 'thank you' message and close modal */
-                                jQuery('#ratingAlert').html("" +
-                                    '<h4 class="alert-heading">Thank you!</h4>' +
-                                    '<p>You\'re make this site even better.</p>' +
-                                    "");
-                                jQuery('#ratingAlert').addClass('alert-success').show(100);
-                            },
-                            error: function (xhr, ajaxOptions, thrownError) {
-                                let msg = JSON.parse(xhr.responseText)['message'];
-
-                                jQuery('#ratingAlert').html("" +
-                                    '<h4 class="alert-heading">Ooops!</h4>' +
-                                    '<p>Something went wrong.</p>' +
-                                    '<hr>' +
-                                    '<p class="mb-0">' + msg + '.</p>' +
-                                    "");
-                                jQuery('#ratingAlert').addClass('alert-danger').show(100);
-                            }
-                        }).done(function(){
-                            but.innerText = "Done";
-                        });
-                    });
-                });
-
-                jQuery('#ratingModal').on('hide.bs.modal', function () {
-                    jQuery('#sendRating').off('click');
-                    jQuery('#ratingAlert')
-                        .removeClass('alert-success')
-                        .removeClass('alert-danger')
-                        .hide();
-                    jQuery('#sendRating')
-                        .prop('disabled', false)
-                        .text('Rate');
-                });
-            });
-        {% endif %}
     </script>
+
+    {% if app.user %}
+        {{ parent() }}
+        {{ encore_entry_script_tags('rating') }}
+    {% endif %}
+
 {% endblock %}
