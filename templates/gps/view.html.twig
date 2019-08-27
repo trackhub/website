@@ -96,7 +96,7 @@
         <input type="submit" class="btn btn-success" value="download selected versions">
     </form>
 
-    <div class="chart-container" style="height: 300px;">
+    <div class="chart-container" style="height: 300px;" id="elevation-container" data-labels="{{ elevationLabels|json_encode|e('html_attr') }}"  data-datasets="{{ elevationData|json_encode|e('html_attr') }}">
         <canvas id="elevation" width="400" height="300">
             Elevation plot can't be shown!
             Your browser doesn't support canvas elements.
@@ -242,30 +242,6 @@
             {% set trackIndex = trackIndex + 1 %}
         {% endfor %}
 
-        // elevation plot
-        var ctx = document.getElementById('elevation').getContext('2d');
-        var myChart = new window.chartJs(ctx, {
-            type: 'line',
-            data: {
-                labels: {{ elevationLabels|json_encode|raw }},
-                datasets: {{ elevationData|json_encode|raw }}
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                scales: {
-                    yAxes: [{
-                        ticks: {
-                            beginAtZero: false
-                        }
-                    }]
-                },
-                tooltips: {
-                    mode: 'nearest'
-                }
-            }
-        });
-
         /* Display star rating */
         {% for version in track.versions %}
         {
@@ -280,9 +256,11 @@
         {% endfor %}
     </script>
 
+    {{ parent() }}
+    {{ encore_entry_script_tags('view') }}
+
     <!--- If user is logged-in show add rating js code --->
     {% if app.user %}
-        {{ parent() }}
         {{ encore_entry_script_tags('rating') }}
     {% endif %}
 
