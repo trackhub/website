@@ -5,11 +5,11 @@ before_install:
     - docker build --tag=trackhub-web ./docker/web/
 
 script:
-    - docker run -u www-data -t trackhub-web /bin/bash -c "php -v && ls"
-#    - composer install --prefer-dist
-#    - ./vendor/bin/phpunit -c tests/phpunit/phpunit.xml --no-coverage
-#    - ./bin/console doctrine:mapping:info
-#    - cd ./tests/phpcs && composer install && ./vendor/bin/phpcs --standard=phpcs.xml
+    - docker run -u www-data -v `pwd`:/var/www -t trackhub-web /bin/bash -c "php -v && ls"
+    - docker run -u www-data -v `pwd`:/var/www -t trackhub-web /bin/bash -c "composer install --prefer-dist"
+    - docker run -u www-data -v `pwd`:/var/www -t trackhub-web /bin/bash -c "./vendor/bin/phpunit -c tests/phpunit/phpunit.xml --no-coverage"
+    - docker run -u www-data -v `pwd`:/var/www -t trackhub-web /bin/bash -c "./bin/console doctrine:mapping:info"
+    - docker run -u www-data -v `pwd`:/var/www -t trackhub-web /bin/bash -c "cd ./tests/phpcs && composer install && ./vendor/bin/phpcs --standard=phpcs.xml"
 
 notifications:
     on_success: never
