@@ -5,6 +5,8 @@ before_install:
     - docker build --tag=trackhub-web ./docker/web/
 
 script:
+    - whoami
+    - failStep
     - docker run -u www-data -v `pwd`:/var/www -t trackhub-web /bin/bash -c "php -v && ls"
     - docker run -u www-data -v `pwd`:/var/www -t trackhub-web /bin/bash -c "composer install --prefer-dist"
     - docker run -u www-data -v `pwd`:/var/www -t trackhub-web /bin/bash -c "./vendor/bin/phpunit -c tests/phpunit/phpunit.xml --no-coverage"
