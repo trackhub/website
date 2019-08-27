@@ -1,6 +1,6 @@
 {
     "require": {
-        "robmorgan/phinx": "^0.10.7",
+        "robmorgan/phinx": "dev-master",
         "fzaninotto/faker": "^1.8"
     }
 }
