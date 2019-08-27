@@ -3,10 +3,9 @@ services:
 
 before_install:
     - docker build --tag=trackhub-web ./docker/web/
-    - docker-compose -p track build
 
 script:
-    - docker run -t track_web_1 /bin/bash -c "php -v && ls"
+    - docker run -u www-data -t trackhub-web /bin/bash -c "php -v && ls"
 #    - composer install --prefer-dist
 #    - ./vendor/bin/phpunit -c tests/phpunit/phpunit.xml --no-coverage
 #    - ./bin/console doctrine:mapping:info
