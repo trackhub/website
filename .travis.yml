@@ -3,17 +3,16 @@ services:
 
 before_install:
     - docker build --tag=trackhub-web ./docker/web/
-
 script:
-    - whoami
-    - id
-    - docker run -v `pwd`:/var/www -t trackhub-web /bin/bash -c "php -v && ls -l"
+    - docker run -v `pwd`:/var/www -t trackhub-web /bin/bash -c "php -v"
     - docker run -v `pwd`:/var/www -t trackhub-web /bin/bash -c "composer install --prefer-dist"
     - docker run -v `pwd`:/var/www -t trackhub-web /bin/bash -c "./vendor/bin/phpunit -c tests/phpunit/phpunit.xml --no-coverage"
     - docker run -v `pwd`:/var/www -t trackhub-web /bin/bash -c "./bin/console doctrine:mapping:info"
     - docker run -v `pwd`:/var/www -t trackhub-web /bin/bash -c "cd ./tests/phpcs && composer install && ./vendor/bin/phpcs --standard=phpcs.xml"
-    - docker run -v `pwd`:/var/www -t trackhub-web /bin/bash -c "cd yarn install"
-    - docker run -v `pwd`:/var/www -t trackhub-web /bin/bash -c "cd yarn encore dev"
+    - docker run -v `pwd`:/var/www -t trackhub-web /bin/bash -c "yarn install"
+    - docker run -v `pwd`:/var/www -t trackhub-web /bin/bash -c "yarn encore dev"
+    - echo "Production env tests"
+    - docker run -v `pwd`:/var/www -t trackhub-web /bin/bash -c "composer install --prefer-dist --no-dev -o"
     - docker run -v `pwd`:/var/www -t trackhub-web /bin/bash -c "cd yarn encore production"
 
 notifications:
