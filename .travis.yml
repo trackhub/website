@@ -13,7 +13,7 @@ script:
     - docker run -v `pwd`:/var/www -t trackhub-web /bin/bash -c "yarn encore dev"
     - echo "Production env tests"
     - docker run -v `pwd`:/var/www -t trackhub-web /bin/bash -c "composer install --prefer-dist --no-dev -o"
-    - docker run -v `pwd`:/var/www -t trackhub-web /bin/bash -c "cd yarn encore production"
+    - docker run -v `pwd`:/var/www -t trackhub-web /bin/bash -c "yarn encore production"
 
 notifications:
     on_success: never
