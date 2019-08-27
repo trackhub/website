@@ -1,21 +1,16 @@
-language: php
-
 services:
   - docker
-
-before_script:
-  - phpenv rehash
 
 before_install:
     - docker build --tag=trackhub-web ./docker/web/
     - docker-compose -p track build
 
 script:
-    - ls -la && php -v
-    - composer install --prefer-dist
-    - ./vendor/bin/phpunit -c tests/phpunit/phpunit.xml --no-coverage
-    - ./bin/console doctrine:mapping:info
-    - cd ./tests/phpcs && composer install && ./vendor/bin/phpcs --standard=phpcs.xml
+    - docker exec -t track_web_1 ls -la && php -v
+#    - composer install --prefer-dist
+#    - ./vendor/bin/phpunit -c tests/phpunit/phpunit.xml --no-coverage
+#    - ./bin/console doctrine:mapping:info
+#    - cd ./tests/phpcs && composer install && ./vendor/bin/phpcs --standard=phpcs.xml
 
 notifications:
     on_success: never
