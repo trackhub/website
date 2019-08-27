@@ -3,9 +3,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
     jQuery('#ratingModal').on('show.bs.modal', function (event) {
         const button = jQuery(event.relatedTarget);
+
+        /* Get data from twig */
         const version = button.data('version');
         let path = button.data('path');
-
         path = path.replace("id", version);
 
         jQuery('#sendRating').on('click', function() {
@@ -25,7 +26,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 success: function(data) {
                     const rating = data.rating;
                     const votes = data.votes;
-
 
                     /* Update star rating */
                     const starRating = new StarRating("#rating-" + version);

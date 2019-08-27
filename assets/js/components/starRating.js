@@ -1,6 +1,6 @@
 class StarRating {
     constructor(target, stars = 5) {
-        this.target = target
+        this.target = target;
         this.stars = stars;
     }
 

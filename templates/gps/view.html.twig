@@ -6,7 +6,7 @@
 
     {% if canEdit %}
         <a href="{{ path('app_track_edit', {id: track.id}) }}" class="btn btn-info">Edit</a>
-        <a href="{{ path('gps-new-version', {id:track.id}) }}" class="btn btn-info">add new version</a>
+        <a href="{{ path('gps-new-version', {id: track.id}) }}" class="btn btn-info">add new version</a>
     {% endif %}
 
     <hr>
@@ -42,6 +42,7 @@
                     >
                         <div class="stars-inner"></div>
                     </div>
+                    <!--- Show rating button if user is logged-id --->
                     {% if app.user %}
                     <button type="button" class="btn" data-toggle="modal" data-target="#ratingModal" data-version="{{ version.id }}" data-path="{{ path('gps-rate', {'id': 'id'}) }}">
                         <i class="fas fa-bars"></i>
@@ -58,38 +59,6 @@
                 </td>
             </tr>
         {% endfor %}
-        <div class="modal fade" id="ratingModal" tabindex="-1" role="dialog" aria-labelledby="ratingModalLabel" aria-hidden="true">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="ratingModalLabel">Rate track version</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="alert" id="ratingAlert" role="alert">
-                        </div>
-                        <form>
-                            <div class="form-group">
-                                <label for="ratingSelect">Select rating</label>
-                                <select class="form-control" id="ratingSelect">
-                                    <option>1</option>
-                                    <option>2</option>
-                                    <option>3</option>
-                                    <option>4</option>
-                                    <option>5</option>
-                                </select>
-                            </div>
-                        </form>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-primary" id="sendRating">Rate</button>
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    </div>
-                </div>
-            </div>
-        </div>
         {% for version in track.getUphillVersions(true) %}
             <tr>
                 <td>uphill version #{{ loop.index }}</td>
@@ -143,6 +112,8 @@
         {% endfor %}
     </div>
 
+    {% include "include/ratingModal.html.twig" %}
+
 {% endblock %}
 
 {% block javascripts %}
@@ -164,7 +135,7 @@
 
         {% for version in track.versions %}
             (function() {
-                var latlngs = [];
+                let latlngs = [];
 
                 {% for point in version.points %}
                     latlngs.push([
@@ -173,7 +144,7 @@
                     ]);
                 {% endfor %}
 
-                var track = new AppTrack(
+                const track = new AppTrack(
                     map,
                     [L.polyline(latlngs, {color: 'red'})]
                 );
@@ -188,7 +159,7 @@
 
                 track.show();
 
-                var buttonToggle = document.querySelectorAll("[data-type=track-toggle")[{{ trackIndex }}];
+                const buttonToggle = document.querySelectorAll("[data-type=track-toggle")[{{ trackIndex }}];
                 buttonToggle.addEventListener('click', function() {
                     track.toggle();
                 });
@@ -200,7 +171,7 @@
         // uphills
         {% for version in track.getUphillVersions(true) %}
             (function() {
-                var latlngs = [];
+                let latlngs = [];
 
                 {% for point in version.points %}
                 latlngs.push([
@@ -209,7 +180,7 @@
                 ]);
                 {% endfor %}
 
-                var track = new AppTrack(
+                const track = new AppTrack(
                     map,
                     [L.polyline(latlngs, {color: 'green'})]
                 );
@@ -224,7 +195,7 @@
 
                 track.show();
 
-                var buttonToggle = document.querySelectorAll("[data-type=track-toggle")[{{ trackIndex }}];
+                const buttonToggle = document.querySelectorAll("[data-type=track-toggle")[{{ trackIndex }}];
                 buttonToggle.addEventListener('click', function() {
                     track.toggle();
                 });
@@ -295,19 +266,21 @@
             }
         });
 
-        /* Display star ratings */
+        /* Display star rating */
         {% for version in track.versions %}
         {
             {% set sum = 0 %}
             {%  for r in version.ratings %}
                 {% set sum = sum + r.rating %}
             {% endfor %}
+
             const starRating = new StarRating("#rating-{{ version.id }}");
             starRating.setRating({{ sum / version.votes }});
         }
         {% endfor %}
     </script>
 
+    <!--- If user is logged-in show add rating js code --->
     {% if app.user %}
         {{ parent() }}
         {{ encore_entry_script_tags('rating') }}
