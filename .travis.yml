@@ -1,20 +1,21 @@
 language: php
-php:
-  - 7.3
-  - nightly
+
+services:
+  - docker
 
 before_script:
   - phpenv rehash
 
+before_install:
+    - docker build --tag=trackhub-web ./docker/web/
+    - docker-compose -p track build
+
 script:
+    - ls -la && php -v
     - composer install --prefer-dist
     - ./vendor/bin/phpunit -c tests/phpunit/phpunit.xml --no-coverage
     - ./bin/console doctrine:mapping:info
     - cd ./tests/phpcs && composer install && ./vendor/bin/phpcs --standard=phpcs.xml
-
-matrix:
-    allow_failures:
-        - php: nightly
 
 notifications:
     on_success: never
