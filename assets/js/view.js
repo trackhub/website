@@ -23,9 +23,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-
-
-
     document.getElementById('ratingAlert').style.display = 'none';
 
     jQuery('#ratingModal').on('show.bs.modal', function (event) {
