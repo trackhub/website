@@ -4,8 +4,11 @@ class StarRating {
         this.stars = stars;
     }
 
-    setRating(rating) {
-        const percentage = (rating / this.stars) * 100;
+    setRating(rating, votes) {
+        if (votes == 0)
+            return;
+
+        const percentage = ((rating / votes) / this.stars) * 100;
         const percentageRounded = Math.round(percentage / 10) * 10 + '%';
 
         document.querySelector(this.target + ' .stars-inner').style.width = percentageRounded;

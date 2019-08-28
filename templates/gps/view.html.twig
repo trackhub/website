@@ -11,7 +11,22 @@
 
     <hr>
 
+    <!--- Initialize map --->
     <div style="height: 50vh; min-height: 300px; width: 100%;" id="map"></div>
+    <script>
+        const map = L.map('map', {
+                gestureHandling: true,
+                center:[
+                    ({{ track.pointNorthEastLat }} + {{ track.pointSouthWestLat }}) / 2,
+                    ({{ track.pointSouthWestLng + track.pointNorthEastLng}}) / 2
+                ],
+                zoom: 12
+            }
+        );
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+    </script>
 
     <br>
 
@@ -24,78 +39,10 @@
                 <td>Rating</td>
                 <td>include in export</td>
             </tr>
-        {% for version in track.versions %}
-            <tr>
-                <td>main track #{{ loop.index }}</td>
-                <td>{{ version.positiveElevation|number_format(0, '', '\'') }} m</td>
-                <td>{{ version.negativeElevation|number_format(0, '', '\'') }} m</td>
-                <td>
-                    <div class="stars-outer" id="rating-{{ version.id }}"
-                        {% if version.votes > 0 %}
-                         data-toggle="tooltip" data-html="true"
-                            {% set sum = 0 %}
-                            {% for r in version.ratings %}
-                                {% set sum = sum + r.rating %}
-                            {% endfor %}
-                         title="Rating: {{ sum / version.votes }}<br>Votes: {{ version.votes }}"
-                        {% endif %}
-                    >
-                        <div class="stars-inner"></div>
-                    </div>
-
-                    <!--- Show rating button if user is logged-id --->
-                    {% if app.user %}
-                        <button type="button" class="btn"
-                                data-toggle="modal"
-                                data-target="#ratingModal"
-                                data-version="{{ version.id }}"
-                                data-path="{{ path('gps-rate', {'id': 'id'}) }}">
-                            <i class="fas fa-bars"></i>
-                        </button>
-                    {% endif %}
-
-                </td>
-                <td>
-                    <input type="checkbox" data-type="track-toggle" checked
-                           id="{{ 'version_export_id' }}{{ loop.index }}"
-                           name="versions[]"
-                           value="{{ version.id }}"
-                    />
-                    <label for="{{ 'version_export_id' }}{{ loop.index }}">Export</label>
-                </td>
-            </tr>
-        {% endfor %}
-        {% for version in track.getUphillVersions(true) %}
-            <tr>
-                <td>uphill version #{{ loop.index }}</td>
-                <td>{{ version.positiveElevation|number_format(0, '', '\'') }} m</td>
-                <td>{{ version.negativeElevation|number_format(0, '', '\'') }} m</td>
-                <td>
-                    <input type="checkbox" data-type="track-toggle" checked
-                           id="{{ 'uphill_export_id' }}{{ loop.index }}"
-                           name="versions[]"
-                           value="{{ version.id }}"
-                    />
-                    <label for="{{ 'uphill_export_id' }}{{ loop.index }}">Export</label>
-                </td>
-            </tr>
-        {% endfor %}
-
-        {% for version in track.downhillVersions(true) %}
-            <tr>
-                <td>downhill version #{{ loop.index }}</td>
-                <td>{{ version.positiveElevation|number_format(0, '', '\'') }} m</td>
-                <td>{{ version.negativeElevation|number_format(0, '', '\'') }} m</td>
-                <td>
-                    <input type="checkbox" data-type="track-toggle" checked
-                           id="{{ 'downhill_export_id' }}{{ loop.index }}"
-                           name="versions[]"
-                           value="{{ version.id }}"
-                    />
-                    <label for="{{ 'downhill_export_id' }}{{ loop.index }}">Export</label>
-                </td>
-            </tr>
-        {% endfor %}
+            <!--- Render versions on map --->
+            {% include "include/mapVersion.html.twig" with { "versions" : track.versions, "color" : 'red', 'class' : 'main' } only %}
+            {% include "include/mapVersion.html.twig" with { "versions" : track.UphillVersions(true), "color" : "blue", 'class' : 'uphill'} only %}
+            {% include "include/mapVersion.html.twig" with { "versions" : track.downhillVersions(true), "color" : "yellow", 'class' : 'downhill' } only %}
         </table>
 
         <a class="btn btn-success" href="{{ path('gps-download', {id: track.id}) }}">download main track</a>
@@ -123,53 +70,6 @@
 {% endblock %}
 
 {% block javascripts %}
-    <!--- Initialize map --->
-    <script>
-        const map = L.map('map', {
-                gestureHandling: true,
-                center:[
-                    ({{ track.pointNorthEastLat }} + {{ track.pointSouthWestLat }}) / 2,
-                    ({{ track.pointSouthWestLng + track.pointNorthEastLng}}) / 2
-                ],
-                zoom: 12
-            }
-        );
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-        }).addTo(map);
-    </script>
-
-    <!--- Render versions on map --->
-    {% set trackIndex = 0 %}
-    {% include "include/mapVersion.html.twig" with { "versions" : track.versions, "index" : trackIndex, "color" : 'red' } only %}
-    {% include "include/mapVersion.html.twig" with { "versions" : track.UphillVersions(true), "index" : trackIndex, "color" : "blue" } only %}
-    {% include "include/mapVersion.html.twig" with { "versions" : track.downhillVersions(true), "index" : trackIndex, "color" : "yellow" } only %}
-
-    <script>
-        /* Display star rating */
-        {% for version in track.versions %}
-        {
-            {% if version.votes > 0 %}
-            {
-                {% set sum = 0 %}
-                {% for r in version.ratings %}
-                    {% set sum = sum + r.rating %}
-                {% endfor %}
-
-                const starRating = new StarRating("#rating-{{ version.id }}");
-                starRating.setRating({{ sum / version.votes }});
-            }
-            {% endif %}
-        }
-        {% endfor %}
-    </script>
-
     {{ parent() }}
     {{ encore_entry_script_tags('view') }}
-
-    <!--- If user is logged-in show add rating js code --->
-    {% if app.user %}
-        {{ encore_entry_script_tags('rating') }}
-    {% endif %}
-
 {% endblock %}

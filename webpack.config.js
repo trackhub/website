@@ -18,7 +18,6 @@ Encore
      * and one CSS file (e.g. app.css) if you JavaScript imports CSS.
      */
     .addEntry('app', './assets/js/app.js')
-    .addEntry('rating', './assets/js/rating.js')
     .addEntry('view', './assets/js/view.js')
 
     // will require an extra script tag for runtime.js

@@ -1,36 +1,86 @@
+{% for version in versions %}
+    <tr>
+        <td>{{ class }} track #{{ loop.index }}</td>
+        <td>{{ version.positiveElevation|number_format(0, '', '\'') }} m</td>
+        <td>{{ version.negativeElevation|number_format(0, '', '\'') }} m</td>
+        <td>
+            <div class="stars-outer" id="rating-{{ version.id }}"
+                {% if version.votes > 0 %}
+                    data-toggle="tooltip" data-html="true"
+                    {% set sum = 0 %}
+                    {% for r in version.ratings %}
+                        {% set sum = sum + r.rating %}
+                    {% endfor %}
+                    title="Rating: {{ sum / version.votes }}<br>Votes: {{ version.votes }}"
+                {% endif %}
+                >
+                <div class="stars-inner"></div>
+            </div>
+
+        <!--- Show rating button if user is logged-id --->
+        {% if app.user %}
+            <button type="button" class="btn"
+                    data-toggle="modal"
+                    data-target="#ratingModal"
+                    data-version="{{ version.id }}"
+                    data-path="{{ path('gps-rate', {'id': 'id'}) }}">
+                <i class="fas fa-bars"></i>
+            </button>
+        {% endif %}
+
+        </td>
+        <td>
+            <input type="checkbox" data-type="track-toggle" checked
+                   id="export-{{ version.id }}"
+                   name="versions[]"
+                   value="{{ version.id }}"
+            />
+            <label for="export-{{ version.id }}">Export</label>
+        </td>
+    </tr>
+{% endfor %}
+
 <script>
     {% for version in versions %}
+    {
+
+        let latlngs = [];
+
+        {% for point in version.points %}
+        latlngs.push([
+            {{ point.lat }},
+            {{ point.lng }}
+        ]);
+        {% endfor %}
+
+        const track = new AppTrack(
+            map,
+            [L.polyline(latlngs, {color: "{{ color }}"})]
+        );
+
+        {% for waypoint in version.waypoints %}
         {
-            let latlngs = [];
-
-            {% for point in version.points %}
-                latlngs.push([
-                {{ point.lat }},
-                {{ point.lng }}
-                ]);
-            {% endfor %}
-
-            const track = new AppTrack(
-                map,
-                [L.polyline(latlngs, { color: "{{ color }}" })]
-            );
-
-            {% for waypoint in version.waypoints %}
-                {
-                let waypoint = L.marker([{{ waypoint.lat }}, {{ waypoint.lng }}]);
-                waypoint.bindPopup({{ waypoint.name|json_encode|raw }});
-                track.addWaypoint(waypoint);
-                }
-            {% endfor %}
-
-            track.show();
-
-            const buttonToggle = document.querySelectorAll("[data-type=track-toggle")[{{ index }}];
-            buttonToggle.addEventListener('click', function() {
-                track.toggle();
-            });
+            let waypoint = L.marker([{{ waypoint.lat }}, {{ waypoint.lng }}]);
+            waypoint.bindPopup({{ waypoint.name|json_encode|raw }});
+            track.addWaypoint(waypoint);
         }
+        {% endfor %}
 
-        {% set index = index + 1 %}
+        track.show();
+
+        const buttonToggle = document.querySelector("#export-{{ version.id }}");
+        buttonToggle.addEventListener('click', function () {
+            track.toggle();
+        });
+
+        {% set sum = 0 %}
+        {% for r in version.ratings %}
+            {% set sum = sum + r.rating %}
+        {% endfor %}
+
+        const starRating = new StarRating("#rating-{{ version.id }}");
+        starRating.setRating({{ sum }}, {{ version.votes }});
+
+    }
     {% endfor %}
 </script>
