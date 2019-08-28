@@ -42,12 +42,18 @@
                     >
                         <div class="stars-inner"></div>
                     </div>
+
                     <!--- Show rating button if user is logged-id --->
                     {% if app.user %}
-                    <button type="button" class="btn" data-toggle="modal" data-target="#ratingModal" data-version="{{ version.id }}" data-path="{{ path('gps-rate', {'id': 'id'}) }}">
-                        <i class="fas fa-bars"></i>
-                    </button>
+                        <button type="button" class="btn"
+                                data-toggle="modal"
+                                data-target="#ratingModal"
+                                data-version="{{ version.id }}"
+                                data-path="{{ path('gps-rate', {'id': 'id'}) }}">
+                            <i class="fas fa-bars"></i>
+                        </button>
                     {% endif %}
+
                 </td>
                 <td>
                     <input type="checkbox" data-type="track-toggle" checked
@@ -117,11 +123,12 @@
 {% endblock %}
 
 {% block javascripts %}
+    <!--- Initialize map --->
     <script>
-        var map = L.map('map', {
-            gestureHandling: true,
-            center:[
-            ({{ track.pointNorthEastLat }} + {{ track.pointSouthWestLat }}) / 2,
+        const map = L.map('map', {
+                gestureHandling: true,
+                center:[
+                    ({{ track.pointNorthEastLat }} + {{ track.pointSouthWestLat }}) / 2,
                     ({{ track.pointSouthWestLng + track.pointNorthEastLng}}) / 2
                 ],
                 zoom: 12
@@ -130,128 +137,29 @@
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         }).addTo(map);
+    </script>
 
-        {% set trackIndex = 0 %}
+    <!--- Render versions on map --->
+    {% set trackIndex = 0 %}
+    {% include "include/mapVersion.html.twig" with { "versions" : track.versions, "index" : trackIndex, "color" : 'red' } only %}
+    {% include "include/mapVersion.html.twig" with { "versions" : track.UphillVersions(true), "index" : trackIndex, "color" : "blue" } only %}
+    {% include "include/mapVersion.html.twig" with { "versions" : track.downhillVersions(true), "index" : trackIndex, "color" : "yellow" } only %}
 
-        {% for version in track.versions %}
-            (function() {
-                let latlngs = [];
-
-                {% for point in version.points %}
-                    latlngs.push([
-                        {{ point.lat }},
-                        {{ point.lng }}
-                    ]);
-                {% endfor %}
-
-                const track = new AppTrack(
-                    map,
-                    [L.polyline(latlngs, {color: 'red'})]
-                );
-
-                {% for waypoint in version.waypoints %}
-                    {
-                        let waypoint = L.marker([{{ waypoint.lat }}, {{ waypoint.lng }}]);
-                        waypoint.bindPopup({{ waypoint.name|json_encode|raw }});
-                        track.addWaypoint(waypoint);
-                    }
-                {% endfor %}
-
-                track.show();
-
-                const buttonToggle = document.querySelectorAll("[data-type=track-toggle")[{{ trackIndex }}];
-                buttonToggle.addEventListener('click', function() {
-                    track.toggle();
-                });
-            })();
-
-            {% set trackIndex = trackIndex + 1 %}
-        {% endfor %}
-
-        // uphills
-        {% for version in track.getUphillVersions(true) %}
-            (function() {
-                let latlngs = [];
-
-                {% for point in version.points %}
-                latlngs.push([
-                    {{ point.lat }},
-                    {{ point.lng }}
-                ]);
-                {% endfor %}
-
-                const track = new AppTrack(
-                    map,
-                    [L.polyline(latlngs, {color: 'green'})]
-                );
-
-                {% for waypoint in version.waypoints %}
-                    {
-                        let waypoint = L.marker([{{ waypoint.lat }}, {{ waypoint.lng }}]);
-                        waypoint.bindPopup({{ waypoint.name|json_encode|raw }});
-                        track.addWaypoint(waypoint);
-                    }
-                {% endfor %}
-
-                track.show();
-
-                const buttonToggle = document.querySelectorAll("[data-type=track-toggle")[{{ trackIndex }}];
-                buttonToggle.addEventListener('click', function() {
-                    track.toggle();
-                });
-
-            })();
-
-            {% set trackIndex = trackIndex + 1 %}
-        {% endfor %}
-
-
-        // downhills
-        {% for version in track.downhillVersions(true) %}
-            (function() {
-                var latlngs = [];
-
-                {% for point in version.points %}
-                    latlngs.push([
-                        {{ point.lat }},
-                        {{ point.lng }}
-                    ]);
-                {% endfor %}
-
-                var track = new AppTrack(
-                    map,
-                    [L.polyline(latlngs, {color: 'orange'})]
-                );
-
-                {% for waypoint in version.waypoints %}
-                    {
-                        let waypoint = L.marker([{{ waypoint.lat }}, {{ waypoint.lng }}]);
-                        waypoint.bindPopup({{ waypoint.name|json_encode|raw }});
-                        track.addWaypoint(waypoint);
-                    }
-                {% endfor %}
-
-                track.show();
-
-                var buttonToggle = document.querySelectorAll("[data-type=track-toggle")[{{ trackIndex }}];
-                buttonToggle.addEventListener('click', function() {
-                    track.toggle();
-                });
-            })();
-
-            {% set trackIndex = trackIndex + 1 %}
-        {% endfor %}
-
+    <script>
         /* Display star rating */
         {% for version in track.versions %}
         {
-            {% set sum = 0 %}
-            {%  for r in version.ratings %}
-                {% set sum = sum + r.rating %}
-            {% endfor %}
+            {% if version.votes > 0 %}
+            {
+                {% set sum = 0 %}
+                {% for r in version.ratings %}
+                    {% set sum = sum + r.rating %}
+                {% endfor %}
 
-            const starRating = new StarRating("#rating-{{ version.id }}");
-            starRating.setRating({{ sum / version.votes }});
+                const starRating = new StarRating("#rating-{{ version.id }}");
+                starRating.setRating({{ sum / version.votes }});
+            }
+            {% endif %}
         }
         {% endfor %}
     </script>
