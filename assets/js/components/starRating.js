@@ -5,8 +5,9 @@ class StarRating {
     }
 
     setRating(rating, votes) {
-        if (votes == 0)
+        if (votes == 0) {
             return;
+        }
 
         const percentage = ((rating / votes) / this.stars) * 100;
         const percentageRounded = Math.round(percentage / 10) * 10 + '%';
