@@ -35,8 +35,6 @@
 
     {% if canEdit %}
         <a href="{{ path('app_track_edit', {id: track.id}) }}" class="btn btn-info">Edit</a>
-<<<<<<< HEAD
-        <a href="{{ path('gps-new-version', {id:track.id}) }}" class="btn btn-info">add new version</a>
         <input id="file_input" type="file" name="files[]" multiple accept="image/jpeg, image/png">
         <div class="container">
             <div id="file_upload_progress" class="row">
