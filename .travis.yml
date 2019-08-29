@@ -1,20 +1,18 @@
-language: php
-php:
-  - 7.3
-  - nightly
+services:
+  - docker
 
-before_script:
-  - phpenv rehash
-
+before_install:
+    - docker build --tag=trackhub-web ./docker/web/
 script:
-    - composer install --prefer-dist
-    - ./vendor/bin/phpunit -c tests/phpunit/phpunit.xml --no-coverage
-    - ./bin/console doctrine:mapping:info
-    - cd ./tests/phpcs && composer install && ./vendor/bin/phpcs --standard=phpcs.xml
-
-matrix:
-    allow_failures:
-        - php: nightly
+    - docker run -v `pwd`:/var/www -t trackhub-web /bin/bash -c "php -v"
+    - docker run -v `pwd`:/var/www -t trackhub-web /bin/bash -c "composer install --prefer-dist"
+    - docker run -v `pwd`:/var/www -t trackhub-web /bin/bash -c "./vendor/bin/phpunit -c tests/phpunit/phpunit.xml --no-coverage"
+    - docker run -v `pwd`:/var/www -t trackhub-web /bin/bash -c "./bin/console doctrine:mapping:info"
+    - docker run -v `pwd`:/var/www -t trackhub-web /bin/bash -c "cd ./tests/phpcs && composer install && ./vendor/bin/phpcs --standard=phpcs.xml"
+    - docker run -v `pwd`:/var/www -t trackhub-web /bin/bash -c "yarn install"
+    - docker run -v `pwd`:/var/www -t trackhub-web /bin/bash -c "yarn encore dev"
+    - echo "Production env tests"
+    - docker run -v `pwd`:/var/www -t trackhub-web /bin/bash -c "yarn encore production"
 
 notifications:
     on_success: never

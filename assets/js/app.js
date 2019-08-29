@@ -19,4 +19,5 @@ window.bootstrap = require('bootstrap');
 window.chartJs = require('chart.js');
 window.lighBox = require('ekko-lightbox/dist/ekko-lightbox.js');
 
-window.AppTrack = require('./track.js');
+window.AppTrack = require('./components/appTrack.js');
+window.StarRating = require('./components/starRating');
