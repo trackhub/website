@@ -18,11 +18,11 @@ gps-new:
 
 track-new-image:
   path: /{_locale}/gps/add-image/{id}
-  controller: App\Controller\Track::addImage
+  controller: App\Controller\Track\Image::addImage
 
 track-image-thumbnail:
   path: /images/generated/tit/{year}/{trackId}/{imagePath}
-  controller: App\Controller\Track::generateThumbnail
+  controller: App\Controller\Track\Image::generateThumbnail
   requirements:
     year: '\d+'
 
