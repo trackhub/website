@@ -523,7 +523,7 @@ class Track extends AbstractController
         $originalImagePath .= $year . DIRECTORY_SEPARATOR . $trackId . DIRECTORY_SEPARATOR . $imagePath;
 
         $image = new \Imagick($originalImagePath);
-        $image->adaptiveResizeImage(800,300, true);
+        $image->adaptiveResizeImage(800, 300, true);
 
         $thumbnailPathDir = $this->getParameter('track_images_thumbnails_directory');
         $thumbnailPathDir .= DIRECTORY_SEPARATOR . $year . DIRECTORY_SEPARATOR . $trackId;
