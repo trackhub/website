@@ -8,6 +8,7 @@ use App\Entity\Track\VersionRating;
 use App\Entity\Track\Version;
 use App\Entity\Video\Youtube;
 use App\Form\Type\TrackVersion;
+use App\Image\ImageEdit;
 use App\Repository\TrackRepository;
 use App\Track\Exporter;
 use App\Track\Processor;
@@ -517,32 +518,23 @@ class Track extends AbstractController
      * This method is called when thumbnails doesn't exists.
      * Thumbnail will be created and saved in the "public" directory.
      */
-    public function generateThumbnail(int $year, string $trackId, string $imagePath)
+    public function generateThumbnail(int $year, string $trackId, string $imagePath, Request $request)
     {
         $originalImagePath = $this->getParameter('track_images_directory') . DIRECTORY_SEPARATOR;
         $originalImagePath .= $year . DIRECTORY_SEPARATOR . $trackId . DIRECTORY_SEPARATOR . $imagePath;
-
-        $image = new \Imagick($originalImagePath);
-        $image->adaptiveResizeImage(800, 300, true);
 
         $thumbnailPathDir = $this->getParameter('track_images_thumbnails_directory');
         $thumbnailPathDir .= DIRECTORY_SEPARATOR . $year . DIRECTORY_SEPARATOR . $trackId;
         $thumbnailPath = $thumbnailPathDir . DIRECTORY_SEPARATOR . $imagePath;
 
-        $fs = new Filesystem();
-
-        $fs->mkdir($thumbnailPathDir);
-
-        file_put_contents(
-            $thumbnailPath,
-            $image
-        );
+        $resizer = new ImageEdit();
+        $resizer->resize($originalImagePath, $thumbnailPath, 600, 300);
 
         return new Response(
-            $image,
-            Response::HTTP_OK,
+            null,
+            Response::HTTP_TEMPORARY_REDIRECT,
             [
-                'Content-Type' => 'image/jpeg',
+                'location' => $request->getRequestUri(),
             ]
         );
     }
