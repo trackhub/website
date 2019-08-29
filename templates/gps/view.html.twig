@@ -6,12 +6,27 @@
 
     {% if canEdit %}
         <a href="{{ path('app_track_edit', {id: track.id}) }}" class="btn btn-info">Edit</a>
-        <a href="{{ path('gps-new-version', {id:track.id}) }}" class="btn btn-info">add new version</a>
+        <a href="{{ path('gps-new-version', {id: track.id}) }}" class="btn btn-info">add new version</a>
     {% endif %}
 
     <hr>
 
+    <!--- Initialize map --->
     <div style="height: 50vh; min-height: 300px; width: 100%;" id="map"></div>
+    <script>
+        const map = L.map('map', {
+                gestureHandling: true,
+                center:[
+                    ({{ track.pointNorthEastLat }} + {{ track.pointSouthWestLat }}) / 2,
+                    ({{ track.pointSouthWestLng + track.pointNorthEastLng}}) / 2
+                ],
+                zoom: 12
+            }
+        );
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+    </script>
 
     <br>
 
@@ -24,110 +39,17 @@
                 <td>Rating</td>
                 <td>include in export</td>
             </tr>
-        {% for version in track.versions %}
-            <tr>
-                <td>main track #{{ loop.index }}</td>
-                <td>{{ version.positiveElevation|number_format(0, '', '\'') }} m</td>
-                <td>{{ version.negativeElevation|number_format(0, '', '\'') }} m</td>
-                <td>
-                    <div class="stars-outer" id="rating-{{ version.id }}"
-                        {% if version.votes > 0 %}
-                         data-toggle="tooltip" data-html="true"
-                            {% set sum = 0 %}
-                            {% for r in version.ratings %}
-                                {% set sum = sum + r.rating %}
-                            {% endfor %}
-                         title="Rating: {{ sum / version.votes }}<br>Votes: {{ version.votes }}"
-                        {% endif %}
-                    >
-                        <div class="stars-inner"></div>
-                    </div>
-                    {% if app.user %}
-                    <button type="button" class="btn" data-toggle="modal" data-target="#ratingModal" data-version="{{ version.id }}">
-                        <i class="fas fa-bars"></i>
-                    </button>
-                    {% endif %}
-                </td>
-                <td>
-                    <input type="checkbox" data-type="track-toggle" checked
-                           id="{{ 'version_export_id' }}{{ loop.index }}"
-                           name="versions[]"
-                           value="{{ version.id }}"
-                    />
-                    <label for="{{ 'version_export_id' }}{{ loop.index }}">Export</label>
-                </td>
-            </tr>
-        {% endfor %}
-        <div class="modal fade" id="ratingModal" tabindex="-1" role="dialog" aria-labelledby="ratingModalLabel" aria-hidden="true">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="ratingModalLabel">Rate track version</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="alert" id="ratingAlert" role="alert">
-                        </div>
-                        <form>
-                            <div class="form-group">
-                                <label for="ratingSelect">Select rating</label>
-                                <select class="form-control" id="ratingSelect">
-                                    <option>1</option>
-                                    <option>2</option>
-                                    <option>3</option>
-                                    <option>4</option>
-                                    <option>5</option>
-                                </select>
-                            </div>
-                        </form>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-primary" id="sendRating">Rate</button>
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-        {% for version in track.getUphillVersions(true) %}
-            <tr>
-                <td>uphill version #{{ loop.index }}</td>
-                <td>{{ version.positiveElevation|number_format(0, '', '\'') }} m</td>
-                <td>{{ version.negativeElevation|number_format(0, '', '\'') }} m</td>
-                <td>
-                    <input type="checkbox" data-type="track-toggle" checked
-                           id="{{ 'uphill_export_id' }}{{ loop.index }}"
-                           name="versions[]"
-                           value="{{ version.id }}"
-                    />
-                    <label for="{{ 'uphill_export_id' }}{{ loop.index }}">Export</label>
-                </td>
-            </tr>
-        {% endfor %}
-
-        {% for version in track.downhillVersions(true) %}
-            <tr>
-                <td>downhill version #{{ loop.index }}</td>
-                <td>{{ version.positiveElevation|number_format(0, '', '\'') }} m</td>
-                <td>{{ version.negativeElevation|number_format(0, '', '\'') }} m</td>
-                <td>
-                    <input type="checkbox" data-type="track-toggle" checked
-                           id="{{ 'downhill_export_id' }}{{ loop.index }}"
-                           name="versions[]"
-                           value="{{ version.id }}"
-                    />
-                    <label for="{{ 'downhill_export_id' }}{{ loop.index }}">Export</label>
-                </td>
-            </tr>
-        {% endfor %}
+            <!--- Render versions on map --->
+            {% include "include/mapVersion.html.twig" with { "versions" : track.versions, "color" : 'red', 'class' : 'main' } only %}
+            {% include "include/mapVersion.html.twig" with { "versions" : track.UphillVersions(true), "color" : "blue", 'class' : 'uphill'} only %}
+            {% include "include/mapVersion.html.twig" with { "versions" : track.downhillVersions(true), "color" : "yellow", 'class' : 'downhill' } only %}
         </table>
 
         <a class="btn btn-success" href="{{ path('gps-download', {id: track.id}) }}">download main track</a>
         <input type="submit" class="btn btn-success" value="download selected versions">
     </form>
 
-    <div class="chart-container" style="height: 300px;">
+    <div class="chart-container" style="height: 300px;" id="elevation-container" data-labels="{{ elevationLabels|json_encode|e('html_attr') }}"  data-datasets="{{ elevationData|json_encode|e('html_attr') }}">
         <canvas id="elevation" width="400" height="300">
             Elevation plot can't be shown!
             Your browser doesn't support canvas elements.
@@ -143,245 +65,11 @@
         {% endfor %}
     </div>
 
+    {% include "include/ratingModal.html.twig" %}
+
 {% endblock %}
 
 {% block javascripts %}
-    <script>
-        var map = L.map('map', {
-            gestureHandling: true,
-            center:[
-            ({{ track.pointNorthEastLat }} + {{ track.pointSouthWestLat }}) / 2,
-                    ({{ track.pointSouthWestLng + track.pointNorthEastLng}}) / 2
-                ],
-                zoom: 12
-            }
-        );
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-        }).addTo(map);
-
-        {% set trackIndex = 0 %}
-
-        {% for version in track.versions %}
-            (function() {
-                var latlngs = [];
-
-                {% for point in version.points %}
-                    latlngs.push([
-                        {{ point.lat }},
-                        {{ point.lng }}
-                    ]);
-                {% endfor %}
-
-                var track = new AppTrack(
-                    map,
-                    [L.polyline(latlngs, {color: 'red'})]
-                );
-
-                {% for waypoint in version.waypoints %}
-                    {
-                        let waypoint = L.marker([{{ waypoint.lat }}, {{ waypoint.lng }}]);
-                        waypoint.bindPopup({{ waypoint.name|json_encode|raw }});
-                        track.addWaypoint(waypoint);
-                    }
-                {% endfor %}
-
-                track.show();
-
-                var buttonToggle = document.querySelectorAll("[data-type=track-toggle")[{{ trackIndex }}];
-                buttonToggle.addEventListener('click', function() {
-                    track.toggle();
-                });
-            })();
-
-            {% set trackIndex = trackIndex + 1 %}
-        {% endfor %}
-
-        // uphills
-        {% for version in track.getUphillVersions(true) %}
-            (function() {
-                var latlngs = [];
-
-                {% for point in version.points %}
-                latlngs.push([
-                    {{ point.lat }},
-                    {{ point.lng }}
-                ]);
-                {% endfor %}
-
-                var track = new AppTrack(
-                    map,
-                    [L.polyline(latlngs, {color: 'green'})]
-                );
-
-                {% for waypoint in version.waypoints %}
-                    {
-                        let waypoint = L.marker([{{ waypoint.lat }}, {{ waypoint.lng }}]);
-                        waypoint.bindPopup({{ waypoint.name|json_encode|raw }});
-                        track.addWaypoint(waypoint);
-                    }
-                {% endfor %}
-
-                track.show();
-
-                var buttonToggle = document.querySelectorAll("[data-type=track-toggle")[{{ trackIndex }}];
-                buttonToggle.addEventListener('click', function() {
-                    track.toggle();
-                });
-
-            })();
-
-            {% set trackIndex = trackIndex + 1 %}
-        {% endfor %}
-
-
-        // downhills
-        {% for version in track.downhillVersions(true) %}
-            (function() {
-                var latlngs = [];
-
-                {% for point in version.points %}
-                    latlngs.push([
-                        {{ point.lat }},
-                        {{ point.lng }}
-                    ]);
-                {% endfor %}
-
-                var track = new AppTrack(
-                    map,
-                    [L.polyline(latlngs, {color: 'orange'})]
-                );
-
-                {% for waypoint in version.waypoints %}
-                    {
-                        let waypoint = L.marker([{{ waypoint.lat }}, {{ waypoint.lng }}]);
-                        waypoint.bindPopup({{ waypoint.name|json_encode|raw }});
-                        track.addWaypoint(waypoint);
-                    }
-                {% endfor %}
-
-                track.show();
-
-                var buttonToggle = document.querySelectorAll("[data-type=track-toggle")[{{ trackIndex }}];
-                buttonToggle.addEventListener('click', function() {
-                    track.toggle();
-                });
-            })();
-
-            {% set trackIndex = trackIndex + 1 %}
-        {% endfor %}
-
-        // elevation plot
-        var ctx = document.getElementById('elevation').getContext('2d');
-        var myChart = new window.chartJs(ctx, {
-            type: 'line',
-            data: {
-                labels: {{ elevationLabels|json_encode|raw }},
-                datasets: {{ elevationData|json_encode|raw }}
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                scales: {
-                    yAxes: [{
-                        ticks: {
-                            beginAtZero: false
-                        }
-                    }]
-                },
-                tooltips: {
-                    mode: 'nearest'
-                }
-            }
-        });
-
-        /* Display star ratings */
-        {% for version in track.versions %}
-        {
-            {% set sum = 0 %}
-            {%  for r in version.ratings %}
-                {% set sum = sum + r.rating %}
-            {% endfor %}
-            rating = {{ sum }} / {{ version.votes }};
-            const starPercentage = (rating / 5) * 100;
-            const starPercentageRounded = Math.round(starPercentage / 10) * 10 + '%';
-
-            document.querySelector('#rating-{{ version.id }} .stars-inner').style.width = starPercentageRounded;
-        }
-        {% endfor %}
-
-        {% if app.user %}
-            /* Handle rating submission */
-            document.addEventListener('DOMContentLoaded', function() {
-                document.getElementById('ratingAlert').style.display = 'none';
-
-                jQuery('#ratingModal').on('show.bs.modal', function (event) {
-                    const button = jQuery(event.relatedTarget);
-                    const version = button.data('version');
-
-                    let url = '{{ path('gps-rate', {'id': 'id'}) }}';
-                    url = url.replace("id", version);
-
-                    jQuery('#sendRating').on('click', function() {
-                        const rating = document.getElementById('ratingSelect').value;
-                        let but = this;
-
-                        this.disabled = true;
-                        this.innerHTML = '<span class="spinner-border spinner-border-sm m-1" role="status" aria-hidden="true"></span>';
-                        this.innerHTML += 'Sending...';
-
-                        jQuery.ajax({
-                            type: "POST",
-                            url: url,
-                            data: {
-                                rating: rating
-                            },
-                            success: function(data) {
-                                const rating = data.rating;
-                                const votes = data.votes;
-
-                                /* Update star rating */
-                                const starPercentage = (rating / 5) * 100;
-                                const starPercentageRounded = Math.round(starPercentage / 10) * 10 + '%';
-
-                                jQuery('#rating-' + version).attr('data-original-title', 'Rating: ' + rating + '<br>Votes: ' + votes);
-                                document.querySelector('#rating-' + version + ' .stars-inner').style.width = starPercentageRounded;
-
-                                /* Display 'thank you' message and close modal */
-                                jQuery('#ratingAlert').html("" +
-                                    '<h4 class="alert-heading">Thank you!</h4>' +
-                                    '<p>You\'re make this site even better.</p>' +
-                                    "");
-                                jQuery('#ratingAlert').addClass('alert-success').show(100);
-                            },
-                            error: function (xhr, ajaxOptions, thrownError) {
-                                let msg = JSON.parse(xhr.responseText)['message'];
-
-                                jQuery('#ratingAlert').html("" +
-                                    '<h4 class="alert-heading">Ooops!</h4>' +
-                                    '<p>Something went wrong.</p>' +
-                                    '<hr>' +
-                                    '<p class="mb-0">' + msg + '.</p>' +
-                                    "");
-                                jQuery('#ratingAlert').addClass('alert-danger').show(100);
-                            }
-                        }).done(function(){
-                            but.innerText = "Done";
-                        });
-                    });
-                });
-
-                jQuery('#ratingModal').on('hide.bs.modal', function () {
-                    jQuery('#sendRating').off('click');
-                    jQuery('#ratingAlert')
-                        .removeClass('alert-success')
-                        .removeClass('alert-danger')
-                        .hide();
-                    jQuery('#sendRating')
-                        .prop('disabled', false)
-                        .text('Rate');
-                });
-            });
-        {% endif %}
-    </script>
+    {{ parent() }}
+    {{ encore_entry_script_tags('view') }}
 {% endblock %}

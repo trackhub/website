@@ -18,8 +18,7 @@ Encore
      * and one CSS file (e.g. app.css) if you JavaScript imports CSS.
      */
     .addEntry('app', './assets/js/app.js')
-    //.addEntry('page1', './assets/js/page1.js')
-    //.addEntry('page2', './assets/js/page2.js')
+    .addEntry('view', './assets/js/view.js')
 
     // will require an extra script tag for runtime.js
     // but, you probably want this, unless you're building a single-page app
