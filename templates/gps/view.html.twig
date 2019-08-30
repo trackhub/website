@@ -5,8 +5,8 @@
     <h1>{{ track.name }}</h1>
 
     {% if canEdit %}
-        <a href="{{ path('app_track_edit', {id: track.id}) }}" class="btn btn-info">Edit</a>
-        <a href="{{ path('gps-new-version', {id: track.id}) }}" class="btn btn-info">add new version</a>
+        <a href="{{ path('app_track_edit', {id: track.id}) }}" class="btn btn-info">{{ 'Edit'|trans }}</a>
+        <a href="{{ path('gps-new-version', {id: track.id}) }}" class="btn btn-info">{{ 'Add new version'|trans }}</a>
     {% endif %}
 
     <hr>
@@ -34,19 +34,19 @@
         <table class="table">
             <tr>
                 <td></td>
-                <td>climb</td>
-                <td>descent</td>
-                <td>Rating</td>
-                <td>include in export</td>
+                <td>{{ 'Climb'|trans }}</td>
+                <td>{{ 'Descent'|trans }}</td>
+                <td>{{ 'Rating'|trans }}</td>
+                <td>{{ 'Include in export'|trans }}</td>
             </tr>
-            <!--- Render versions on map --->
+            {# Render versions on map #}
             {% include "include/mapVersion.html.twig" with { "versions" : track.versions, "color" : 'red', 'class' : 'main' } only %}
             {% include "include/mapVersion.html.twig" with { "versions" : track.UphillVersions(true), "color" : "blue", 'class' : 'uphill'} only %}
             {% include "include/mapVersion.html.twig" with { "versions" : track.downhillVersions(true), "color" : "yellow", 'class' : 'downhill' } only %}
         </table>
 
-        <a class="btn btn-success" href="{{ path('gps-download', {id: track.id}) }}">download main track</a>
-        <input type="submit" class="btn btn-success" value="download selected versions">
+        <a class="btn btn-success" href="{{ path('gps-download', {id: track.id}) }}">{{ 'Download main track'|trans }}</a>
+        <input type="submit" class="btn btn-success" value="{{ 'Download selected versions'|trans }}">
     </form>
 
     <div class="chart-container" style="height: 300px;" id="elevation-container" data-labels="{{ elevationLabels|json_encode|e('html_attr') }}"  data-datasets="{{ elevationData|json_encode|e('html_attr') }}">
