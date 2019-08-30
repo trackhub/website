@@ -24,12 +24,23 @@ class Track extends AbstractType
         }
 
         $builder->add(
-            'name',
+            'nameEn',
             TextType::class,
             [
                 'required' => false,
+                'label' => 'Name in English',
             ]
         );
+
+        $builder->add(
+            'nameBg',
+            TextType::class,
+            [
+                'required' => false,
+                'label' => 'Name in Bulgarian',
+            ]
+        );
+
         $builder->add(
             'type',
             ChoiceType::class,

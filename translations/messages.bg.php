@@ -7,7 +7,13 @@ return [
     'Log in' => 'Вписване',
     'Name' => 'Име',
     'Type' => 'Тип',
+    'Submit' => 'Изпрати',
     'GPS tracks by track-hub.com' => 'GPS следи от track-hub.com',
+    'Name in Bulgarian' => 'Име на Български',
+    'Name in English' => 'Име на Английски',
+    'Visibility' => 'Видимист',
+    'public' => 'публичен',
+    'unlisted' => 'нелистнат',
 
     'Latest tracks' => 'Най-нови следи',
     'Latest tracks by bicycle' => 'Най-нови следи с колело',

@@ -2,7 +2,7 @@
 
 {% block content %}
 
-    <h1>{{ track.name }}</h1>
+    <h1>{{ track.name(app.request.locale) }}</h1>
 
     {% if canEdit %}
         <a href="{{ path('app_track_edit', {id: track.id}) }}" class="btn btn-info">Edit</a>
