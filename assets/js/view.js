@@ -92,7 +92,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
-jsUpload = function jsUpload(inputElement, csrfToken, uploadUrl, translations) {
+window.jsImageUpload = function (inputElement, csrfToken, uploadUrl, translations) {
     inputElement.addEventListener('change', function() {
         for (let i = 0; i < this.files.length; i++) {
             let previewDiv = document.createElement('div');
@@ -144,5 +144,3 @@ jsUpload = function jsUpload(inputElement, csrfToken, uploadUrl, translations) {
         }
     });
 };
-
-window.jsUpload = jsUpload;
