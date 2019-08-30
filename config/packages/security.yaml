@@ -16,10 +16,11 @@ security:
         path:   app_logout
       oauth:
         resource_owners:
-          facebook: "/login/check-facebook"
-        login_path:        /login
+          facebook: facebook_login
+        login_path:        hwi_oauth_connect
         use_forward:       false
-        failure_path:      /login
+        failure_path:      hwi_oauth_connect
+        default_target_path: home
 
         oauth_user_provider:
           service: app.oauth.provider
@@ -37,6 +38,6 @@ security:
   access_control:
   # - { path: ^/admin, roles: ROLE_ADMIN }
   # - { path: ^/profile, roles: ROLE_USER }
-  - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY, requires_channel: https }
+  - { path: ^/([a-z]+/)?login, roles: IS_AUTHENTICATED_ANONYMOUSLY, requires_channel: https }
   - { path: ^/([a-z]+/)?gps/new, roles: ROLE_USER }
   - { path: ^/([a-z]+/)?admin, roles: ROLE_ADMIN }

@@ -11,6 +11,11 @@ use App\Entity\Track;
 
 class Home extends AbstractController
 {
+    public function index()
+    {
+        return $this->redirectToRoute('home');
+    }
+
     public function home(TrackRepository $repo)
     {
         $data = $repo->findLatestTrackTypes();
