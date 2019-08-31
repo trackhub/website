@@ -11,9 +11,9 @@ return [
     'GPS tracks by track-hub.com' => 'GPS следи от track-hub.com',
     'Name in Bulgarian' => 'Име на Български',
     'Name in English' => 'Име на Английски',
-    'Visibility' => 'Видимист',
+    'Visibility' => 'Видимост',
     'public' => 'публичен',
-    'unlisted' => 'нелистнат',
+    'unlisted' => 'скрит',
 
     'Latest tracks' => 'Най-нови следи',
     'Latest tracks by bicycle' => 'Най-нови следи с колело',
