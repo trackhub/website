@@ -27,11 +27,17 @@ class Version
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\User\User")
+     * @ORM\JoinColumn(name="send_by_id",
+     *     referencedColumnName="id",
+     *     nullable=true,
+     *     onDelete="SET NULL")
      */
     private $sendBy;
 
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\File\TrackFile", cascade={"persist", "remove"}, orphanRemoval=true)
+     * @ORM\OneToOne(targetEntity="App\Entity\File\TrackFile",
+     *     cascade={"persist", "remove"},
+     *     orphanRemoval=true)
      */
     private $file;
 
