@@ -19,6 +19,14 @@ return [
     'Uploaded' => 'Качена',
     'Upload failed' => 'Качването неуспешно',
     'Image format is not allowed' => 'Форматът на картинката не е позволен',
+    'Climb' => 'Изкачване',
+    'Descent' => 'Спускане',
+    'Rating' => 'Рейтинг',
+    'Include in export' => 'Включи в експорта',
+    'Download main track' => 'Свали главната следа',
+    'Download selected versions' => 'Свали избраните версии',
+    'Add new version' => 'Добави нова версия',
+    'Edit' => 'Промени',
 
     // user menu
     'logout' => 'изход',
