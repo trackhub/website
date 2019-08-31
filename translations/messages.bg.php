@@ -15,6 +15,14 @@ return [
     'View details' => 'Виж детайли',
     'by bike' => 'с колело',
     'by foot' => 'пешеходно',
+    'Climb' => 'Изкачване',
+    'Descent' => 'Спускане',
+    'Rating' => 'Рейтинг',
+    'Include in export' => 'Включи в експорта',
+    'Download main track' => 'Свали главната следа',
+    'Download selected versions' => 'Свали избраните версии',
+    'Add new version' => 'Добави нова версия',
+    'Edit' => 'Промени',
 
     // user menu
     'logout' => 'изход',
