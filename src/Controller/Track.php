@@ -57,7 +57,8 @@ class Track extends AbstractController
             $track->addOptimizedPoints($optimizedPoints);
             $track->addVersion($trackVersion);
             $track->setType($form->get('type')->getData());
-            $track->setName($form->get('name')->getData());
+            $track->setNameEn($form->get('nameEn')->getData());
+            $track->setNameBg($form->get('nameBg')->getData());
             $track->setVisibility($form->get('visibility')->getData());
 
             $videoParser = new YoutubeParser();
@@ -113,7 +114,8 @@ class Track extends AbstractController
         $this->denyAccessUnlessGranted('edit', $track);
 
         $form = $this->createForm(\App\Form\Type\Track::class);
-        $form->get('name')->setData($track->getName());
+        $form->get('nameEn')->setData($track->getNameEn());
+        $form->get('nameBg')->setData($track->getNameBg());
         $form->get('type')->setData($track->getType());
         $form->get('visibility')->setData($track->getVisibility());
 
@@ -146,7 +148,8 @@ class Track extends AbstractController
             }
 
             $track->setvideosYoutube($youtubeVideos);
-            $track->setName($form->get('name')->getData());
+            $track->setNameEn($form->get('nameEn')->getData());
+            $track->setNameBg($form->get('nameBg')->getData());
             $track->setType($form->get('type')->getData());
             $track->setVisibility($form->get('visibility')->getData());
 
@@ -297,7 +300,7 @@ class Track extends AbstractController
         ]);
     }
 
-    public function view($id, TrackRepository $repo)
+    public function view($id, TrackRepository $repo, Request $request)
     {
         $gps = $repo->findOneBy(['id' => $id]);
 
@@ -388,7 +391,7 @@ class Track extends AbstractController
             next($values);
         }
 
-        $appTitle = $gps->getName();
+        $appTitle = $gps->getName($request->getLocale());
         switch ($gps->getType()) {
             case \App\Entity\Track::TYPE_CYCLING:
                 $appTitle .= ' mountain bike trail';
