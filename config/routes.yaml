@@ -1,6 +1,6 @@
 indexWithoutLocale:
   path: /
-  controller: App\Controller\Home::home
+  controller: App\Controller\Home::index
 
 home:
   path: /{_locale}
