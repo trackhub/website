@@ -12,6 +12,3 @@ hwi_oauth_login:
 
 facebook_login:
   path: /{_locale}/login/check-facebook
-
-facebook_login_no_locale:
-  path: /login/check-facebook
