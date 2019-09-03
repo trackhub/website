@@ -10,11 +10,9 @@ class Image extends AbstractMigration
             CREATE TABLE track_image (
                 id CHAR(36) NOT NULL COMMENT '(DC2Type:guid)',
                 track_id CHAR(36) NOT NULL COMMENT '(DC2Type:guid)',
-                version_id CHAR(36) DEFAULT NULL COMMENT '(DC2Type:guid)',
                 send_by_id INT NOT NULL,
                 filepath VARCHAR(255) NOT NULL,
                 INDEX IDX_TRACK_ID (track_id),
-                INDEX IDX_VERSION_ID (version_id),
                 INDEX IDX_SEND_BY (send_by_id),
                 PRIMARY KEY(id)
             )
@@ -26,10 +24,6 @@ class Image extends AbstractMigration
         ");
 
         $this->query("
-            ALTER TABLE track_image ADD CONSTRAINT FK_TF_VERSION_ID FOREIGN KEY (version_id) REFERENCES version (id)
-        ");
-
-        $this->query("
             ALTER TABLE track_image ADD CONSTRAINT FK_TF_SEND_BY_ID FOREIGN KEY (send_by_id) REFERENCES `user` (id)
         ");
     }
@@ -37,7 +31,6 @@ class Image extends AbstractMigration
     public function down()
     {
         $this->query("ALTER TABLE track_image DROP CONSTRAINT FK_TF_SEND_BY_ID");
-        $this->query("ALTER TABLE track_image DROP CONSTRAINT FK_TF_VERSION_ID");
         $this->query("ALTER TABLE track_image DROP CONSTRAINT FK_TF_TRACK_ID");
 
         $this->query("DROP TABLE track_image");

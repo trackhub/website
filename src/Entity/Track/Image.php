@@ -25,11 +25,6 @@ class Image
     private $track;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Track\Version", inversedBy="points")
-     */
-    private $version;
-
-    /**
      * @ORM\ManyToOne(targetEntity="App\Entity\User\User")
      */
     private $sendBy;
@@ -50,11 +45,6 @@ class Image
     public function getId(): ?string
     {
         return $this->id;
-    }
-
-    public function setVersion(Version $version = null)
-    {
-        $this->version = $version;
     }
 
     public function getFilepath(): string

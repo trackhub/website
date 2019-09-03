@@ -58,14 +58,7 @@
             </nav>
         </footer>
 
-        <script>
-            jQuery(document).on('click', '[data-toggle="lightbox"]', function(event) {
-                event.preventDefault();
-                jQuery(this).ekkoLightbox({
-                    alwaysShowClose: true
-                });
-            });
-        </script>
+
 
         {% include "include/foot.html.twig" %}
         {% block javascripts %}{% endblock %}

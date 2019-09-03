@@ -6,12 +6,16 @@
     {% if canEdit %}
         <a href="{{ path('app_track_edit', {id: track.id}) }}" class="btn btn-info">{{ 'Edit'|trans }}</a>
         <a href="{{ path('gps-new-version', {id: track.id}) }}" class="btn btn-info">{{ 'Add new version'|trans }}</a>
+    {% endif %}
 
+    {% if app.user %}
         <label for="file_input" class="btn btn-success mb-0">Add pictures</label>
         <input  id="file_input" style="visibility: hidden;" type="file" name="files[]" multiple accept="image/jpeg, image/png">
         <div class="container">
             <div id="file_upload_progress" class="row"></div>
         </div>
+    {% else %}
+        <a href="{{ path('hwi_oauth_connect') }}" class="btn btn-success">Add pictures</a>
     {% endif %}
 
     <hr>
@@ -100,6 +104,13 @@
                 'uploaded': {{ 'Uploaded'|json_encode|raw }}
             }
         );
+
+        jQuery(document).on('click', '[data-toggle="lightbox"]', function(event) {
+            event.preventDefault();
+            jQuery(this).ekkoLightbox({
+                alwaysShowClose: true
+            });
+        });
     </script>
 
 {% endblock %}
