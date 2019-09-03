@@ -1,35 +1,3 @@
 body {
     background-color: lightgray;
 }
-
-label[for=file_input] {
-    cursor: pointer;
-}
-
-
-.track_images {
-    height: 300px;
-    overflow-x: scroll;
-    overflow-y: hidden;
-    white-space:nowrap;
-}
-
-.track_images img {
-    max-width: 300px;
-    max-height: 300px;
-}
-
-#file_upload_progress img {
-    max-width: 300px;
-    max-height: 300px;
-}
-
-#file_upload_progress div {
-    padding-top: 10px;
-}
-
-.upload_progress_text {
-    background-color: black;
-    color: white;
-    max-width: 300px;
-}
