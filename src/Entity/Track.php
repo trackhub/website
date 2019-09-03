@@ -43,7 +43,12 @@ class Track
     /**
      * @ORM\Column(type="string", nullable=true)
      */
-    private $name;
+    private $nameEn;
+
+    /**
+     * @ORM\Column(type="string", nullable=true)
+     */
+    private $nameBg;
 
     /**
      * @ORM\Column(type="boolean", nullable=false)
@@ -144,14 +149,43 @@ class Track
         return $this->sendBy;
     }
 
-    public function getName(): ?string
+    /**
+     * Get localized name.
+     * If localized name doesn't exists - fallback to EN
+     */
+    public function getName(string $locale): ?string
     {
-        return $this->name;
+        if ($locale === 'bg' && $this->nameBg !== null) {
+            return $this->nameBg;
+        }
+
+        return $this->nameEn;
     }
 
-    public function setName(?string $name): void
+    public function getNameEn(): ?string
     {
-        $this->name = $name;
+        return $this->nameEn;
+    }
+
+    public function getNameBg(): ?string
+    {
+        return $this->nameBg;
+    }
+
+    /**
+     * @param mixed $nameEn
+     */
+    public function setNameEn(string $nameEn = null): void
+    {
+        $this->nameEn = $nameEn;
+    }
+
+    /**
+     * @param mixed $nameBg
+     */
+    public function setNameBg(string $nameBg = null): void
+    {
+        $this->nameBg = $nameBg;
     }
 
     public function getId(): ?string

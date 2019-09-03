@@ -11,6 +11,11 @@ use App\Entity\Track;
 
 class Home extends AbstractController
 {
+    public function index()
+    {
+        return $this->redirectToRoute('home');
+    }
+
     public function home(TrackRepository $repo)
     {
         $data = $repo->findLatestTrackTypes();
@@ -63,7 +68,7 @@ class Home extends AbstractController
         foreach ($qResult as $gps) {
             $gpsArrayData = [];
             $gpsArrayData['id'] = $gps->getId();
-            $gpsArrayData['name'] = $gps->getName();
+            $gpsArrayData['name'] = $gps->getName($request->getLocale());
             $gpsArrayData['slugOrId'] = $gps->getSlugOrId();
             $gpsArrayData['type'] = $gps->getType();
 

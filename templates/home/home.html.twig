@@ -17,10 +17,10 @@
                     {% for track in latestTracks %}
                         <li>
                             <a href="{{ path('gps-view', { id: track.slugOrId}) }}">
-                                {% if track.name is empty %}
+                                {% if track.name(app.request.locale) is empty %}
                                     {{ track.id }}
                                 {% else %}
-                                    {{ track.name }}
+                                    {{ track.name(app.request.locale) }}
                                 {% endif %}
                             </a>
                         </li>
@@ -34,10 +34,10 @@
                     {% for track in latestTracksHike %}
                         <li>
                             <a href="{{ path('gps-view', { id: track.slugOrId}) }}">
-                                {% if track.name is empty %}
+                                {% if track.name(app.request.locale) is empty %}
                                     {{ track.id }}
                                 {% else %}
-                                    {{ track.name }}
+                                    {{ track.name(app.request.locale) }}
                                 {% endif %}
                             </a>
                         </li>
