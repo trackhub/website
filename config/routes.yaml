@@ -16,6 +16,16 @@ gps-new:
   path: /{_locale}/gps/new
   controller: App\Controller\Track::new
 
+track-new-image:
+  path: /{_locale}/gps/add-image/{id}
+  controller: App\Controller\Track\Image::addImage
+
+track-image-thumbnail:
+  path: /images/generated/tit/{year}/{trackId}/{imagePath}
+  controller: App\Controller\Track\Image::generateThumbnail
+  requirements:
+    year: '\d+'
+
 gps-view:
   path: /{_locale}/gps/view/{id}
   controller: App\Controller\Track::view

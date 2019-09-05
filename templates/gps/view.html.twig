@@ -1,12 +1,21 @@
 {% extends "base.html.twig" %}
 
 {% block content %}
-
     <h1>{{ track.name(app.request.locale) }}</h1>
 
     {% if canEdit %}
         <a href="{{ path('app_track_edit', {id: track.id}) }}" class="btn btn-info">{{ 'Edit'|trans }}</a>
         <a href="{{ path('gps-new-version', {id: track.id}) }}" class="btn btn-info">{{ 'Add new version'|trans }}</a>
+    {% endif %}
+
+    {% if app.user %}
+        <label for="file_input" class="btn btn-success mb-0">Add pictures</label>
+        <input  id="file_input" style="visibility: hidden;" type="file" name="files[]" multiple accept="image/jpeg, image/png">
+        <div class="container">
+            <div id="file_upload_progress" class="row"></div>
+        </div>
+    {% else %}
+        <a href="{{ path('hwi_oauth_connect') }}" class="btn btn-success">Add pictures</a>
     {% endif %}
 
     <hr>
@@ -65,6 +74,19 @@
         {% endfor %}
     </div>
 
+    {% if track.images is not empty %}
+        <div class="track_images" >
+            {% for image in track.images %}
+                <a href="{{ app_track_images_directory }}/{{ image.filepath }}"
+                   data-toggle="lightbox"
+                   data-gallery="track-images"
+                   data-footer="&lt;a target=&quot;_blank&quot; href=&quot;{{ app_track_images_directory }}/{{ image.filepath }}#&quot;&gt;{{ 'View full size'|trans() }}&lt;/a&gt;"
+                >
+                    <img src="{{ app_track_images_thumbnails_directory }}/{{ image.filepath }}">
+                </a>
+            {% endfor %}
+        </div>
+    {% endif %}
     {% include "include/ratingModal.html.twig" %}
 
 {% endblock %}
@@ -72,4 +94,22 @@
 {% block javascripts %}
     {{ parent() }}
     {{ encore_entry_script_tags('view') }}
+
+    <script>
+        jsImageUpload(
+            document.getElementById('file_input'),
+            {{ csrf_token('file_upload')|json_encode|raw }},
+            {{ path('track-new-image', {id: track.id})|json_encode|raw }},
+            {
+                'uploaded': {{ 'Uploaded'|json_encode|raw }}
+            }
+        );
+
+        jQuery(document).on('click', '[data-toggle="lightbox"]', function(event) {
+            event.preventDefault();
+            jQuery(this).ekkoLightbox({
+                alwaysShowClose: true
+            });
+        });
+    </script>
 {% endblock %}

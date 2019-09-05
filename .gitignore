@@ -2,6 +2,8 @@
 ###> symfony/framework-bundle ###
 /.env
 /public/bundles/
+/public/uploads/
+/public/images/generated/
 /var/
 /vendor/
 ###< symfony/framework-bundle ###

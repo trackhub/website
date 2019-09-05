@@ -5,6 +5,8 @@
 # https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
 parameters:
     locale: 'en'
+    track_images_directory: '%kernel.project_dir%/public/uploads/track_images'
+    track_images_thumbnails_directory: '%kernel.project_dir%/public/images/generated/tit'
 
 services:
     # default configuration for services in *this* file

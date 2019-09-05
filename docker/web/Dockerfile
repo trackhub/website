@@ -30,8 +30,10 @@ RUN apt-get update && \
                        php${PHP_V}-xml \
                        php${PHP_V}-curl \
                        php${PHP_V}-mbstring \
+                       php${PHP_V}-imagick \
                        php${PHP_V}-intl
 RUN update-alternatives --set php /usr/bin/php${PHP_V}
+COPY php.ini /etc/php/${PHP_V}/apache2/php.ini
 # end php
 
 RUN wget https://getcomposer.org/download/1.7.3/composer.phar -O /usr/local/bin/composer && \
