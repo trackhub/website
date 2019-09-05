@@ -96,21 +96,24 @@
     {{ parent() }}
     {{ encore_entry_script_tags('view') }}
 
-    <script>
-        jsImageUpload(
-            document.getElementById('file_input'),
-            {{ csrf_token('file_upload')|json_encode|raw }},
-            {{ path('track-new-image', {id: track.id})|json_encode|raw }},
-            {
-                'uploaded': {{ 'Uploaded'|json_encode|raw }}
-            }
-        );
+    {# upload element doesn't exists if user is not logged in #}
+    {% if app.user %}
+        <script>
+            jsImageUpload(
+                document.getElementById('file_input'),
+                {{ csrf_token('file_upload')|json_encode|raw }},
+                {{ path('track-new-image', {id: track.id})|json_encode|raw }},
+                {
+                    'uploaded': {{ 'Uploaded'|json_encode|raw }}
+                }
+            );
 
-        jQuery(document).on('click', '[data-toggle="lightbox"]', function(event) {
-            event.preventDefault();
-            jQuery(this).ekkoLightbox({
-                alwaysShowClose: true
+            jQuery(document).on('click', '[data-toggle="lightbox"]', function(event) {
+                event.preventDefault();
+                jQuery(this).ekkoLightbox({
+                    alwaysShowClose: true
+                });
             });
-        });
-    </script>
+        </script>
+    {% endif %}
 {% endblock %}
