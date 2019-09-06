@@ -34,11 +34,17 @@ class Image
      */
     private $filepath;
 
+    /**
+     * @ORM\Column(type="datetime")
+     */
+    private $createdAt;
+
     public function __construct(string $file, User $sendBy, Track $track)
     {
         $this->filepath = $file;
         $this->sendBy = $sendBy;
         $this->track = $track;
+        $this->createdAt = new \DateTime();
         $track->addImage($this);
     }
 
