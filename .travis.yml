@@ -19,15 +19,14 @@ jobs:
         docker run -v `pwd`:/var/www -t trackhub-web /bin/bash -c "./bin/console doctrine:mapping:info" &&
         docker run -v `pwd`:/var/www -t trackhub-web /bin/bash -c "yarn encore dev" &&
         docker run -v `pwd`:/var/www -t trackhub-web /bin/bash -c "yarn encore production"
-    - name: php cs tests
+    - name: PHPCS tests
       script: >-
-          cd /var/www/tests/phpcs &&
+          cd ./tests/phpcs &&
           composer install &&
           ./vendor/bin/phpcs --standard=phpcs.xml
 
 stages:
-  - docker tests
-  - php cs tests
+  - tests
 
 notifications:
     on_success: never
