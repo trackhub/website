@@ -15,9 +15,9 @@ jobs:
         docker run -v `pwd`:/var/www -t trackhub-web /bin/bash -c "
           php -v &&
           composer install --prefer-dist &&
-          yarn install &&
-          ./vendor/bin/phpunit -c tests/phpunit/phpunit.xml --no-coverage
           ./bin/console doctrine:mapping:info &&
+          ./vendor/bin/phpunit -c tests/phpunit/phpunit.xml --no-coverage
+          yarn install &&
           yarn encore dev &&
           yarn encore production
         "
