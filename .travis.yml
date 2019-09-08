@@ -9,7 +9,7 @@ jobs:
     - stage: docker tests
       name: Tests inside docker
       script: >-
-        docker build --tag=trackhub-web ./docker/web/
+        docker build --tag=trackhub-web ./docker/web/ &&
         docker run -v `pwd`:/var/www -t trackhub-web /bin/bash -c "composer install --prefer-dist" &&
         docker run -v `pwd`:/var/www -t trackhub-web /bin/bash -c "yarn install" &&
         docker run -v `pwd`:/var/www -t trackhub-web /bin/bash -c "php -v" &&
