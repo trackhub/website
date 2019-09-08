@@ -19,8 +19,12 @@ jobs:
         docker run -v `pwd`:/var/www -t trackhub-web /bin/bash -c "yarn encore production"
     - name: php cs tests
       script: >-
-        docker run -v `pwd`:/var/www -t php:7 /bin/bash -c "cd /var/www && composer install" &&
-        docker run -v `pwd`:/var/www -t php:7 /bin/bash -c "cd /var/www && ./vendor/bin/phpcs --standard=phpcs.xml"
+        docker run -v `pwd`:/var/www -t php:7 /bin/bash -c "
+          cd /var/www &&
+          php -r 'copy('https://getcomposer.org/installer', 'composer-setup.php');' &&
+          php composer-setup.php &&
+          php composer.phar install &&
+          ./vendor/bin/phpcs --standard=phpcs.xml"
 
 stages:
   - docker tests
