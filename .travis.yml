@@ -12,13 +12,15 @@ jobs:
       name: Tests inside docker
       script: >-
         docker build --tag=trackhub-web ./docker/web/ &&
-        docker run -v `pwd`:/var/www -t trackhub-web /bin/bash -c "composer install --prefer-dist" &&
-        docker run -v `pwd`:/var/www -t trackhub-web /bin/bash -c "yarn install" &&
-        docker run -v `pwd`:/var/www -t trackhub-web /bin/bash -c "php -v" &&
-        docker run -v `pwd`:/var/www -t trackhub-web /bin/bash -c "./vendor/bin/phpunit -c tests/phpunit/phpunit.xml --no-coverage" &&
-        docker run -v `pwd`:/var/www -t trackhub-web /bin/bash -c "./bin/console doctrine:mapping:info" &&
-        docker run -v `pwd`:/var/www -t trackhub-web /bin/bash -c "yarn encore dev" &&
-        docker run -v `pwd`:/var/www -t trackhub-web /bin/bash -c "yarn encore production"
+        docker run -v `pwd`:/var/www -t trackhub-web /bin/bash -c "
+          php -v &&
+          composer install --prefer-dist &&
+          yarn install &&
+          ./vendor/bin/phpunit -c tests/phpunit/phpunit.xml --no-coverage
+          ./bin/console doctrine:mapping:info &&
+          yarn encore dev &&
+          yarn encore production
+        "
     - name: PHPCS tests
       script: >-
           cd ./tests/phpcs &&
