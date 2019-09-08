@@ -159,6 +159,10 @@ class Track
             return $this->nameBg;
         }
 
+        if ($this->nameEn === null) {
+            return $this->nameBg;
+        }
+
         return $this->nameEn;
     }
 
@@ -443,7 +447,7 @@ class Track
     }
 
     /**
-     * @return mixed
+     * @return Image[]|ArrayCollection
      */
     public function getImages()
     {
@@ -452,8 +456,8 @@ class Track
 
     public function __toString(): string
     {
-        if ($this->getName()) {
-            return $this->getName();
+        if ($this->getName('en')) {
+            return $this->getName('en');
         }
         return $this->getId();
     }
