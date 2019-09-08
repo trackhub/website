@@ -147,7 +147,7 @@ class TrackTest extends TestCase
     /**
      * @dataProvider getNameDataProvider
      */
-    public function testGetName($exptected, $desiredLang,$nameEn, $nameBg)
+    public function testGetName($exptected, $desiredLang, $nameEn, $nameBg)
     {
         $track = new Track(new User());
         $track->setNameBg($nameBg);
