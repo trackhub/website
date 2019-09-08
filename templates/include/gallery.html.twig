@@ -1,0 +1,18 @@
+{% if images is not empty %}
+<div class="row text-center text-lg-left">
+    {% for image in images %}
+    <div class="col-lg-3 col-md-4 col-6">
+        <a href="{{ directory }}/{{ image.filepath }}"
+           class="d-block mb-4 h-100"
+           data-toggle="lightbox"
+           data-gallery="track-images"
+           data-footer="&lt;a target=&quot;_blank&quot; href=&quot;{{ app_track_images_directory }}/{{ image.filepath }}#&quot;&gt;{{ 'View full size'|trans() }}&lt;/a&gt;"
+        >
+        <img class="img-fluid img-thumbnail" src="{{ app_track_images_thumbnails_directory }}/{{ image.filepath }}">
+        </a>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+    <h1>No images</h1>
+{% endif %}

@@ -1,70 +1,98 @@
 {% extends "base.html.twig" %}
 
 {% block content %}
-    <h1>{{ track.name(app.request.locale) }}</h1>
+{#    https://www.codeply.com/go/jJNuQJzTOb/bootstrap-4-landing-page#}
 
-    {% if canEdit %}
-        <a href="{{ path('app_track_edit', {id: track.id}) }}" class="btn btn-info">{{ 'Edit'|trans }}</a>
-        <a href="{{ path('gps-new-version', {id: track.id}) }}" class="btn btn-info">{{ 'Add new version'|trans }}</a>
-    {% endif %}
 
-    {% if app.user %}
-        <label for="file_input" class="btn btn-success mb-0">Add pictures</label>
-        <input  id="file_input" style="visibility: hidden;" type="file" name="files[]" multiple accept="image/jpeg, image/png">
-        <div class="container">
-            <div id="file_upload_progress" class="row"></div>
-        </div>
-    {% else %}
-        <a href="{{ path('hwi_oauth_connect') }}" class="btn btn-success">Add pictures</a>
-    {% endif %}
+    <div class="container" id="content">
+        <h2 class="mb-3">{{ track.name(app.request.locale) }}</h2>
+        {% if canEdit %}
+            <a href="{{ path('app_track_edit', {id: track.id}) }}" class="btn btn-info">{{ 'Edit'|trans }}</a>
+            <a href="{{ path('gps-new-version', {id: track.id}) }}" class="btn btn-info">{{ 'Add new version'|trans }}</a>
+        {% endif %}
 
-    <hr>
+        {% if app.user %}
+            <label for="file_input" class="btn btn-success mb-0">Add pictures</label>
+            <input  id="file_input" style="visibility: hidden;" type="file" name="files[]" multiple accept="image/jpeg, image/png">
+            <div class="container">
+                <div id="file_upload_progress" class="row"></div>
+            </div>
+        {% else %}
+            <a href="{{ path('hwi_oauth_connect') }}" class="btn btn-success">Add pictures</a>
+        {% endif %}
 
-    <!--- Initialize map --->
-    <div style="height: 50vh; min-height: 300px; width: 100%;" id="map"></div>
-    <script>
-        const map = L.map('map', {
-                gestureHandling: true,
-            }
-        );
+    <div class="row h-100 mt-5">
+        <main class="col py-5">
+            <div class="row">
+                <div class="col">
+                    <ul class="nav nav-tabs small" role="tablist">
+                        <li class="nav-item"><a class="nav-link text-uppercase active" data-toggle="tab" href="#tab1" role="tab">Information</a></li>
+                        <li class="nav-item ml-auto"><a class="nav-link text-uppercase" data-toggle="tab" href="#tab2" role="tab">Gallery</a></li>
+                        <li class="nav-item"><a class="nav-link text-uppercase" data-toggle="tab" href="#tab3" role="tab">Comments</a></li>
+                    </ul>
+                    <div class="tab-content py-3">
+                        <div class="tab-pane active" id="tab1" role="tabpanel">
 
-        map.fitBounds([
-            [{{ track.pointNorthEastLat }}, {{ track.pointNorthEastLng }}],
-            [{{ track.pointSouthWestLat }}, {{ track.pointSouthWestLng }}],
-        ]);
+                            <div style="height: 50vh; min-height: 300px; width: 100%;" id="map"></div>
+                            <script>
+                                const map = L.map('map', {
+                                        gestureHandling: true,
+                                    }
+                                );
 
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-        }).addTo(map);
-    </script>
+                                map.fitBounds([
+                                    [{{ track.pointNorthEastLat }}, {{ track.pointNorthEastLng }}],
+                                    [{{ track.pointSouthWestLat }}, {{ track.pointSouthWestLng }}],
+                                ]);
 
-    <br>
+                                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                                    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                                }).addTo(map);
+                            </script>
 
-    <form method="post" action="{{ path('app_track_download_batch') }}">
-        <table class="table">
-            <tr>
-                <td></td>
-                <td>{{ 'Climb'|trans }}</td>
-                <td>{{ 'Descent'|trans }}</td>
-                <td>{{ 'Rating'|trans }}</td>
-                <td>{{ 'Include in export'|trans }}</td>
-            </tr>
-            {# Render versions on map #}
-            {% include "include/mapVersion.html.twig" with { "versions" : track.versions, "color" : 'red', 'class' : 'main' } only %}
-            {% include "include/mapVersion.html.twig" with { "versions" : track.UphillVersions(true), "color" : "blue", 'class' : 'uphill'} only %}
-            {% include "include/mapVersion.html.twig" with { "versions" : track.downhillVersions(true), "color" : "yellow", 'class' : 'downhill' } only %}
-        </table>
+                            <form method="post" action="{{ path('app_track_download_batch') }}">
+                                <table class="table">
+                                    <tr>
+                                        <td></td>
+                                        <td>{{ 'Climb'|trans }}</td>
+                                        <td>{{ 'Descent'|trans }}</td>
+                                        <td>{{ 'Rating'|trans }}</td>
+                                        <td>{{ 'Include in export'|trans }}</td>
+                                    </tr>
+                                    {# Render versions on map #}
+                                    {% include "include/mapVersion.html.twig" with { "versions" : track.versions, "color" : 'red', 'class' : 'main' } only %}
+                                    {% include "include/mapVersion.html.twig" with { "versions" : track.UphillVersions(true), "color" : "blue", 'class' : 'uphill'} only %}
+                                    {% include "include/mapVersion.html.twig" with { "versions" : track.downhillVersions(true), "color" : "yellow", 'class' : 'downhill' } only %}
+                                </table>
 
-        <a class="btn btn-success" href="{{ path('gps-download', {id: track.id}) }}">{{ 'Download main track'|trans }}</a>
-        <input type="submit" class="btn btn-success" value="{{ 'Download selected versions'|trans }}">
-    </form>
+                                <a class="btn btn-success" href="{{ path('gps-download', {id: track.id}) }}">{{ 'Download main track'|trans }}</a>
+                                <input type="submit" class="btn btn-success" value="{{ 'Download selected versions'|trans }}">
+                            </form>
 
-    <div class="chart-container" style="height: 300px;" id="elevation-container" data-labels="{{ elevationLabels|json_encode|e('html_attr') }}"  data-datasets="{{ elevationData|json_encode|e('html_attr') }}">
-        <canvas id="elevation" width="400" height="300">
-            Elevation plot can't be shown!
-            Your browser doesn't support canvas elements.
-        </canvas>
+                            <h5>Elevation</h5>
+                            <div class="chart-container" style="height: 300px;" id="elevation-container" data-labels="{{ elevationLabels|json_encode|e('html_attr') }}"  data-datasets="{{ elevationData|json_encode|e('html_attr') }}">
+                                <canvas id="elevation" width="400" height="300">
+                                    Elevation plot can't be shown!
+                                    Your browser doesn't support canvas elements.
+                                </canvas>
+                            </div>
+                        </div>
+                        <div class="tab-pane" id="tab2" role="tabpanel">
+                            {% include 'include/gallery.html.twig' with {
+                                "images" : track.images,
+                                "directory" : app_track_images_directory
+                            } only %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
     </div>
+    </div>
+
+
+
+
 
     <div>
         {% for youtube in track.videosYoutube %}
@@ -75,19 +103,7 @@
         {% endfor %}
     </div>
 
-    {% if track.images is not empty %}
-        <div class="track_images" >
-            {% for image in track.images %}
-                <a href="{{ app_track_images_directory }}/{{ image.filepath }}"
-                   data-toggle="lightbox"
-                   data-gallery="track-images"
-                   data-footer="&lt;a target=&quot;_blank&quot; href=&quot;{{ app_track_images_directory }}/{{ image.filepath }}#&quot;&gt;{{ 'View full size'|trans() }}&lt;/a&gt;"
-                >
-                    <img src="{{ app_track_images_thumbnails_directory }}/{{ image.filepath }}">
-                </a>
-            {% endfor %}
-        </div>
-    {% endif %}
+
     {% include "include/ratingModal.html.twig" %}
 
 {% endblock %}
