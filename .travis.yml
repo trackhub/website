@@ -6,7 +6,7 @@ services:
 
 jobs:
   include:
-    - stage: docker tests
+    - stage: tests
       name: Tests inside docker
       script: >-
         docker build --tag=trackhub-web ./docker/web/ &&
