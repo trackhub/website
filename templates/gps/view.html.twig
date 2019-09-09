@@ -28,6 +28,8 @@
             }
         );
 
+        map.addControl(new MapControlFullScreen());
+
         map.fitBounds([
             [{{ track.pointNorthEastLat }}, {{ track.pointNorthEastLng }}],
             [{{ track.pointSouthWestLat }}, {{ track.pointSouthWestLng }}],
