@@ -1,8 +1,6 @@
 {% extends "base.html.twig" %}
 
 {% block content %}
-{#    https://www.codeply.com/go/jJNuQJzTOb/bootstrap-4-landing-page#}
-
 
     <div class="container" id="content">
         <h2 class="mb-3">{{ track.name(app.request.locale) }}</h2>
@@ -26,12 +24,12 @@
             <div class="row">
                 <div class="col">
                     <ul class="nav nav-tabs small" role="tablist">
-                        <li class="nav-item"><a class="nav-link text-uppercase active" data-toggle="tab" href="#tab1" role="tab">Information</a></li>
-                        <li class="nav-item ml-auto"><a class="nav-link text-uppercase" data-toggle="tab" href="#tab2" role="tab">Gallery</a></li>
-                        <li class="nav-item"><a class="nav-link text-uppercase" data-toggle="tab" href="#tab3" role="tab">Comments</a></li>
+                        <li class="nav-item"><a class="nav-link text-uppercase active" data-toggle="tab" href="#tabInfo" role="tab">Information</a></li>
+                        <li class="nav-item ml-auto"><a class="nav-link text-uppercase" data-toggle="tab" href="#tabGallery" role="tab">Gallery</a></li>
+                        <li class="nav-item"><a class="nav-link text-uppercase" data-toggle="tab" href="#tabVideos" role="tab">Videos</a></li>
                     </ul>
                     <div class="tab-content py-3">
-                        <div class="tab-pane active" id="tab1" role="tabpanel">
+                        <div class="tab-pane active" id="tabInfo" role="tabpanel">
 
                             <div style="height: 50vh; min-height: 300px; width: 100%;" id="map"></div>
                             <script>
@@ -60,28 +58,53 @@
                                         <td>{{ 'Include in export'|trans }}</td>
                                     </tr>
                                     {# Render versions on map #}
-                                    {% include "include/mapVersion.html.twig" with { "versions" : track.versions, "color" : 'red', 'class' : 'main' } only %}
-                                    {% include "include/mapVersion.html.twig" with { "versions" : track.UphillVersions(true), "color" : "blue", 'class' : 'uphill'} only %}
-                                    {% include "include/mapVersion.html.twig" with { "versions" : track.downhillVersions(true), "color" : "yellow", 'class' : 'downhill' } only %}
+                                    {% include "include/mapVersion.html.twig" with {
+                                        "versions" : track.versions,
+                                        "color" : 'red',
+                                        'class' : 'main'
+                                    } only %}
+                                    {% include "include/mapVersion.html.twig" with {
+                                        "versions" : track.UphillVersions(true),
+                                        "color" : "blue",
+                                        'class' : 'uphill'
+                                    } only %}
+                                    {% include "include/mapVersion.html.twig" with {
+                                        "versions" : track.downhillVersions(true),
+                                        "color" : "yellow",
+                                        'class' : 'downhill'
+                                    } only %}
                                 </table>
 
-                                <a class="btn btn-success" href="{{ path('gps-download', {id: track.id}) }}">{{ 'Download main track'|trans }}</a>
+                                <a class="btn btn-success"href="{{ path('gps-download', {id: track.id}) }}">{{ 'Download main track'|trans }}</a>
                                 <input type="submit" class="btn btn-success" value="{{ 'Download selected versions'|trans }}">
                             </form>
 
-                            <h5>Elevation</h5>
-                            <div class="chart-container" style="height: 300px;" id="elevation-container" data-labels="{{ elevationLabels|json_encode|e('html_attr') }}"  data-datasets="{{ elevationData|json_encode|e('html_attr') }}">
+                            <div class="chart-container" style="height: 300px;"id="elevation-container"
+                                 data-labels="{{ elevationLabels|json_encode|e('html_attr') }}"
+                                 data-datasets="{{ elevationData|json_encode|e('html_attr') }}">
                                 <canvas id="elevation" width="400" height="300">
                                     Elevation plot can't be shown!
                                     Your browser doesn't support canvas elements.
                                 </canvas>
                             </div>
                         </div>
-                        <div class="tab-pane" id="tab2" role="tabpanel">
+                        <div class="tab-pane" id="tabGallery" role="tabpanel">
                             {% include 'include/gallery.html.twig' with {
                                 "images" : track.images,
                                 "directory" : app_track_images_directory
                             } only %}
+                        </div>
+                        <div class="tab-pane" id="tabVideos" role="tabpanel">
+                            {% if track.videosYoutube is not empty %}
+                                {% for youtube in track.videosYoutube %}
+                                    <iframe width="560" height="315"
+                                            src="https://www.youtube.com/embed/{{ youtube.link }}"
+                                            frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
+                                    </iframe>
+                                {% endfor %}
+                            {% else %}
+                                <h5>No videos</h5>
+                            {% endif %}
                         </div>
                     </div>
                 </div>
@@ -89,20 +112,6 @@
         </main>
     </div>
     </div>
-
-
-
-
-
-    <div>
-        {% for youtube in track.videosYoutube %}
-            <iframe width="560" height="315"
-                    src="https://www.youtube.com/embed/{{ youtube.link }}"
-                    frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
-            </iframe>
-        {% endfor %}
-    </div>
-
 
     {% include "include/ratingModal.html.twig" %}
 
@@ -124,12 +133,5 @@
                     }
                 );
             {% endif %}
-
-            jQuery(document).on('click', '[data-toggle="lightbox"]', function(event) {
-                event.preventDefault();
-                jQuery(this).ekkoLightbox({
-                    alwaysShowClose: true
-                });
-            });
         </script>
 {% endblock %}

@@ -90,6 +90,22 @@ document.addEventListener('DOMContentLoaded', function() {
             .prop('disabled', false)
             .text('Rate');
     });
+
+    jQuery(document).on('shown.bs.tab', 'a[data-toggle="tab"]', function (event) {
+        jQuery('img.lazy').lazy({
+            bind: "event",
+            effect: "fadeIn",
+            effectTime: 500,
+            threshold: 0
+        });
+    });
+
+    jQuery(document).on('click', '[data-toggle="lightbox"]', function(event) {
+        event.preventDefault();
+        jQuery(this).ekkoLightbox({
+            alwaysShowClose: true
+        });
+    });
 });
 
 window.jsImageUpload = function (inputElement, csrfToken, uploadUrl, translations) {
