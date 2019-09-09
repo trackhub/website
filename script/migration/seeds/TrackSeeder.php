@@ -72,7 +72,8 @@ class TrackSeeder extends AbstractSeed
             $data = [
                 'id' => $trackId,
                 'last_check' => date('Y-m-d H:i:s', strtotime(sprintf("-%d hours", $i))),
-                'name' => 'Dummy track ' . $i,
+                'name_en' => 'Dummy track ' . $i,
+                'name_bg' => 'Фалшив трак ' . $i,
                 'point_north_east_lat' => 0,
                 'point_north_east_lng' => 0,
                 'point_south_west_lat' => 0,
