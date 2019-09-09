@@ -17,8 +17,9 @@ require('bootstrap');
 window.jQuery = require('jquery');
 window.chartJs = require('chart.js');
 window.lighBox = require('ekko-lightbox/dist/ekko-lightbox.js');
+window.jQueryLazy = require('jquery-lazy');
 
 window.AppTrack = require('./components/appTrack.js');
 window.StarRating = require('./components/starRating');
 
-require('jquery-lazy');
+window.MapControlFullScreen =  require('./map/control/fullScreen')

@@ -1,7 +1,6 @@
 {% extends "base.html.twig" %}
 
 {% block content %}
-
     <div class="container" id="content">
         <h2 class="mb-3">{{ track.name(app.request.locale) }}</h2>
         {% if canEdit %}
@@ -19,102 +18,102 @@
             <a href="{{ path('hwi_oauth_connect') }}" class="btn btn-success">Add pictures</a>
         {% endif %}
 
-    <div class="row h-100 mt-5">
-        <main class="col py-5">
-            <div class="row">
-                <div class="col">
-                    <ul class="nav nav-tabs small" role="tablist">
-                        <li class="nav-item"><a class="nav-link text-uppercase active" data-toggle="tab" href="#tabInfo" role="tab">{{ 'Information'|trans }}</a></li>
-                        <li class="nav-item ml-auto"><a class="nav-link text-uppercase" data-toggle="tab" href="#tabGallery" role="tab">{{ 'Gallery'|trans }}</a></li>
-                        <li class="nav-item"><a class="nav-link text-uppercase" data-toggle="tab" href="#tabVideos" role="tab">{{ 'Videos'|trans }}</a></li>
-                    </ul>
-                    <div class="tab-content py-3">
-                        <div class="tab-pane active" id="tabInfo" role="tabpanel">
+        <div class="row h-100 mt-5">
+            <main class="col py-5">
+                <div class="row">
+                    <div class="col">
+                        <ul class="nav nav-tabs small" role="tablist">
+                            <li class="nav-item"><a class="nav-link text-uppercase active" data-toggle="tab" href="#tabInfo" role="tab">{{ 'Information'|trans }}</a></li>
+                            <li class="nav-item ml-auto"><a class="nav-link text-uppercase" data-toggle="tab" href="#tabGallery" role="tab">{{ 'Gallery'|trans }}</a></li>
+                            <li class="nav-item"><a class="nav-link text-uppercase" data-toggle="tab" href="#tabVideos" role="tab">{{ 'Videos'|trans }}</a></li>
+                        </ul>
+                        <div class="tab-content py-3">
+                            <div class="tab-pane active" id="tabInfo" role="tabpanel">
 
-                            <div style="height: 50vh; min-height: 300px; width: 100%;" id="map"></div>
-                            <script>
-                                const map = L.map('map', {
-                                        gestureHandling: true,
-                                    }
-                                );
+                                <div style="height: 50vh; min-height: 300px; width: 100%;" id="map"></div>
+                                <script>
+                                    const map = L.map('map', {
+                                            gestureHandling: true,
+                                        }
+                                    );
 
-                                map.fitBounds([
-                                    [{{ track.pointNorthEastLat }}, {{ track.pointNorthEastLng }}],
-                                    [{{ track.pointSouthWestLat }}, {{ track.pointSouthWestLng }}],
-                                ]);
+                                    map.addControl(new MapControlFullScreen());
+                                    map.fitBounds([
+                                        [{{ track.pointNorthEastLat }}, {{ track.pointNorthEastLng }}],
+                                        [{{ track.pointSouthWestLat }}, {{ track.pointSouthWestLng }}],
+                                    ]);
 
-                                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                                    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                                }).addTo(map);
-                            </script>
+                                    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                                        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                                    }).addTo(map);
+                                </script>
 
-                            <form method="post" action="{{ path('app_track_download_batch') }}">
-                                <table class="table">
-                                    <tr>
-                                        <td></td>
-                                        <td>{{ 'Climb'|trans }}</td>
-                                        <td>{{ 'Descent'|trans }}</td>
-                                        <td>{{ 'Rating'|trans }}</td>
-                                        <td>{{ 'Include in export'|trans }}</td>
-                                    </tr>
-                                    {# Render versions on map #}
-                                    {% include "include/mapVersion.html.twig" with {
-                                        "versions" : track.versions,
-                                        "color" : 'red',
-                                        'class' : 'main'
-                                    } only %}
-                                    {% include "include/mapVersion.html.twig" with {
-                                        "versions" : track.UphillVersions(true),
-                                        "color" : "blue",
-                                        'class' : 'uphill'
-                                    } only %}
-                                    {% include "include/mapVersion.html.twig" with {
-                                        "versions" : track.downhillVersions(true),
-                                        "color" : "yellow",
-                                        'class' : 'downhill'
-                                    } only %}
-                                </table>
+                                <form method="post" action="{{ path('app_track_download_batch') }}">
+                                    <table class="table">
+                                        <tr>
+                                            <td></td>
+                                            <td>{{ 'Climb'|trans }}</td>
+                                            <td>{{ 'Descent'|trans }}</td>
+                                            <td>{{ 'Rating'|trans }}</td>
+                                            <td>{{ 'Include in export'|trans }}</td>
+                                        </tr>
+                                        {# Render versions on map #}
+                                        {% include "include/mapVersion.html.twig" with {
+                                            "versions" : track.versions,
+                                            "color" : 'red',
+                                            'class' : 'main'
+                                        } only %}
+                                        {% include "include/mapVersion.html.twig" with {
+                                            "versions" : track.UphillVersions(true),
+                                            "color" : "blue",
+                                            'class' : 'uphill'
+                                        } only %}
+                                        {% include "include/mapVersion.html.twig" with {
+                                            "versions" : track.downhillVersions(true),
+                                            "color" : "yellow",
+                                            'class' : 'downhill'
+                                        } only %}
+                                    </table>
 
-                                <a class="btn btn-success"href="{{ path('gps-download', {id: track.id}) }}">{{ 'Download main track'|trans }}</a>
-                                <input type="submit" class="btn btn-success" value="{{ 'Download selected versions'|trans }}">
-                            </form>
+                                    <a class="btn btn-success"href="{{ path('gps-download', {id: track.id}) }}">{{ 'Download main track'|trans }}</a>
+                                    <input type="submit" class="btn btn-success" value="{{ 'Download selected versions'|trans }}">
+                                </form>
 
-                            <div class="chart-container" style="height: 300px;"id="elevation-container"
-                                 data-labels="{{ elevationLabels|json_encode|e('html_attr') }}"
-                                 data-datasets="{{ elevationData|json_encode|e('html_attr') }}">
-                                <canvas id="elevation" width="400" height="300">
-                                    Elevation plot can't be shown!
-                                    Your browser doesn't support canvas elements.
-                                </canvas>
+                                <div class="chart-container" style="height: 300px;"id="elevation-container"
+                                     data-labels="{{ elevationLabels|json_encode|e('html_attr') }}"
+                                     data-datasets="{{ elevationData|json_encode|e('html_attr') }}">
+                                    <canvas id="elevation" width="400" height="300">
+                                        Elevation plot can't be shown!
+                                        Your browser doesn't support canvas elements.
+                                    </canvas>
+                                </div>
                             </div>
-                        </div>
-                        <div class="tab-pane" id="tabGallery" role="tabpanel">
-                            {% include 'include/gallery.html.twig' with {
-                                "images" : track.images,
-                                "directory" : app_track_images_directory
-                            } only %}
-                        </div>
-                        <div class="tab-pane" id="tabVideos" role="tabpanel">
-                            {% if track.videosYoutube is not empty %}
-                                {% for youtube in track.videosYoutube %}
-                                    <iframe width="560" height="315"
-                                            src="https://www.youtube.com/embed/{{ youtube.link }}"
-                                            frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
-                                    </iframe>
-                                {% endfor %}
-                            {% else %}
-                                <h5>No videos</h5>
-                            {% endif %}
+                            <div class="tab-pane" id="tabGallery" role="tabpanel">
+                                {% include 'include/gallery.html.twig' with {
+                                    "images" : track.images,
+                                    "directory" : app_track_images_directory
+                                } only %}
+                            </div>
+                            <div class="tab-pane" id="tabVideos" role="tabpanel">
+                                {% if track.videosYoutube is not empty %}
+                                    {% for youtube in track.videosYoutube %}
+                                        <iframe width="560" height="315"
+                                                src="https://www.youtube.com/embed/{{ youtube.link }}"
+                                                frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
+                                        </iframe>
+                                    {% endfor %}
+                                {% else %}
+                                    <h5>{{ 'No videos'|trans }}</h5>
+                                {% endif %}
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </main>
-    </div>
+            </main>
+        </div>
     </div>
 
     {% include "include/ratingModal.html.twig" %}
-
 {% endblock %}
 
 {% block javascripts %}

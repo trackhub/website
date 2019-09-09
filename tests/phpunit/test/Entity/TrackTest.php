@@ -127,4 +127,52 @@ class TrackTest extends TestCase
 
         $this->assertArraysAreIdentical($expectedVersions, $track->{$getVersionsMethod}());
     }
+
+    public function getNameDataProvider()
+    {
+        return [
+            // only en with desired en
+            ['text en', 'en', 'text en', null],
+            // desired en, both en and bg are set
+            ['text en', 'en', 'text en', 'text bg'],
+            // only bg is set
+            ['text bg', 'bg', null, 'text bg'],
+            // desired en, but not set
+            ['text bg', 'en', null, 'text bg'],
+            // none set
+            [null, 'en', null, null],
+        ];
+    }
+
+    /**
+     * @dataProvider getNameDataProvider
+     */
+    public function testGetName($exptected, $desiredLang, $nameEn, $nameBg)
+    {
+        $track = new Track(new User());
+        $track->setNameBg($nameBg);
+        $track->setNameEn($nameEn);
+
+        $this->assertSame($exptected, $track->getName($desiredLang));
+    }
+
+    public function testToStringWithoutName()
+    {
+        $trackMockBuilder = $this->getMockBuilder(Track::class);
+        $trackMockBuilder->disableOriginalConstructor();
+        $trackMockBuilder->onlyMethods(['getId']);
+        $trackMock = $trackMockBuilder->getMock();
+        $trackMock->method('getId')->willReturn('d2c355ca-342a-4f74-b2d2-190d49b1ca5f');
+        $this->assertSame('d2c355ca-342a-4f74-b2d2-190d49b1ca5f', $trackMock->__toString());
+    }
+
+    public function testToStringWithName()
+    {
+        $trackMockBuilder = $this->getMockBuilder(Track::class);
+        $trackMockBuilder->disableOriginalConstructor();
+        $trackMockBuilder->onlyMethods([]);
+        $trackMock = $trackMockBuilder->getMock();
+        $trackMock->setNameEn("some name");
+        $this->assertSame('some name', $trackMock->__toString());
+    }
 }
