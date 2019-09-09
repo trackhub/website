@@ -1,8 +1,8 @@
 {% extends "base.html.twig" %}
 
 {% block content %}
-    <div class="container" id="content">
-        <h2 class="mb-3">{{ track.name(app.request.locale) }}</h2>
+    <div class="container-fluid" id="content">
+        <h1 class="mb-3">{{ track.name(app.request.locale) }}</h1>
         {% if canEdit %}
             <a href="{{ path('app_track_edit', {id: track.id}) }}" class="btn btn-info">{{ 'Edit'|trans }}</a>
             <a href="{{ path('gps-new-version', {id: track.id}) }}" class="btn btn-info">{{ 'Add new version'|trans }}</a>
