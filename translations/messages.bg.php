@@ -33,6 +33,11 @@ return [
     'Download selected versions' => 'Свали избраните версии',
     'Add new version' => 'Добави нова версия',
     'Edit' => 'Промени',
+    'Information' => 'Информация',
+    'Gallery' => 'Галерия',
+    'Videos' => 'Видео',
+    'No pictures' => 'Няма снимки',
+    'No videos' => 'Няма видео',
 
     // user menu
     'logout' => 'изход',
