@@ -82,23 +82,17 @@ class Track extends AbstractController
 
             if (!$form->get('slug')->isEmpty()) {
                 $slug = $form->get('slug')->getData();
-
-                $addNewSlug = false;
-                if ($track->getSlug() !== $slug) {
-                    $track->setSlug($slug);
-                    $existingSlug = $slugRepo->findOneBy(['slug' => $slug]);
-                    if ($existingSlug) {
-                        $form->get('slug')->addError(
-                            new FormError('Slug is already taken')
-                        );
-                    }
+                $track->setSlug($slug);
+                $existingSlug = $slugRepo->findOneBy(['slug' => $slug]);
+                if ($existingSlug) {
+                    $form->get('slug')->addError(
+                        new FormError('Slug is already taken')
+                    );
                 }
 
-                if ($addNewSlug) {
-                    $slugEntity = new Slug($track, $slug);
-                    $this->getDoctrine()->getManager()
-                        ->persist($slugEntity);
-                }
+                $slugEntity = new Slug($track, $slug);
+                $this->getDoctrine()->getManager()
+                    ->persist($slugEntity);
             }
 
             $processor->postProcess($track);
