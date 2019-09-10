@@ -67,7 +67,6 @@ class TrackAdmin extends AbstractAdmin
                     'multiple' => true,
                 ]
             )
-            ->add('slug')
             ->add('sendBy')
             ->end();
     }
