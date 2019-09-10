@@ -113,7 +113,7 @@ class Track extends AbstractController
                 $this->getDoctrine()->getManager()
                     ->flush();
 
-                return $this->redirectToRoute('gps-view', ['id' => $track->getId()]);
+                return $this->redirectToRoute('gps-view', ['id' => $track->getSlugOrId()]);
             }
         }
 
@@ -202,7 +202,7 @@ class Track extends AbstractController
                 $this->getDoctrine()->getManager()
                     ->flush();
 
-                return $this->redirectToRoute('gps-view', ['id' => $track->getId()]);
+                return $this->redirectToRoute('gps-view', ['id' => $track->getSlugOrId()]);
             }
         }
 
