@@ -205,7 +205,6 @@ class Track extends AbstractController
             }
 
             if ($formIsValid) {
-
                 $this->getDoctrine()->getManager()
                     ->flush();
 
