@@ -10,6 +10,7 @@ use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\FormBuilderInterface;
 use \Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\Regex;
 
 class Track extends AbstractType
 {
@@ -68,7 +69,6 @@ class Track extends AbstractType
                 'file',
                 FileType::class,
                 [
-                    'mapped' => false,
                     'label' => 'Track file. Supported formats: .gpx',
                 ]
             );
@@ -82,6 +82,19 @@ class Track extends AbstractType
                 'allow_delete' => true,
                 'by_reference' => true,
                 'entry_type' => YoutubeType::class,
+            ]
+        );
+
+        $builder->add(
+            'slug',
+            TextType::class,
+            [
+                'required' => false,
+                'label' => 'Short link',
+                'constraints' => new Regex([
+                    'pattern' => '/^[a-zA-Z0-9_\-]+$/',
+                    'message' => 'Should contains only letters, numbers, whitespace, dash and underscore',
+                ]),
             ]
         );
     }
