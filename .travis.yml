@@ -30,6 +30,7 @@ jobs:
       script: |
         ./run.sh & \
         /bin/bash -c "
+          docker ps --format '{{.Names}}' ; \
           until docker exec -it $(docker ps --format '{{.Names}}' | grep "web") curl localhost
           do
               echo 'Waiting for web server...'
