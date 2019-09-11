@@ -1,18 +1,34 @@
+dist: bionic
+language: php
+php:
+  - 7.3
+
 services:
   - docker
 
-before_install:
-    - docker build --tag=trackhub-web ./docker/web/
-script:
-    - docker run -v `pwd`:/var/www -t trackhub-web /bin/bash -c "php -v"
-    - docker run -v `pwd`:/var/www -t trackhub-web /bin/bash -c "composer install --prefer-dist"
-    - docker run -v `pwd`:/var/www -t trackhub-web /bin/bash -c "./vendor/bin/phpunit -c tests/phpunit/phpunit.xml --no-coverage"
-    - docker run -v `pwd`:/var/www -t trackhub-web /bin/bash -c "./bin/console doctrine:mapping:info"
-    - docker run -v `pwd`:/var/www -t trackhub-web /bin/bash -c "cd ./tests/phpcs && composer install && ./vendor/bin/phpcs --standard=phpcs.xml"
-    - docker run -v `pwd`:/var/www -t trackhub-web /bin/bash -c "yarn install"
-    - docker run -v `pwd`:/var/www -t trackhub-web /bin/bash -c "yarn encore dev"
-    - echo "Production env tests"
-    - docker run -v `pwd`:/var/www -t trackhub-web /bin/bash -c "yarn encore production"
+jobs:
+  include:
+    - stage: tests
+      name: Tests inside docker
+      script: >-
+        docker build --tag=trackhub-web ./docker/web/ &&
+        docker run -v `pwd`:/var/www -t trackhub-web /bin/bash -c "
+          php -v &&
+          composer install --prefer-dist &&
+          ./bin/console doctrine:mapping:info &&
+          ./vendor/bin/phpunit -c tests/phpunit/phpunit.xml --no-coverage
+          yarn install &&
+          yarn encore dev &&
+          yarn encore production
+        "
+    - name: PHPCS tests
+      script: >-
+          cd ./tests/phpcs &&
+          composer install &&
+          ./vendor/bin/phpcs --standard=phpcs.xml
+
+stages:
+  - tests
 
 notifications:
     on_success: never
