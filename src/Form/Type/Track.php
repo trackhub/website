@@ -93,7 +93,7 @@ class Track extends AbstractType
                 'label' => 'Short link',
                 'constraints' => new Regex([
                     'pattern' => '/^[a-zA-Z0-9_\-]+$/',
-                    'message' => 'Should contains only letters, numbers, whitespace, dash and underscore',
+                    'message' => 'Should contains only letters, numbers, dash and underscore',
                 ]),
             ]
         );
