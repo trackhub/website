@@ -28,13 +28,11 @@ jobs:
           ./vendor/bin/phpcs --standard=phpcs.xml
     - name: Seeders tests
       script: |
-        docker pull debian && docker run -idt debian bash && \
-        sleep 5 && docker ps && exit 1 && \
         ./run.sh & \
         /bin/bash -c "
-          docker ps --format '{{.Names}}' ; \
           until docker exec -it $(docker ps --format '{{.Names}}' | grep "web") curl localhost
           do
+              docker ps --format '{{.Names}}'
               echo 'Waiting for web server...'
               sleep 3
           done
