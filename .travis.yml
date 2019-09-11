@@ -29,11 +29,12 @@ jobs:
     - name: Seeders tests
       script: |
         ./run.sh & \
-        export WEB_IP=$(docker inspect --format='{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' track_web_1) && \
         /bin/bash -c "
+          WEB_IP=""
           until nc -z $WEB_IP 80
           do
               echo 'Waiting for web server...'
+              WEB_IP=$(docker inspect --format='{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' track_web_1) && \
               sleep 3
           done
         " && \
