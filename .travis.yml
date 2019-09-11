@@ -30,7 +30,7 @@ jobs:
       script: |
         ./run.sh & \
         /bin/bash -c "
-          until nc -z $(docker inspect --format='{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' track_web_1) 80
+          until docker-compose -p track exec web curl localhost
           do
               echo 'Waiting for web server...'
               sleep 3
