@@ -70,4 +70,21 @@ class TrackRepository extends EntityRepository
 
         return $data;
     }
+
+    public function findByIdOrSlug(string $name): ?Track
+    {
+        $byId = $this->findOneBy(['id' => $name]);
+        if ($byId) {
+            return $byId;
+        }
+
+        $slugRepo = $this->getEntityManager()->getRepository(Track\Slug::class);
+        $bySlug = $slugRepo->findOneBy(['slug' => $name]);
+
+        if ($bySlug) {
+            return $bySlug->getTrack();
+        }
+
+        return null;
+    }
 }

@@ -55,3 +55,9 @@ services:
         factory: ['@doctrine.orm.default_entity_manager', getRepository]
         arguments:
             - App\Entity\Track
+
+    App\Repository\Track\SlugRepository:
+        class: App\Repository\Track\SlugRepository
+        factory: ['@doctrine.orm.default_entity_manager', getRepository]
+        arguments:
+            - App\Entity\Track\Slug
