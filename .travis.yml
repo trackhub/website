@@ -28,9 +28,8 @@ jobs:
           ./vendor/bin/phpcs --standard=phpcs.xml
     - name: Seeders tests
       script: |
-        docker-compose -p track build && \
         ./run.sh & \
-        timeout 300 /bin/bash -c "
+        timeout 450 /bin/bash -c "
           until docker-compose -p track exec web curl localhost
           do
               echo 'Waiting for web server...'
