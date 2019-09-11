@@ -26,6 +26,20 @@ jobs:
           cd ./tests/phpcs &&
           composer install &&
           ./vendor/bin/phpcs --standard=phpcs.xml
+    - name: Seeders tests
+      script: >-
+        ./run.sh &
+        until nc -z web 80
+        do
+            echo "Waiting for web server..."
+            sleep 3
+        done
+
+        docker exec -it track_web_1 /bin/bash -c "
+            cd script/migration &&
+            composer install &&
+            ./vendor/bin/phinx seed:run
+        "
 
 stages:
   - tests
