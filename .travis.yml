@@ -28,6 +28,8 @@ jobs:
           ./vendor/bin/phpcs --standard=phpcs.xml
     - name: Seeders tests
       script: |
+        docker pull debian && docker run -idt debian bash && \
+        sleep 5 && docker ps && exit 1 && \
         ./run.sh & \
         /bin/bash -c "
           docker ps --format '{{.Names}}' ; \
