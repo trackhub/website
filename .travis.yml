@@ -30,12 +30,13 @@ jobs:
       script: |
         ./run.sh & \
         /bin/bash -c "
-          until nc -z web 80
+          WEB_IP=$(docker inspect --format='{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' track_web_1)
+          until nc -z $WEB_IP 80
           do
               echo "Waiting for web server..."
               sleep 3
           done
-        "
+        " && \
         docker exec -it track_web_1 /bin/bash -c "
             cd script/migration &&
             composer install &&
