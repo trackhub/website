@@ -30,13 +30,13 @@ jobs:
       script: |
         ./run.sh & \
         /bin/bash -c "
-          until docker-compose -p track exec web curl localhost
+          until docker exec -it $(docker ps --format '{{.Names}}' | grep "web") curl localhost
           do
               echo 'Waiting for web server...'
               sleep 3
           done
         " && \
-        docker-compose -p track exec web /bin/bash -c "
+        docker exec -it $(docker ps --format '{{.Names}}' | grep "web") /bin/bash -c "
             cd script/migration &&
             composer install &&
             ./vendor/bin/phinx seed:run
