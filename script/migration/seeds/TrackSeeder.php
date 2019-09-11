@@ -25,6 +25,13 @@ class TrackSeeder extends AbstractSeed
      */
     const NEW_VERSION_EVERY_NTH_TRACK = self::TRACK_COUNT / 3;
 
+    public function getDependencies()
+    {
+        return [
+            'UserSeeder',
+        ];
+    }
+
     protected function getVisibility($index): int
     {
         if ($index % 4 === 1) {
@@ -41,13 +48,6 @@ class TrackSeeder extends AbstractSeed
         }
 
         return self::TYPE_CYCLING;
-    }
-
-    public function getDependencies()
-    {
-        return [
-            'UserSeeder'
-        ];
     }
 
     public function run()
