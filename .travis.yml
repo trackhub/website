@@ -30,10 +30,8 @@ jobs:
       script: |
         ./run.sh & \
         /bin/bash -c "
-          until docker exec -it $(docker ps --format '{{.Names}}' | grep "web") curl localhost
+          until docker-compose -p track exec web curl localhost
           do
-              docker ps --format '{{.Names}}'
-              docker ps --format '{{.Names}}' | grep "web"
               echo 'Waiting for web server...'
               sleep 3
           done
