@@ -4,7 +4,7 @@ set -e
 
 set -x
 
-bash ./run.sh  > /dev/null &
+bash ./run.sh &
 timeout --foreground 360 bash -c "
   until docker-compose -p track exec web curl localhost
   do
