@@ -36,7 +36,7 @@ jobs:
               sleep 3
           done
         " && \
-        docker exec -it track_web_1 /bin/bash -c "
+        docker-compose -p track exec web /bin/bash -c "
             cd script/migration &&
             composer install &&
             ./vendor/bin/phinx seed:run
