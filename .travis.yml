@@ -29,7 +29,7 @@ jobs:
     - name: Seeders tests
       script: |
         ./run.sh & \
-        timeout 300 /bin/bash -c "
+        timeout 400 /bin/bash -c "
           until docker-compose -p track exec web curl localhost
           do
               echo 'Waiting for web server...'
