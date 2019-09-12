@@ -14,5 +14,6 @@ timeout --foreground 360 bash -c "
 echo "Web server is UP!"
 
 docker exec -it $(docker ps --format '{{.Names}}' | grep "web") /bin/bash -c "
+    export TRACK_SEEDER_TRACK_COUNT=4 &&
     cd script/migration && ./vendor/bin/phinx seed:run
 "

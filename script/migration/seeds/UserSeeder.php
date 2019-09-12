@@ -16,6 +16,7 @@ class UserSeeder extends AbstractSeed
         /* Delete previous data */
         $this->query("UPDATE track_file SET version_id = NULL");
         $this->query("UPDATE version SET file_id = NULL");
+        $this->query("DELETE FROM track_slug");
         $this->query("DELETE FROM track_file");
         $this->query("DELETE FROM track_image");
         $this->query("DELETE FROM version_waypoint");
