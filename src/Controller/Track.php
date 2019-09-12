@@ -3,10 +3,12 @@
 namespace App\Controller;
 
 use App\Entity\File\TrackFile;
+use App\Entity\Track\Slug;
 use App\Entity\Track\VersionRating;
 use App\Entity\Track\Version;
 use App\Entity\Video\Youtube;
 use App\Form\Type\TrackVersion;
+use App\Repository\Track\SlugRepository;
 use App\Repository\TrackRepository;
 use App\Track\Exporter;
 use App\Track\Processor;
@@ -26,7 +28,7 @@ use Tekstove\UrlVideoParser\Youtube\YoutubeParser;
 
 class Track extends AbstractController
 {
-    public function new(Request $request, LoggerInterface $logger)
+    public function new(Request $request, LoggerInterface $logger, SlugRepository $slugRepo)
     {
         $form = $this->createForm(\App\Form\Type\Track::class);
         $form->add('submit', SubmitType::class);
@@ -78,6 +80,21 @@ class Track extends AbstractController
 
             $track->setvideosYoutube($youtubeVideos);
 
+            if (!$form->get('slug')->isEmpty()) {
+                $slug = $form->get('slug')->getData();
+                $track->setSlug($slug);
+                $existingSlug = $slugRepo->findOneBy(['slug' => $slug]);
+                if ($existingSlug) {
+                    $form->get('slug')->addError(
+                        new FormError('Slug is already taken')
+                    );
+                }
+
+                $slugEntity = new Slug($track, $slug);
+                $this->getDoctrine()->getManager()
+                    ->persist($slugEntity);
+            }
+
             $processor->postProcess($track);
 
             if ($track->getOptimizedPoints()->isEmpty()) {
@@ -96,7 +113,7 @@ class Track extends AbstractController
                 $this->getDoctrine()->getManager()
                     ->flush();
 
-                return $this->redirectToRoute('gps-view', ['id' => $track->getId()]);
+                return $this->redirectToRoute('gps-view', ['id' => $track->getSlugOrId()]);
             }
         }
 
@@ -108,7 +125,7 @@ class Track extends AbstractController
         );
     }
 
-    public function edit(Request $request, $id, LoggerInterface $logger)
+    public function edit(Request $request, $id, LoggerInterface $logger, SlugRepository $slugRepo)
     {
         $track = $this->getDoctrine()->getRepository(\App\Entity\Track::class)->findOneBy(['id' => $id]);
         $this->denyAccessUnlessGranted('edit', $track);
@@ -118,6 +135,7 @@ class Track extends AbstractController
         $form->get('nameBg')->setData($track->getNameBg());
         $form->get('type')->setData($track->getType());
         $form->get('visibility')->setData($track->getVisibility());
+        $form->get('slug')->setData($track->getSlug());
 
         $youtubeFormData = [];
         foreach ($track->getVideosYoutube() as $youtube) {
@@ -132,6 +150,7 @@ class Track extends AbstractController
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
+            $formIsValid = true;
             $videoParser = new YoutubeParser();
             $youtubeVideos = [];
             foreach ($form->get('videosYoutube')->getData() as $youtubeLink) {
@@ -153,10 +172,38 @@ class Track extends AbstractController
             $track->setType($form->get('type')->getData());
             $track->setVisibility($form->get('visibility')->getData());
 
-            $this->getDoctrine()->getManager()
-                ->flush();
+            if (!$form->get('slug')->isEmpty()) {
+                $slug = $form->get('slug')->getData();
 
-            return $this->redirectToRoute('gps-view', ['id' => $track->getId()]);
+                $addNewSlug = false;
+                if ($track->getSlug() !== $slug) {
+                    $track->setSlug($slug);
+                    $existingSlug = $slugRepo->findOneBy(['slug' => $slug]);
+                    if ($existingSlug) {
+                        if ($existingSlug->getTrack() !== $track) {
+                            $formIsValid = false;
+                            $form->get('slug')->addError(
+                                new FormError('Slug is already taken')
+                            );
+                        }
+                    } else {
+                        $addNewSlug = true;
+                    }
+                }
+
+                if ($addNewSlug) {
+                    $slugEntity = new Slug($track, $slug);
+                    $this->getDoctrine()->getManager()
+                        ->persist($slugEntity);
+                }
+            }
+
+            if ($formIsValid) {
+                $this->getDoctrine()->getManager()
+                    ->flush();
+
+                return $this->redirectToRoute('gps-view', ['id' => $track->getSlugOrId()]);
+            }
         }
 
         return $this->render(
@@ -302,18 +349,18 @@ class Track extends AbstractController
 
     public function view($id, TrackRepository $repo, Request $request)
     {
-        $gps = $repo->findOneBy(['id' => $id]);
-
-        $canonicalUrl = null;
-        if (!$gps) {
-            $canonicalUrl = $this->generateUrl('gps-view', ['id' => $id]);
-            $gps = $repo->findOneBy(['slug' => $id]);
-        }
-
-        /** @var $gps \App\Entity\Track */
+        $gps = $repo->findByIdOrSlug($id);
 
         if (!$gps) {
             throw new NotFoundHttpException("Track not found");
+        }
+
+        $canonicalUrl = null;
+        if ($gps->getSlug()) {
+            $canonicalUrl = $this->generateUrl(
+                'gps-view',
+                ['id' => $gps->getSlug()],
+            );
         }
 
         $processor = new Processor();

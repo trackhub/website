@@ -33,6 +33,7 @@ return [
     'Download selected versions' => 'Свали избраните версии',
     'Add new version' => 'Добави нова версия',
     'Edit' => 'Промени',
+    'Short link' => 'Кратък линк',
 
     // user menu
     'logout' => 'изход',
