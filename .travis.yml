@@ -26,6 +26,8 @@ jobs:
           cd ./tests/phpcs &&
           composer install &&
           ./vendor/bin/phpcs --standard=phpcs.xml
+    - name: Seeders tests
+      script:  bash tests/travis/seeds_test.sh
 
 stages:
   - tests

@@ -14,7 +14,12 @@ class TrackSeeder extends AbstractSeed
     /**
      * How many track to generate
      */
-    const TRACK_COUNT = 40;
+    private $trackCount;
+
+    /**
+     * Default value for $trackCount
+     */
+    const DEFAULT_TRACK_COUNT = 40;
 
     /**
      * Every N-th track will have 1 more version.
@@ -23,7 +28,14 @@ class TrackSeeder extends AbstractSeed
      * track3, track4, track5 - 2 versions
      * track5 - 3 versions
      */
-    const NEW_VERSION_EVERY_NTH_TRACK = self::TRACK_COUNT / 3;
+    const NEW_VERSION_EVERY_NTH_TRACK = 3;
+
+    public function getDependencies()
+    {
+        return [
+            'UserSeeder',
+        ];
+    }
 
     protected function getVisibility($index): int
     {
@@ -43,31 +55,21 @@ class TrackSeeder extends AbstractSeed
         return self::TYPE_CYCLING;
     }
 
-    public function getDependencies()
+    protected function init()
     {
-        return [
-            'UserSeeder'
-        ];
+        $this->trackCount = env('TRACK_SEEDER_TRACK_COUNT', self::DEFAULT_TRACK_COUNT);
     }
 
     public function run()
     {
-        $this->query("UPDATE track_file SET version_id = NULL");
-        $this->query("UPDATE version SET file_id = NULL");
-        $this->query("DELETE FROM point");
-        $this->query("DELETE FROM version");
-        $this->query("DELETE FROM track_file");
-        $this->query("DELETE FROM optimized_point");
-        $this->query("DELETE FROM track");
-
         /**
          * Fetch random users
          */
-        $user = $this->fetchRow("SELECT id FROM user ORDER BY RAND()");
+        $user = $this->fetchRow("SELECT id FROM user ORDER BY RAND() LIMIT 1");
 
         $track = $this->table('track');
 
-        for ($i = 0; $i < self::TRACK_COUNT; $i++) {
+        for ($i = 0; $i < $this->trackCount; $i++) {
             $trackId = uniqid();
             $data = [
                 'id' => $trackId,
