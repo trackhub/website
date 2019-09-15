@@ -61,3 +61,8 @@ services:
         factory: ['@doctrine.orm.default_entity_manager', getRepository]
         arguments:
             - App\Entity\Track\Slug
+    App\Repository\Track\ImageRepository:
+        class: App\Repository\Track\ImageRepository
+        factory: ['@doctrine.orm.default_entity_manager', getRepository]
+        arguments:
+            - App\Entity\Track\Image

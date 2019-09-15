@@ -175,17 +175,11 @@ class Track
         return $this->nameBg;
     }
 
-    /**
-     * @param mixed $nameEn
-     */
     public function setNameEn(string $nameEn = null): void
     {
         $this->nameEn = $nameEn;
     }
 
-    /**
-     * @param mixed $nameBg
-     */
     public function setNameBg(string $nameBg = null): void
     {
         $this->nameBg = $nameBg;

@@ -34,6 +34,8 @@ return [
     'Add new version' => 'Добави нова версия',
     'Edit' => 'Промени',
     'Short link' => 'Кратък линк',
+    'Picture from' => 'Картинка от',
+    'View the trail' => 'Виж следата',
 
     // user menu
     'logout' => 'изход',

@@ -3,7 +3,7 @@ label[for=file_input] {
 }
 
 .track_images {
-    height: 300px;
+    max-height: 300px;
     overflow-x: scroll;
     overflow-y: hidden;
     white-space:nowrap;

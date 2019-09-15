@@ -45,6 +45,25 @@
                 </ul>
             </div>
         </div>
+
+        {% if latestImages is defined and latestImages is not empty %}
+            <div class="container-fluid track_images">
+                {% for image in latestImages %}
+                    {# !!!  FIXME XSS IN TITLE!!! #}
+                    <a href="{{ path('gps-view', { id: image.track.slugOrId }) }}"
+                        title="{{- 'View the trail'|trans -}}
+                            {%- if image.track.name(app.request.locale) is not empty -%}
+                                {{- ' "' -}} {{- image.track.name(app.request.locale) -}}{{- '"' -}}
+                            {%- endif -%}"
+                    >
+                        <img
+                            src="{{ app_track_images_thumbnails_directory }}/{{ image.filepath }}"
+                            alt="{{ 'Picture from' }} {{ image.track.name(app.request.locale) }}"
+                        >
+                    </a>
+                {% endfor %}
+            </div>
+        {% endif %}
     </div>
 
     <script>
