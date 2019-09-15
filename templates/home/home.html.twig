@@ -47,6 +47,7 @@
         </div>
 
         {% if latestImages is defined and latestImages is not empty %}
+            {{ 'Latest pictures'|trans }}:
             <div class="container-fluid track_images">
                 {% for image in latestImages %}
                     <a href="{{ path('gps-view', { id: image.track.slugOrId }) }}"
