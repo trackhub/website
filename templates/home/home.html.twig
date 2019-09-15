@@ -58,7 +58,7 @@
                     >
                         <img
                             src="{{ app_track_images_thumbnails_directory }}/{{ image.filepath }}"
-                            alt="{{ 'Picture from' }} {{ image.track.name(app.request.locale) }}"
+                            alt="{{ 'Picture from'|trans }} {{ image.track.name(app.request.locale) }}"
                         >
                     </a>
                 {% endfor %}
