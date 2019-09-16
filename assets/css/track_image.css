@@ -4,7 +4,7 @@ label[for=file_input] {
 
 .track_images {
     max-height: 300px;
-    overflow-x: scroll;
+    overflow-x: auto;
     overflow-y: hidden;
     white-space:nowrap;
 }
