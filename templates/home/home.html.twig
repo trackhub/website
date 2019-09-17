@@ -45,6 +45,25 @@
                 </ul>
             </div>
         </div>
+
+        {% if latestImages is defined and latestImages is not empty %}
+            {{ 'Latest pictures'|trans }}:
+            <div class="track_images d-flex justify-content-between align-items-center">
+                {% for image in latestImages %}
+                    <a href="{{ path('gps-view', { id: image.track.slugOrId }) }}"
+                        title="{{- 'View the trail'|trans -}}
+                            {%- if image.track.name(app.request.locale) is not empty -%}
+                                {{ ' &quot;' }} {{- image.track.name(app.request.locale) -}}{{- '&quot;' -}}
+                            {%- endif -%}"
+                    >
+                        <img
+                            src="{{ app_track_images_thumbnails_directory }}/{{ image.filepath }}"
+                            alt="{{ 'Picture from'|trans }} {{ image.track.name(app.request.locale) }}"
+                        >
+                    </a>
+                {% endfor %}
+            </div>
+        {% endif %}
     </div>
 
     <script>

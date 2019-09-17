@@ -3,15 +3,20 @@ label[for=file_input] {
 }
 
 .track_images {
-    height: 300px;
-    overflow-x: scroll;
+    max-height: 300px;
+    overflow-x: auto;
     overflow-y: hidden;
     white-space:nowrap;
 }
 
 .track_images img {
+    margin-right: 2px;
     max-width: 300px;
     max-height: 300px;
+}
+
+.track_images img:not:first-child {
+    margin-left: 2px;
 }
 
 #file_upload_progress img {

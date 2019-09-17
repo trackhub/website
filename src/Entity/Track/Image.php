@@ -7,7 +7,7 @@ use App\Entity\User\User;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="App\Repository\Track\ImageRepository")
  * @ORM\Table(name="track_image")
  */
 class Image
@@ -56,5 +56,10 @@ class Image
     public function getFilepath(): string
     {
         return $this->filepath;
+    }
+
+    public function getTrack(): Track
+    {
+        return $this->track;
     }
 }

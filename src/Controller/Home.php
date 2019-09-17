@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Track\OptimizedPoint;
+use App\Repository\Track\ImageRepository;
 use App\Repository\TrackRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -16,15 +17,17 @@ class Home extends AbstractController
         return $this->redirectToRoute('home');
     }
 
-    public function home(TrackRepository $repo)
+    public function home(TrackRepository $repo, ImageRepository $imageRepository)
     {
-        $data = $repo->findLatestTrackTypes();
+        $trackData = $repo->findLatestTrackTypes();
+        $images = $imageRepository->getLatestImages(5);
 
         return $this->render(
             'home/home.html.twig',
             [
-                'latestTracks' => $data[Track::TYPE_CYCLING],
-                'latestTracksHike' => $data[Track::TYPE_HIKING],
+                'latestTracks' => $trackData[Track::TYPE_CYCLING],
+                'latestTracksHike' => $trackData[Track::TYPE_HIKING],
+                'latestImages' => $images,
             ]
         );
     }

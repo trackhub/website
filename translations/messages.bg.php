@@ -19,6 +19,8 @@ return [
     'Latest tracks' => 'Най-нови следи',
     'Latest tracks by bicycle' => 'Най-нови следи с колело',
     'Latest tracks by foot' => 'Най-нови пешеходни следи',
+    'Latest pictures' => 'Най-нови снимки',
+    'Picture from' => 'Снимка от',
     'View details' => 'Виж детайли',
     'by bike' => 'с колело',
     'by foot' => 'пешеходно',
@@ -34,6 +36,8 @@ return [
     'Add new version' => 'Добави нова версия',
     'Edit' => 'Промени',
     'Short link' => 'Кратък линк',
+    'Picture from' => 'Снимка от',
+    'View the trail' => 'Виж следата',
 
     // user menu
     'logout' => 'изход',
