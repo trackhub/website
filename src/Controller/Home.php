@@ -20,7 +20,11 @@ class Home extends AbstractController
     public function home(TrackRepository $repo, ImageRepository $imageRepository)
     {
         $trackData = $repo->findLatestTrackTypes();
-        $images = $imageRepository->getLatestImages(5);
+
+        // average picture width is 300px
+        // 1920 / 300 = 6.4
+        // 3840 / 300 = 12.8
+        $images = $imageRepository->getLatestImages(10);
 
         return $this->render(
             'home/home.html.twig',
