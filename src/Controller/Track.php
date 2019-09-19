@@ -162,7 +162,12 @@ class Track extends AbstractController
                     $videoId = $videoParser->getId($youtubeLink['link']);
                     $youtubeVideos[] = new Youtube($videoId);
                 } catch (ParseException $e) {
-                    $logger->error("Video parsing failed", [$e->getMessage()]);
+                    // if we have video id
+                    if (preg_match('~[a-zA-Z0-9\-_]{5,}~', $youtubeLink['link'])) {
+                        $youtubeVideos[] = new Youtube($youtubeLink['link']);
+                    } else {
+                        $logger->error("Video parsing failed", [$e->getMessage()]);
+                    }
                 }
             }
 

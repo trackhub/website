@@ -36,9 +36,8 @@
             // add the "add a tag" anchor and li to the tags ul
             collectionHolder.append(newLinkLi);
 
-            // count the current form inputs we have (e.g. 2), use that as the new
-            // index when inserting a new item (e.g. 2)
-            collectionHolder.setAttribute('data-index', collectionHolder.getElementsByTagName('input').length);
+            // (new Date()).getTime()) is generating random key for the video element
+            collectionHolder.setAttribute('data-index', (new Date()).getTime());
 
             addTagButton.addEventListener('click', function(e) {
                 // add a new tag form (see next code block)
