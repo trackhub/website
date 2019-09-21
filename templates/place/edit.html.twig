@@ -1,0 +1,43 @@
+{% extends "base.html.twig" %}
+
+{% block content %}
+
+    <input type="text" id="lat">
+    <input type="text" id="lng">
+    <!--- Initialize map --->
+    <div style="height: 50vh; min-height: 300px; width: 100%;" id="map"></div>
+    <script>
+        const map = L.map('map', {
+                gestureHandling: true,
+            }
+        );
+
+        map.setView([42.1, 25.0], 10);
+        map.addControl(new MapControlFullScreen());
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+
+        let popup = L.marker(
+            [42.1, 25.0],
+            {
+                draggable: true,
+                autoPan: true,
+            }
+        );
+        popup.addTo(map);
+
+        popup.on('moveend', function(a) {
+            document.getElementById('lat').value = a.target._latlng.lat;
+            document.getElementById('lng').value = a.target._latlng.lng;
+        });
+
+        map.on('click', function (a) {
+            popup.setLatLng(a.latlng);
+            document.getElementById('lat').value = a.latlng.lat;
+            document.getElementById('lng').value = a.latlng.lng;
+        });
+
+    </script>
+{% endblock %}
