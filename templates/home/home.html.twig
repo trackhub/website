@@ -57,7 +57,7 @@
                             {%- endif -%}"
                     >
                         <img
-                            src="{{ app_track_images_thumbnails_directory }}/{{ image.filepath }}"
+                            src="{{ app_track_image(image, 300, 300) }}"
                             alt="{{ 'Picture from'|trans }} {{ image.track.name(app.request.locale) }}"
                             loading="lazy"
                         >
