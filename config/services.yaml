@@ -5,8 +5,9 @@
 # https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
 parameters:
     locale: 'en'
-    track_images_directory: '%kernel.project_dir%/public/uploads/track_images'
+    track_images_directory: '%kernel.project_dir%/data/uploads/track_images'
     track_images_thumbnails_directory: '%kernel.project_dir%/public/images/generated/tit'
+    track_images_thumbnails_directory_url: '/images/generated/tit'
 
 services:
     # default configuration for services in *this* file
@@ -66,3 +67,10 @@ services:
         factory: ['@doctrine.orm.default_entity_manager', getRepository]
         arguments:
             - App\Entity\Track\Image
+
+    App\Twig\TrackImageExtension:
+        class: App\Twig\TrackImageExtension
+        arguments:
+            - '%track_images_thumbnails_directory_url%'
+        tags:
+            - { name: twig.extension}

@@ -1,6 +1,7 @@
 
 ###> symfony/framework-bundle ###
 /.env
+/data
 /public/bundles/
 /public/uploads/
 /public/images/generated/

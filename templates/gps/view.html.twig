@@ -80,12 +80,13 @@
     {% if track.images is not empty %}
         <div class="track_images" >
             {% for image in track.images %}
-                <a href="{{ app_track_images_directory }}/{{ image.filepath }}"
+                <a href="{{ app_track_image(image, 3840, 2160) }}"
                    data-toggle="lightbox"
                    data-gallery="track-images"
-                   data-footer="&lt;a target=&quot;_blank&quot; href=&quot;{{ app_track_images_directory }}/{{ image.filepath }}#&quot;&gt;{{ 'View full size'|trans() }}&lt;/a&gt;"
+                   data-footer="&lt;a target=&quot;_blank&quot; href=&quot;{{ app_track_image(image, 3840, 2160) }}#&quot;&gt;{{ 'View full size'|trans() }}&lt;/a&gt;"
                 >
-                    <img src="{{ app_track_images_thumbnails_directory }}/{{ image.filepath }}">
+                    <img src="{{ app_track_image(image, 300, 300) }}">
+
                 </a>
             {% endfor %}
         </div>
