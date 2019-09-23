@@ -14,13 +14,8 @@ class TrackImageExtensionTest extends TestCase
         $user = new User();
 
         $extension = new TrackImageExtension('/my/secret/dir');
-        $trackMockBuilder = $this->getMockBuilder(Track::class);
-        $trackMockBuilder->setConstructorArgs([$user]);
-        $trackMockBuilder->onlyMethods(['getId']);
-        $trackMock = $trackMockBuilder->getMock();
-        $trackMock->expects($this->any())->method('getId')->willReturn('1234-567');
-
-        $image = new Track\Image('my-pic.jpg', $user, $trackMock);
+        $track = new Track($user);
+        $image = new Track\Image('my-pic.jpg', $user, $track);
         $thumbnailUrl = $extension->resize($image, 300, 400);
         $this->assertSame('/my/secret/dir/300/400/my-pic.jpg', $thumbnailUrl);
     }
