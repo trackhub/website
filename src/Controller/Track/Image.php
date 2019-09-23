@@ -81,17 +81,18 @@ class Image extends AbstractController
      * This method is called when thumbnails doesn't exists.
      * Thumbnail will be created and saved in the "public" directory.
      */
-    public function generateThumbnail(int $year, string $trackId, string $imagePath, Request $request)
+    public function generateThumbnail(int $year, string $trackId, string $imagePath, int $maxWidth, int $maxHeight, Request $request)
     {
         $originalImagePath = $this->getParameter('track_images_directory') . DIRECTORY_SEPARATOR;
         $originalImagePath .= $year . DIRECTORY_SEPARATOR . $trackId . DIRECTORY_SEPARATOR . $imagePath;
 
         $thumbnailPathDir = $this->getParameter('track_images_thumbnails_directory');
+        $thumbnailPathDir .= DIRECTORY_SEPARATOR . $maxWidth . DIRECTORY_SEPARATOR . $maxHeight;
         $thumbnailPathDir .= DIRECTORY_SEPARATOR . $year . DIRECTORY_SEPARATOR . $trackId;
         $thumbnailPath = $thumbnailPathDir . DIRECTORY_SEPARATOR . $imagePath;
 
         $resizer = new ImageEdit();
-        $resizer->resize($originalImagePath, $thumbnailPath, 600, 300);
+        $resizer->resize($originalImagePath, $thumbnailPath, $maxWidth, $maxHeight);
 
         return new Response(
             null,

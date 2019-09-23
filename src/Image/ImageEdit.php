@@ -10,7 +10,11 @@ class ImageEdit
     {
         $image = new \Imagick($input);
         $image->setImageOrientation($image->getImageOrientation());
-        $image->adaptiveResizeImage($maxW, $maxH, true);
+
+        $resizedW = min($image->getImageWidth(), $maxW);
+        $resizedH = min($image->getImageHeight(), $maxH);
+
+        $image->adaptiveResizeImage($resizedW, $resizedH, true);
 
         $fs = new Filesystem();
         $fs->dumpFile($output, $image);
