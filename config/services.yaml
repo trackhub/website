@@ -68,8 +68,8 @@ services:
         arguments:
             - App\Entity\Track\Image
 
-    App\Twig\ImageSizeExtension:
-        class: App\Twig\ImageSizeExtension
+    App\Twig\TrackImageExtension:
+        class: App\Twig\TrackImageExtension
         arguments:
             - '%track_images_thumbnails_directory_url%'
         tags:

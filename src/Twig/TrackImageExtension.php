@@ -6,7 +6,7 @@ use App\Entity\Track\Image;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 
-class ImageSizeExtension extends AbstractExtension
+class TrackImageExtension extends AbstractExtension
 {
     private $imagesDirectory;
 
