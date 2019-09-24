@@ -21,10 +21,12 @@ track-new-image:
   controller: App\Controller\Track\Image::addImage
 
 track-image-thumbnail:
-  path: /images/generated/tit/{year}/{trackId}/{imagePath}
+  path: /images/generated/tit/{maxWidth}/{maxHeight}/{year}/{trackId}/{imagePath}
   controller: App\Controller\Track\Image::generateThumbnail
   requirements:
     year: '\d+'
+    maxWidth: '\d+'
+    maxHeight: '\d+'
 
 gps-view:
   path: /{_locale}/gps/view/{id}

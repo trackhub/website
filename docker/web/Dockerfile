@@ -14,7 +14,7 @@ RUN chsh -s /bin/bash www-data
 COPY virtualhost.conf /etc/apache2/sites-enabled/000-default.conf
 COPY virtualhost-ssl.conf /etc/apache2/sites-available/000-default-ssl.conf
 
-RUN a2enmod rewrite ssl
+RUN a2enmod rewrite ssl expires
 
 # php
 RUN wget -O /etc/apt/trusted.gpg.d/php.gpg https://packages.sury.org/php/apt.gpg
@@ -29,7 +29,9 @@ RUN apt-get update && \
                        php${PHP_V}-curl \
                        php${PHP_V}-mbstring \
                        php${PHP_V}-imagick \
+                       php${PHP_V}-exif \
                        php${PHP_V}-intl
+
 RUN update-alternatives --set php /usr/bin/php${PHP_V}
 COPY php.ini /etc/php/${PHP_V}/apache2/php.ini
 # end php
