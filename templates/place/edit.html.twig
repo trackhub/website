@@ -2,42 +2,80 @@
 
 {% block content %}
 
-    <input type="text" id="lat">
-    <input type="text" id="lng">
+    <input type="number" step="0.00001" id="lat">
+    <input type="number" step="0.00001" id="lng">
     <!--- Initialize map --->
     <div style="height: 50vh; min-height: 300px; width: 100%;" id="map"></div>
     <script>
-        const map = L.map('map', {
-                gestureHandling: true,
-            }
-        );
+        (function() {
+            const map = L.map('map', {
+                    gestureHandling: true,
+                }
+            );
 
-        map.setView([42.1, 25.0], 10);
-        map.addControl(new MapControlFullScreen());
+            map.setView([42.1, 25.0], 10);
+            map.addControl(new MapControlFullScreen());
 
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-        }).addTo(map);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            }).addTo(map);
 
-        let popup = L.marker(
-            [42.1, 25.0],
-            {
-                draggable: true,
-                autoPan: true,
-            }
-        );
-        popup.addTo(map);
+            let popup = L.marker(
+                [42.1, 25.0],
+                {
+                    draggable: true,
+                    autoPan: true,
+                }
+            );
+            popup.addTo(map);
 
-        popup.on('moveend', function(a) {
-            document.getElementById('lat').value = a.target._latlng.lat;
-            document.getElementById('lng').value = a.target._latlng.lng;
-        });
+            popup.on('moveend', function (a) {
+                document.getElementById('lat').value = a.target._latlng.lat;
+                document.getElementById('lng').value = a.target._latlng.lng;
+            });
 
-        map.on('click', function (a) {
-            popup.setLatLng(a.latlng);
-            document.getElementById('lat').value = a.latlng.lat;
-            document.getElementById('lng').value = a.latlng.lng;
-        });
+            map.on('click', function (a) {
+                popup.setLatLng(a.latlng);
+                document.getElementById('lat').value = a.latlng.lat;
+                document.getElementById('lng').value = a.latlng.lng;
+            });
 
+            class syncInputAndMap {
+                constructor(marker, lat, lng) {
+                    this.marker = marker;
+                    this.lat = lat;
+                    this.lng = lng;
+
+                    lat.addEventListener('keyup', (e) => {this.inputLatSync(e)});
+                    lng.addEventListener('keyup', (e) => {this.inputLngSync(e)});
+                    lat.addEventListener('change', (e) => {this.inputLatSync(e)});
+                    lng.addEventListener('change', (e) => {this.inputLngSync(e)});
+                };
+
+                inputLatSync (event) {
+                    const newLat = event.target.value;
+                    if (newLat === '') {
+                        return;
+                    }
+
+                    let ll = this.marker.getLatLng();
+                    ll.lat = newLat;
+                    this.marker.setLatLng(ll);
+                }
+
+                inputLngSync (event) {
+                    const newLng = event.target.value;
+                    if (newLng === '') {
+                        return;
+                    }
+
+                    let ll = this.marker.getLatLng();
+                    ll.lng = newLng;
+                    this.marker.setLatLng(ll);
+                }
+            };
+
+            new syncInputAndMap(popup, document.getElementById('lat'), document.getElementById('lng'));
+        })();
     </script>
 {% endblock %}
