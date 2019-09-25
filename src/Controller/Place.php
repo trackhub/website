@@ -14,7 +14,7 @@ class Place extends AbstractController
         $form->add('submit', SubmitType::class);
 
         $form->handleRequest($request);
-        if ($form->isValid()) {
+        if ($form->isSubmitted() && $form->isValid()) {
             $place = new \App\Entity\Place(
                 $form->get('lat')->getData(),
                 $form->get('lng')->getData(),
@@ -22,6 +22,7 @@ class Place extends AbstractController
 
             $this->getDoctrine()->getManager()->persist($place);
             $this->getDoctrine()->getManager()->flush();
+
             return $this->redirectToRoute('home'); // @FIXME!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         }
 
@@ -29,6 +30,36 @@ class Place extends AbstractController
             'place/edit.html.twig',
             [
                 'form' => $form->createView(),
+            ]
+        );
+    }
+
+    public function edit(string $id, Request $request)
+    {
+        $placeRepo = $this->getDoctrine()->getRepository(\App\Entity\Place::class);
+        $place = $placeRepo->findOneBy(['id' => $id]);
+
+        $form = $this->createForm(\App\Form\Type\Place::class);
+        $form->add('submit', SubmitType::class);
+
+        $form->get('lat')->setData($place->getLat());
+        $form->get('lng')->setData($place->getLng());
+
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $place->setLat($form->get('lat')->getData());
+            $place->setLng($form->get('lng')->getData());
+
+            $this->getDoctrine()->getManager()->flush();
+
+            return $this->redirectToRoute('home'); // @FIXME!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        }
+
+        return $this->render(
+            'place/edit.html.twig',
+            [
+                'form' => $form->createView(),
+                'place' => $place,
             ]
         );
     }

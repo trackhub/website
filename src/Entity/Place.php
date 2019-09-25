@@ -25,4 +25,14 @@ class Place
         $this->lat = $lat;
         $this->lng = $lng;
     }
+
+    public function setLat(float $lat)
+    {
+        $this->lat = $lat;
+    }
+
+    public function setLng(float $lng)
+    {
+        $this->lng = $lng;
+    }
 }

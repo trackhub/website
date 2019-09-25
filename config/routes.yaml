@@ -90,3 +90,7 @@ app_user_download_personal_data:
 app_place_new:
   path: /{_locale}/place/new
   controller: App\Controller\Place::new
+
+app_place_edit:
+  path: /{_locale}/place/edit/{id}
+  controller: App\Controller\Place::edit

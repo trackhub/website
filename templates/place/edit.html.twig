@@ -14,7 +14,13 @@
                 }
             );
 
-            map.setView([42.1, 25.0], 10);
+            map.setView([
+                {% if place is defined %}
+                    {{ place.lat }}, {{ place.lng }}
+                {% else %}
+                    42.1, 25.0
+                {% endif %}
+            ], 10);
             map.addControl(new MapControlFullScreen());
 
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -22,7 +28,13 @@
             }).addTo(map);
 
             let popup = L.marker(
-                [42.1, 25.0],
+                [
+                    {% if place is defined %}
+                        {{ place.lat }}, {{ place.lng }}
+                        {% else %}
+                            42.1, 25.0
+                    {% endif %}
+                ],
                 {
                     draggable: true,
                     autoPan: true,
