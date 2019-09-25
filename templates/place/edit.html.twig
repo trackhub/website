@@ -2,6 +2,9 @@
 
 {% block content %}
 
+    {{ form_start(form) }}
+    {{ form_end(form) }}
+
     <input type="number" step="0.00001" id="lat">
     <input type="number" step="0.00001" id="lng">
     <!--- Initialize map --->
