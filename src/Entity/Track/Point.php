@@ -2,6 +2,7 @@
 
 namespace App\Entity\Track;
 
+use App\Entity\Point\ElevationPointTrait;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -9,7 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Point
 {
-    use PointTrait;
+    use ElevationPointTrait;
 
     /**
      * @ORM\Id
