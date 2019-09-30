@@ -30,6 +30,20 @@
 
         </td>
         <td>
+            {% if version.difficulty == 'easiest' %}
+                <img src="{{ asset('images/difficulty/white-circle-48x48.png') }}">
+            {% elseif version.difficulty == 'easy' %}
+                <img src="{{ asset('images/difficulty/green-circle-48x48.png') }}">
+            {% elseif version.difficulty == 'more-difficult' %}
+                <img src="{{ asset('images/difficulty/blue-square-48x48.png') }}">
+            {% elseif version.difficulty == 'very-difficult' %}
+                <img src="{{ asset('images/difficulty/black-diamond-48x48.png') }}">
+            {% elseif version.difficulty == 'extremely-difficult' %}
+                <img src="{{ asset('images/difficulty/double-black-diamond-96x48.png') }}">
+            {% endif %}
+
+        </td>
+        <td>
             <input type="checkbox" data-type="track-toggle" checked
                    id="export-{{ version.id }}"
                    name="versions[]"

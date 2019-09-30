@@ -56,6 +56,8 @@ class Track extends AbstractController
 
             $optimizedPoints = $processor->generateOptimizedPoints($trackVersion);
 
+            $trackVersion->setDifficulty($form->get('difficulty')->getData());
+
             $track->addOptimizedPoints($optimizedPoints);
             $track->addVersion($trackVersion);
             $track->setType($form->get('type')->getData());
@@ -246,6 +248,7 @@ class Track extends AbstractController
 
             $trackFile = new TrackFile($trackVersion, $fileContent);
             $trackVersion->setFile($trackFile);
+            $trackVersion->setDifficulty($form->get('difficulty')->getData());
 
             $track->addVersion($trackVersion);
 

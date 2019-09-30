@@ -43,12 +43,13 @@
     <br>
 
     <form method="post" action="{{ path('app_track_download_batch') }}">
-        <table class="table">
+        <table class="table table-sm">
             <tr>
                 <td></td>
                 <td>{{ 'Climb'|trans }}</td>
                 <td>{{ 'Descent'|trans }}</td>
                 <td>{{ 'Rating'|trans }}</td>
+                <td>{{ 'Difficulty'|trans }}</td>
                 <td>{{ 'Include in export'|trans }}</td>
             </tr>
             {# Render versions on map #}
