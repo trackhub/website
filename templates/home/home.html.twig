@@ -189,9 +189,17 @@
                         }
 
                         const marker = L.marker([placesData[i].lat, placesData[i].lng]);
+
+                        const ahrefPop = document.createElement('a');
+                        ahrefPop.href = '/{{ app.request.locale }}/place/view/' + placesData[i].id;
+                        ahrefPop.innerText = 'View details';
+                        if (placesData[i].name) {
+                            ahrefPop.innerText = placesData[i].name;
+                        }
+
                         const popup = L.popup()
                             .setLatLng([placesData[i].lat, placesData[i].lng])
-                            .setContent('<a href="/{{ app.request.locale }}/place/view/' + placesData[i].id + '">view details</a>');
+                            .setContent(ahrefPop.outerHTML);
                         marker.bindPopup(popup);
                         marker.addTo(map);
 

@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Entity\Point\PointTrait;
+use App\EntityTraits\NameableTrait;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -12,6 +13,7 @@ use Doctrine\ORM\Mapping as ORM;
 class Place
 {
     use PointTrait;
+    use NameableTrait;
 
     /**
      * @ORM\Id

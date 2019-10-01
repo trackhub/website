@@ -20,10 +20,18 @@ class Place extends AbstractController
                 $form->get('lng')->getData(),
             );
 
+            if (!$form->get('nameEn')->isEmpty()) {
+                $place->setNameEn($form->get('nameEn')->getData());
+            }
+
+            if (!$form->get('nameBg')->isEmpty()) {
+                $place->setNameBg($form->get('nameBg')->getData());
+            }
+
             $this->getDoctrine()->getManager()->persist($place);
             $this->getDoctrine()->getManager()->flush();
 
-            return $this->redirectToRoute('app_place_view', ['id' => $place->getId()]); // @FIXME!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            return $this->redirectToRoute('app_place_view', ['id' => $place->getId()]);
         }
 
         return $this->render(
@@ -46,15 +54,19 @@ class Place extends AbstractController
 
         $form->get('lat')->setData($place->getLat());
         $form->get('lng')->setData($place->getLng());
+        $form->get('nameEn')->setData($place->getNameEn());
+        $form->get('nameBg')->setData($place->getNameBg());
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $place->setLat($form->get('lat')->getData());
             $place->setLng($form->get('lng')->getData());
+            $place->setNameEn($form->get('nameEn')->getData());
+            $place->setNameBg($form->get('nameBg')->getData());
 
             $this->getDoctrine()->getManager()->flush();
 
-            return $this->redirectToRoute('home'); // @FIXME!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            return $this->redirectToRoute('app_place_view', ['id' => $place->getId()]);
         }
 
         return $this->render(
