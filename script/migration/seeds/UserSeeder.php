@@ -6,7 +6,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 class UserSeeder extends AbstractSeed
 {
     /* How many users to generate */
-    const USER_COUNT = 30;
+    private const USER_COUNT = 30;
 
     public function run()
     {
