@@ -182,15 +182,18 @@
                     const placesData = data.data;
 
                     for (let i = 0; i < placesData.length; i++) {
-                        let id = placesData[i].id;
-                        let slugOrId = placesData[i].id;
+                        const id = placesData[i].id;
 
                         if (loadedPlaces[id]) {
                             continue;
                         }
 
-                        let popup = L.marker([placesData[i].lat, placesData[i].lng]);
-                        popup.addTo(map);
+                        const marker = L.marker([placesData[i].lat, placesData[i].lng]);
+                        const popup = L.popup()
+                            .setLatLng([placesData[i].lat, placesData[i].lng])
+                            .setContent('<a href="/{{ app.request.locale }}/place/view/' + placesData[i].id + '">view details</a>');
+                        marker.bindPopup(popup);
+                        marker.addTo(map);
 
                         loadedPlaces[id] = placesData[i];
                     }
@@ -212,8 +215,13 @@
             for (let key in loadedTracks) {
                 fetchedTracksIds.push(key);
             }
+            let fetchedPLacesIds = [];
+            for (let key in loadedPlaces) {
+                fetchedPLacesIds.push(key);
+            }
 
             postData.append('skipTracks', fetchedTracksIds);
+            postData.append('skipPlaces', fetchedPLacesIds);
 
             ajax.open('POST', url);
             ajax.send(postData);
