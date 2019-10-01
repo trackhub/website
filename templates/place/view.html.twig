@@ -1,6 +1,10 @@
 {% extends "base.html.twig" %}
 
 {% block content %}
+    <h1>
+        {{ place.name(app.request.locale) }}
+    </h1>
+
     <!--- Initialize map --->
     <div style="height: 50vh; min-height: 300px; width: 100%;" id="map"></div>
     <script>
@@ -12,7 +16,7 @@
 
             map.setView([
                 {{ place.lat }}, {{ place.lng }}
-            ], 10);
+            ], 15);
             map.addControl(new MapControlFullScreen());
 
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {

@@ -78,7 +78,7 @@ class Place extends AbstractController
         );
     }
 
-    public function view($id)
+    public function view(string $id, Request $request)
     {
         $placeRepo = $this->getDoctrine()->getRepository(\App\Entity\Place::class);
         $place = $placeRepo->findOneBy(['id' => $id]);
@@ -87,6 +87,7 @@ class Place extends AbstractController
             'place/view.html.twig',
             [
                 'place' => $place,
+                'app_title' => $place->getName($request->getLocale()),
             ]
         );
     }
