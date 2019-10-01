@@ -23,7 +23,7 @@ class Place extends AbstractController
             $this->getDoctrine()->getManager()->persist($place);
             $this->getDoctrine()->getManager()->flush();
 
-            return $this->redirectToRoute('home'); // @FIXME!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            return $this->redirectToRoute('app_place_view', ['id' => $place->getId()]); // @FIXME!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         }
 
         return $this->render(
@@ -38,6 +38,8 @@ class Place extends AbstractController
     {
         $placeRepo = $this->getDoctrine()->getRepository(\App\Entity\Place::class);
         $place = $placeRepo->findOneBy(['id' => $id]);
+
+        // @TODO ACL check!
 
         $form = $this->createForm(\App\Form\Type\Place::class);
         $form->add('submit', SubmitType::class);
@@ -59,6 +61,19 @@ class Place extends AbstractController
             'place/edit.html.twig',
             [
                 'form' => $form->createView(),
+                'place' => $place,
+            ]
+        );
+    }
+
+    public function view($id)
+    {
+        $placeRepo = $this->getDoctrine()->getRepository(\App\Entity\Place::class);
+        $place = $placeRepo->findOneBy(['id' => $id]);
+
+        return $this->render(
+            'place/view.html.twig',
+            [
                 'place' => $place,
             ]
         );

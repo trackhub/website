@@ -38,17 +38,43 @@ class Home extends AbstractController
 
     public function find($neLat, $neLon, $swLat, $swLon, Request $request, TrackRepository $repo)
     {
-        $skipTracks = $request->request->get('skipTracks', []);
+        $skipTracks = $request->request->get('skipTracks', '');
         $skipTracksAsArray = explode(',', $skipTracks);
 
+        $tracks = $this->findTracks($neLat, $neLon, $swLat, $swLon, $repo, $skipTracksAsArray, $request->getLocale());
+
+        $skipTracks = $request->request->get('skipPlaces', '');
+        $skipPlacesAsArray = explode(',', $skipTracks);
+        $places = $this->findPlaces($neLat, $neLon, $swLat, $swLon, $skipPlacesAsArray, $request->getLocale());
+
+        return new Response(
+            json_encode([
+                'tracks' => [
+                    'status' => $tracks['status'],
+                    'data' => $tracks['data'],
+                ],
+                'places' => [
+                    'status' => $places['status'],
+                    'data' => $places['data'],
+                ],
+            ]),
+            Response::HTTP_OK,
+            [
+                'Content-Type' => 'text/json',
+            ]
+        );
+    }
+
+    private function findTracks($neLat, $neLon, $swLat, $swLon, $repo, $skipTracks, $locale)
+    {
         $qb = $repo->createQueryBuilder('g');
 
         $repo->andWhereTrackIsPublic($qb)
-             ->andWhereInCoordinates($qb, $skipTracksAsArray, $neLat, $swLat, $neLon, $swLon);
+            ->andWhereInCoordinates($qb, $skipTracks, $neLat, $swLat, $neLon, $swLon);
 
         $data = $qb->select($qb->expr()->count('g.id'))
-                   ->getQuery()
-                   ->getSingleResult();
+            ->getQuery()
+            ->getSingleResult();
 
         $count = current($data);
 
@@ -61,7 +87,7 @@ class Home extends AbstractController
         $qb = $repo->createQueryBuilder('g');
 
         $repo->andWhereTrackIsPublic($qb)
-             ->andWhereInCoordinates($qb, $skipTracksAsArray, $neLat, $swLat, $neLon, $swLon);
+            ->andWhereInCoordinates($qb, $skipTracks, $neLat, $swLat, $neLon, $swLon);
 
         /* @var $qResult Track[] */
         $qResult = $qb
@@ -75,7 +101,7 @@ class Home extends AbstractController
         foreach ($qResult as $gps) {
             $gpsArrayData = [];
             $gpsArrayData['id'] = $gps->getId();
-            $gpsArrayData['name'] = $gps->getName($request->getLocale());
+            $gpsArrayData['name'] = $gps->getName($locale);
             $gpsArrayData['slugOrId'] = $gps->getSlugOrId();
             $gpsArrayData['type'] = $gps->getType();
 
@@ -90,15 +116,57 @@ class Home extends AbstractController
             $responseData[] = $gpsArrayData;
         }
 
-        return new Response(
-            json_encode([
-                'status' => $status,
-                'data' => $responseData,
-            ]),
-            Response::HTTP_OK,
-            [
-                'Content-Type' => 'text/json',
-            ]
-        );
+        return [
+            'data' => $responseData,
+            'status' => $status,
+        ];
+    }
+
+    private function findPlaces($neLat, $neLon, $swLat, $swLon, $skipTracks, $locale)
+    {
+        $repo = $this->getDoctrine()->getRepository(\App\Entity\Place::class);
+
+        $qb = $repo->createQueryBuilder('g');
+
+        $repo->andWhereInCoordinates($qb, $skipTracks, $neLat, $swLat, $neLon, $swLon);
+
+        $data = $qb->select($qb->expr()->count('g.id'))
+            ->getQuery()
+            ->getSingleResult();
+
+        $count = current($data);
+
+        if ($count > 10) {
+            $status = 2; // 2 = too many tracks
+        } else {
+            $status = 1; // 1 = ok
+        }
+
+        $qb = $repo->createQueryBuilder('g');
+
+        $repo->andWhereInCoordinates($qb, $skipTracks, $neLat, $swLat, $neLon, $swLon);
+
+        /* @var $qResult \App\Entity\Place[] */
+        $qResult = $qb
+            ->select('g')
+            ->setMaxResults(10)
+            ->getQuery()
+            ->getResult();
+
+        $responseData = [];
+
+        foreach ($qResult as $gps) {
+            $gpsArrayData = [];
+            $gpsArrayData['id'] = $gps->getId();
+             $gpsArrayData['lat'] = $gps->getLat();
+             $gpsArrayData['lng'] = $gps->getLng();
+
+            $responseData[] = $gpsArrayData;
+        }
+
+        return [
+            'data' => $responseData,
+            'status' => $status,
+        ];
     }
 }

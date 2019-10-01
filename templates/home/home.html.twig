@@ -94,6 +94,7 @@
         map.addControl(new MapControlFullScreen());
 
         var loadedTracks = {};
+        var loadedPlaces = {};
 
         var moveEndListener = function() {
             var ajax = new XMLHttpRequest();
@@ -102,69 +103,104 @@
                     return;
                 }
 
-                let responseAsJson = JSON.parse(this.responseText);
+                const responseAsJson = JSON.parse(this.responseText);
 
-                var responseStatus = responseAsJson.status;
+                // tracks
+                (function (data) {
+                    const responseStatus = data.status;
 
-                if (responseStatus != 1 && responseStatus != 2) {
-                    // unknown error
-                    // @FIXME show error
-                    return;
-                }
-
-                let tracksData = responseAsJson.data;
-
-                for (let i = 0; i < tracksData.length; i++) {
-                    let id = tracksData[i].id;
-                    let slugOrId = tracksData[i].slugOrId;
-
-                    if (loadedTracks[id]) {
-                        continue;
+                    if (responseStatus != 1 && responseStatus != 2) {
+                        // unknown error
+                        // @FIXME show error
+                        return;
                     }
 
+                    const tracksData = data.data;
 
-                    var polylineCollection = [];
-                    for (let j = 0; j < tracksData[i].points.length; j++) {
-                        let points = tracksData[i].points[j];
-                        let pointsAsPolyline = [];
-                        for (let pointIndex = 0; pointIndex < points.length; pointIndex++) {
-                            pointsAsPolyline.push([
-                                points[pointIndex].lat,
-                                points[pointIndex].lng
-                            ]);
+                    for (let i = 0; i < tracksData.length; i++) {
+                        let id = tracksData[i].id;
+                        let slugOrId = tracksData[i].slugOrId;
+
+                        if (loadedTracks[id]) {
+                            continue;
                         }
 
-                        let polylineColor = gpsColors[Math.floor(Math.random()*gpsColors.length)];
-                        let polyline = L.polyline(pointsAsPolyline, {color: polylineColor});
-                        polylineCollection.push(polyline);
-                        polyline.bindPopup('<a href="/{{ app.request.locale }}/gps/view/' + encodeURIComponent(slugOrId) + '">{{ 'View details'|trans|e('js') }}</a>');
+
+                        var polylineCollection = [];
+                        for (let j = 0; j < tracksData[i].points.length; j++) {
+                            let points = tracksData[i].points[j];
+                            let pointsAsPolyline = [];
+                            for (let pointIndex = 0; pointIndex < points.length; pointIndex++) {
+                                pointsAsPolyline.push([
+                                    points[pointIndex].lat,
+                                    points[pointIndex].lng
+                                ]);
+                            }
+
+                            let polylineColor = gpsColors[Math.floor(Math.random()*gpsColors.length)];
+                            let polyline = L.polyline(pointsAsPolyline, {color: polylineColor});
+                            polylineCollection.push(polyline);
+                            polyline.bindPopup('<a href="/{{ app.request.locale }}/gps/view/' + encodeURIComponent(slugOrId) + '">{{ 'View details'|trans|e('js') }}</a>');
+                        }
+
+                        let track = new AppTrack(map, polylineCollection);
+                        track.setType(tracksData[i].type);
+
+                        switch (track.getType()) {
+                            case 1:
+                                if (mapOptions.showByBike) {
+                                    track.show();
+                                }
+                                break;
+                            case 2:
+                                if (mapOptions.showByFoot) {
+                                    track.show();
+                                }
+                                break;
+                            default:
+                                track.show();
+                        }
+
+                        loadedTracks[id] = track;
                     }
 
-                    let track = new AppTrack(map, polylineCollection);
-                    track.setType(tracksData[i].type);
+                    if (responseStatus == 2) {
+                        moveEndListener();
+                    }
+                })(responseAsJson.tracks);
 
-                    switch (track.getType()) {
-                        case 1:
-                            if (mapOptions.showByBike) {
-                                track.show();
-                            }
-                            break;
-                        case 2:
-                            if (mapOptions.showByFoot) {
-                                track.show();
-                            }
-                            break;
-                        default:
-                            track.show();
+                // places
+                (function (data) {
+                    const responseStatus = data.status;
+
+                    if (responseStatus != 1 && responseStatus != 2) {
+                        // unknown error
+                        // @FIXME show error
+                        return;
                     }
 
-                    loadedTracks[id] = track;
-                }
+                    const placesData = data.data;
 
-                if (responseStatus == 2) {
-                    moveEndListener();
-                }
+                    for (let i = 0; i < placesData.length; i++) {
+                        let id = placesData[i].id;
+                        let slugOrId = placesData[i].id;
+
+                        if (loadedPlaces[id]) {
+                            continue;
+                        }
+
+                        let popup = L.marker([placesData[i].lat, placesData[i].lng]);
+                        popup.addTo(map);
+
+                        loadedPlaces[id] = placesData[i];
+                    }
+
+                    if (responseStatus == 2) {
+                        moveEndListener();
+                    }
+                })(responseAsJson.places);
             };
+
             let url = '/{{ app.request.locale }}/gps/list';
             url += '/' + map.getBounds().getNorthEast().lat;
             url += '/' + map.getBounds().getNorthEast().lng;

@@ -94,3 +94,7 @@ app_place_new:
 app_place_edit:
   path: /{_locale}/place/edit/{id}
   controller: App\Controller\Place::edit
+
+app_place_view:
+  path: /{_locale}/place/view/{id}
+  controller: App\Controller\Place::view

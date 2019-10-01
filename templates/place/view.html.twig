@@ -1,0 +1,26 @@
+{% extends "base.html.twig" %}
+
+{% block content %}
+    <!--- Initialize map --->
+    <div style="height: 50vh; min-height: 300px; width: 100%;" id="map"></div>
+    <script>
+        (function() {
+            const map = L.map('map', {
+                    gestureHandling: true,
+                }
+            );
+
+            map.setView([
+                {{ place.lat }}, {{ place.lng }}
+            ], 10);
+            map.addControl(new MapControlFullScreen());
+
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            }).addTo(map);
+
+            let popup = L.marker([{{ place.lat }}, {{ place.lng }}]);
+            popup.addTo(map);
+        })();
+    </script>
+{% endblock %}

@@ -6,7 +6,7 @@ use App\Entity\Point\PointTrait;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity()
+ * @ORM\Entity(repositoryClass="App\Repository\PlaceRepository")
  * @ORM\Table(name="place")
  */
 class Place
@@ -24,6 +24,11 @@ class Place
     {
         $this->lat = $lat;
         $this->lng = $lng;
+    }
+
+    public function getId(): string
+    {
+        return $this->id;
     }
 
     public function setLat(float $lat)
