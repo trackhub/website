@@ -3,7 +3,9 @@
 namespace App\Entity;
 
 use App\Entity\Point\PointTrait;
-use App\EntityTraits\NameableTrait;
+use App\Entity\User\User;
+use App\EntityTraits\NameTrait;
+use App\EntityTraits\SendByTrait;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -13,7 +15,8 @@ use Doctrine\ORM\Mapping as ORM;
 class Place
 {
     use PointTrait;
-    use NameableTrait;
+    use NameTrait;
+    use SendByTrait;
 
     /**
      * @ORM\Id
@@ -22,10 +25,11 @@ class Place
      */
     private $id;
 
-    public function __construct(float $lat, float $lng)
+    public function __construct(float $lat, float $lng, User $sendBy)
     {
         $this->lat = $lat;
         $this->lng = $lng;
+        $this->sendBy = $sendBy;
     }
 
     public function getId(): string

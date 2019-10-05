@@ -2,7 +2,7 @@
 
 namespace App\EntityTraits;
 
-trait NameableTrait
+trait NameTrait
 {
     /**
      * @ORM\Column(type="string", nullable=true)

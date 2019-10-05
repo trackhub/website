@@ -5,6 +5,10 @@
         {{ place.name(app.request.locale) }}
     </h1>
 
+    {% if canEdit %}
+        <a href="{{ path('app_place_edit', {id: place.id}) }}" class="btn btn-info">{{ 'Edit'|trans }}</a>
+    {% endif %}
+
     <!--- Initialize map --->
     <div style="height: 50vh; min-height: 300px; width: 100%;" id="map"></div>
     <script>

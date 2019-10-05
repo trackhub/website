@@ -7,7 +7,8 @@ use App\Entity\Track\OptimizedPoint;
 use App\Entity\Track\Version;
 use App\Entity\User\User;
 use App\Entity\Video\Youtube;
-use App\EntityTraits\NameableTrait;
+use App\EntityTraits\NameTrait;
+use App\EntityTraits\SendByTrait;
 use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
@@ -17,7 +18,8 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Track
 {
-    use NameableTrait;
+    use NameTrait;
+    use SendByTrait;
 
     public const TYPE_CYCLING = 1;
     public const TYPE_HIKING = 2;
@@ -88,11 +90,6 @@ class Track
     private $createdAt;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\User\User")
-     */
-    private $sendBy;
-
-    /**
      * @ORM\Column(type="integer")
      */
     private $type = self::TYPE_CYCLING;
@@ -135,12 +132,6 @@ class Track
         $this->videosYoutube = new ArrayCollection();
         $this->images = new ArrayCollection();
     }
-
-    public function getSendBy(): User
-    {
-        return $this->sendBy;
-    }
-
 
     public function getId(): ?string
     {

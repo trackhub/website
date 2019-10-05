@@ -18,6 +18,7 @@ class Place extends AbstractController
             $place = new \App\Entity\Place(
                 $form->get('lat')->getData(),
                 $form->get('lng')->getData(),
+                $this->getUser(),
             );
 
             if (!$form->get('nameEn')->isEmpty()) {
@@ -47,7 +48,7 @@ class Place extends AbstractController
         $placeRepo = $this->getDoctrine()->getRepository(\App\Entity\Place::class);
         $place = $placeRepo->findOneBy(['id' => $id]);
 
-        // @TODO ACL check!
+        $this->denyAccessUnlessGranted('edit', $place);
 
         $form = $this->createForm(\App\Form\Type\Place::class);
         $form->add('submit', SubmitType::class);
@@ -88,6 +89,7 @@ class Place extends AbstractController
             [
                 'place' => $place,
                 'app_title' => $place->getName($request->getLocale()),
+                'canEdit' => $this->isGranted('edit', $place),
             ]
         );
     }

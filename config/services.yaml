@@ -35,16 +35,19 @@ services:
         arguments:
             - '@fos_user.user_manager'
             - facebook: facebookId
+
     app.user.force.terms:
         class: App\Event\Listener\User\Terms
         arguments: ['@security.token_storage']
         tags:
             - { name: kernel.event_listener, event: kernel.request }
+
     app.admin.track:
         class: App\Admin\TrackAdmin
         arguments: [~, App\Entity\Track, Sonata\AdminBundle\Controller\CRUDController]
         tags:
             - { name: sonata.admin, manager_type: orm, group: track, label: 'Track' }
+
     app.admin.user:
         class: App\Admin\UserAdmin
         arguments: [~, App\Entity\User\User, Sonata\AdminBundle\Controller\CRUDController]
@@ -62,6 +65,7 @@ services:
         factory: ['@doctrine.orm.default_entity_manager', getRepository]
         arguments:
             - App\Entity\Track\Slug
+
     App\Repository\Track\ImageRepository:
         class: App\Repository\Track\ImageRepository
         factory: ['@doctrine.orm.default_entity_manager', getRepository]
