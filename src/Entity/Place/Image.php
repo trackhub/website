@@ -1,6 +1,5 @@
 <?php
 
-
 namespace App\Entity\Place;
 
 use App\Entity\Place;

@@ -23,7 +23,7 @@ class TrackSeeder extends AbstractSeed
      * track3, track4, track5 - 2 versions
      * track5 - 3 versions
      */
-    const NEW_VERSION_EVERY_NTH_TRACK = 3;
+    private const NEW_VERSION_EVERY_NTH_TRACK = 3;
 
     /**
      * How many track to generate
