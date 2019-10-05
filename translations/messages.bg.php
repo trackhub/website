@@ -38,6 +38,9 @@ return [
     'Short link' => 'Кратък линк',
     'Picture from' => 'Снимка от',
     'View the trail' => 'Виж следата',
+    'Add place' => 'Добави място',
+    'Latitude' => 'Географска ширина',
+    'Longitude' => 'Географска дължина',
 
     // user menu
     'logout' => 'изход',
