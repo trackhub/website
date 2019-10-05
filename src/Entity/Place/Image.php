@@ -42,7 +42,7 @@ class Image
     {
         $this->filepath = $file;
         $this->sendBy = $sendBy;
-        $this->track = $place;
+        $this->place = $place;
         $this->createdAt = new \DateTime();
         $place->addImage($this);
     }

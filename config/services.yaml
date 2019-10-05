@@ -10,8 +10,8 @@ parameters:
     track_images_thumbnails_directory_url: '/images/generated/tit'
 
     place_images_directory: '%kernel.project_dir%/data/uploads/place_images'
-    place_images_thumbnails_directory: '%kernel.project_dir%/public/images/generated/tit'
-    place_images_thumbnails_directory_url: '/images/generated/tit'
+    place_images_thumbnails_directory: '%kernel.project_dir%/public/images/generated/place'
+    place_images_thumbnails_directory_url: '/images/generated/place'
 
 services:
     # default configuration for services in *this* file
@@ -86,5 +86,11 @@ services:
         class: App\Twig\TrackImageExtension
         arguments:
             - '%track_images_thumbnails_directory_url%'
+        tags:
+            - { name: twig.extension}
+    App\Twig\PlaceImageExtension:
+        class: App\Twig\PlaceImageExtension
+        arguments:
+            - '%place_images_thumbnails_directory_url%'
         tags:
             - { name: twig.extension}

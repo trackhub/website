@@ -14,6 +14,7 @@ class Places extends AbstractMigration
                 name_en VARCHAR(255) DEFAULT NULL,
                 name_bg VARCHAR(255) DEFAULT NULL,
                 send_by_id INT NOT NULL,
+                created_at DATETIME NOT NULL,
                 PRIMARY KEY(id)
             ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci ENGINE = InnoDB
         ");

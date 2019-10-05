@@ -21,6 +21,20 @@
 
     <!--- Initialize map --->
     <div style="height: 50vh; min-height: 300px; width: 100%;" id="map"></div>
+
+    {% if place.images is not empty %}
+        {% for image in place.images %}
+            <a href="{{ app_place_image(image, 3840, 2160) }}"
+               data-toggle="lightbox"
+               data-gallery="track-images"
+               data-footer="&lt;a target=&quot;_blank&quot; href=&quot;{{ app_place_image(image, 3840, 2160) }}#&quot;&gt;{{ 'View full size'|trans() }}&lt;/a&gt;"
+            >
+                <img src="{{ app_place_image(image, 300, 300) }}">
+
+            </a>
+        {% endfor %}
+    {% endif %}
+
     <script>
         (function() {
             const map = L.map('map', {

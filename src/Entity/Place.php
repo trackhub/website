@@ -31,11 +31,17 @@ class Place
      */
     private $images;
 
+    /**
+     * @ORM\Column(type="datetime")
+     */
+    private $createdAt;
+
     public function __construct(float $lat, float $lng, User $sendBy)
     {
         $this->lat = $lat;
         $this->lng = $lng;
         $this->sendBy = $sendBy;
+        $this->createdAt = new \DateTime();
     }
 
     public function getId(): string
@@ -56,5 +62,18 @@ class Place
     public function addImage(Image $image)
     {
         $this->images->add($image);
+    }
+
+    public function getCreatedAt(): \DateTime
+    {
+        return $this->createdAt;
+    }
+
+    /**
+     * @return \ArrayAccess|Image[]
+     */
+    public function getImages(): iterable
+    {
+        return $this->images;
     }
 }

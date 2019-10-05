@@ -9,8 +9,8 @@ class PlaceImage extends AbstractMigration
         $this->query("
             CREATE TABLE place_image (
                 id CHAR(36) NOT NULL COMMENT '(DC2Type:guid)',
-                place_id CHAR(36) DEFAULT NULL COMMENT '(DC2Type:guid)',
-                send_by_id INT DEFAULT NULL,
+                place_id CHAR(36) NOT NULL COMMENT '(DC2Type:guid)',
+                send_by_id INT NOT NULL,
                 filepath VARCHAR(255) NOT NULL,
                 created_at DATETIME NOT NULL,
                 INDEX IDX_PLACE_IMAGE_PLACE_ID (place_id),

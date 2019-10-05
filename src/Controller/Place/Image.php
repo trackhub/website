@@ -50,7 +50,7 @@ class Image extends AbstractController
 
         // @FIXME DIRECTORY SEPARATOR BY YEAR?
         $uploadDirectory = $this->getParameter('place_images_directory') . DIRECTORY_SEPARATOR;
-        $sqlFilepath = $place->getId();
+        $sqlFilepath = $place->getCreatedAt()->format('Y') . DIRECTORY_SEPARATOR . $place->getId();
         $uploadDirectory .= $sqlFilepath;
 
         $uploadFilename = uniqid() . '.' . $extension;
@@ -82,14 +82,14 @@ class Image extends AbstractController
      * This method is called when thumbnails doesn't exists.
      * Thumbnail will be created and saved in the "public" directory.
      */
-    public function generateThumbnail(int $year, string $trackId, string $imagePath, int $maxWidth, int $maxHeight, Request $request)
+    public function generateThumbnail(int $year, string $placeId, string $imagePath, int $maxWidth, int $maxHeight, Request $request)
     {
-        $originalImagePath = $this->getParameter('track_images_directory') . DIRECTORY_SEPARATOR;
-        $originalImagePath .= $year . DIRECTORY_SEPARATOR . $trackId . DIRECTORY_SEPARATOR . $imagePath;
+        $originalImagePath = $this->getParameter('place_images_directory') . DIRECTORY_SEPARATOR;
+        $originalImagePath .= $year . DIRECTORY_SEPARATOR . $placeId . DIRECTORY_SEPARATOR . $imagePath;
 
-        $thumbnailPathDir = $this->getParameter('track_images_thumbnails_directory');
+        $thumbnailPathDir = $this->getParameter('place_images_thumbnails_directory');
         $thumbnailPathDir .= DIRECTORY_SEPARATOR . $maxWidth . DIRECTORY_SEPARATOR . $maxHeight;
-        $thumbnailPathDir .= DIRECTORY_SEPARATOR . $year . DIRECTORY_SEPARATOR . $trackId;
+        $thumbnailPathDir .= DIRECTORY_SEPARATOR . $year . DIRECTORY_SEPARATOR . $placeId;
         $thumbnailPath = $thumbnailPathDir . DIRECTORY_SEPARATOR . $imagePath;
 
         $resizer = new ImageEdit();

@@ -102,3 +102,11 @@ app_place_view:
 app_place_new_image:
   path: /{_locale}/place/image/new/{id}
   controller: App\Controller\Place\Image::addImage
+
+place_image_thumbnail:
+  path: /images/generated/place/{maxWidth}/{maxHeight}/{year}/{placeId}/{imagePath}
+  controller: App\Controller\Place\Image::generateThumbnail
+  requirements:
+    year: '\d+'
+    maxWidth: '\d+'
+    maxHeight: '\d+'
