@@ -8,7 +8,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class Image extends AbstractController
 {
@@ -48,7 +48,6 @@ class Image extends AbstractController
             );
         }
 
-        // @FIXME DIRECTORY SEPARATOR BY YEAR?
         $uploadDirectory = $this->getParameter('place_images_directory') . DIRECTORY_SEPARATOR;
         $sqlFilepath = $place->getCreatedAt()->format('Y') . DIRECTORY_SEPARATOR . $place->getId();
         $uploadDirectory .= $sqlFilepath;
