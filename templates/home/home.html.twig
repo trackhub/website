@@ -48,7 +48,7 @@
 
         {% if latestImages is defined and latestImages is not empty %}
             {{ 'Latest pictures'|trans }}:
-            <div class="track_images track_images_all">
+            <div class="uploaded_images uploaded_images_all">
                 {% for image in latestImages %}
                     <a href="{{ path('gps-view', { id: image.track.slugOrId }) }}"
                         title="{{- 'View the trail'|trans -}}
