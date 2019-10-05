@@ -9,6 +9,16 @@
         <a href="{{ path('app_place_edit', {id: place.id}) }}" class="btn btn-info">{{ 'Edit'|trans }}</a>
     {% endif %}
 
+    {% if app.user %}
+        <label for="file_input" class="btn btn-success mb-0">Add pictures</label>
+        <input  id="file_input" style="visibility: hidden;" type="file" name="files[]" multiple accept="image/jpeg, image/png">
+        <div class="container">
+            <div id="file_upload_progress" class="row"></div>
+        </div>
+    {% else %}
+        <a href="{{ path('hwi_oauth_connect') }}" class="btn btn-success">Add pictures</a>
+    {% endif %}
+
     <!--- Initialize map --->
     <div style="height: 50vh; min-height: 300px; width: 100%;" id="map"></div>
     <script>
@@ -30,5 +40,30 @@
             let popup = L.marker([{{ place.lat }}, {{ place.lng }}]);
             popup.addTo(map);
         })();
+    </script>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+
+    <script>
+        {# upload element doesn't exists if user is not logged in #}
+        {% if app.user %}
+        jsImageUpload(
+            document.getElementById('file_input'),
+                {{ csrf_token('file_upload')|json_encode|raw }},
+                {{ path('app_place_new_image', {id: place.id})|json_encode|raw }},
+            {
+                'uploaded': {{ 'Uploaded'|json_encode|raw }}
+            }
+        );
+        {% endif %}
+
+        jQuery(document).on('click', '[data-toggle="lightbox"]', function(event) {
+            event.preventDefault();
+            jQuery(this).ekkoLightbox({
+                alwaysShowClose: true
+            });
+        });
     </script>
 {% endblock %}

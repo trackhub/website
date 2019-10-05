@@ -98,3 +98,7 @@ app_place_edit:
 app_place_view:
   path: /{_locale}/place/view/{id}
   controller: App\Controller\Place::view
+
+app_place_new_image:
+  path: /{_locale}/place/image/new/{id}
+  controller: App\Controller\Place\Image::addImage

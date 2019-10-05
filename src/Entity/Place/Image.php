@@ -1,15 +1,16 @@
 <?php
 
-namespace App\Entity\Track;
 
-use App\Entity\Track;
+namespace App\Entity\Place;
+
+use App\Entity\Place;
 use App\Entity\User\User;
 use App\EntityTraits\SendByTrait;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\Track\ImageRepository")
- * @ORM\Table(name="track_image")
+ * @ORM\Table(name="place_image")
  */
 class Image
 {
@@ -23,9 +24,9 @@ class Image
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Track", inversedBy="images")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Place", inversedBy="images")
      */
-    private $track;
+    private $place;
 
     /**
      * @ORM\Column(type="string", nullable=false)
@@ -37,13 +38,13 @@ class Image
      */
     private $createdAt;
 
-    public function __construct(string $file, User $sendBy, Track $track)
+    public function __construct(string $file, User $sendBy, Place $place)
     {
         $this->filepath = $file;
         $this->sendBy = $sendBy;
-        $this->track = $track;
+        $this->track = $place;
         $this->createdAt = new \DateTime();
-        $track->addImage($this);
+        $place->addImage($this);
     }
 
     public function getId(): ?string
@@ -54,10 +55,5 @@ class Image
     public function getFilepath(): string
     {
         return $this->filepath;
-    }
-
-    public function getTrack(): Track
-    {
-        return $this->track;
     }
 }

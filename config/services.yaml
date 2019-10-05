@@ -9,6 +9,10 @@ parameters:
     track_images_thumbnails_directory: '%kernel.project_dir%/public/images/generated/tit'
     track_images_thumbnails_directory_url: '/images/generated/tit'
 
+    place_images_directory: '%kernel.project_dir%/data/uploads/place_images'
+    place_images_thumbnails_directory: '%kernel.project_dir%/public/images/generated/tit'
+    place_images_thumbnails_directory_url: '/images/generated/tit'
+
 services:
     # default configuration for services in *this* file
     _defaults:
@@ -71,6 +75,12 @@ services:
         factory: ['@doctrine.orm.default_entity_manager', getRepository]
         arguments:
             - App\Entity\Track\Image
+
+    App\Repository\PlaceRepository:
+        class: App\Repository\PlaceRepository
+        factory: ['@doctrine.orm.default_entity_manager', getRepository]
+        arguments:
+            - App\Entity\Place
 
     App\Twig\TrackImageExtension:
         class: App\Twig\TrackImageExtension

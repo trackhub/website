@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Entity\Point\PointTrait;
+use App\Entity\Place\Image;
 use App\Entity\User\User;
 use App\EntityTraits\NameTrait;
 use App\EntityTraits\SendByTrait;
@@ -25,6 +26,11 @@ class Place
      */
     private $id;
 
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Place\Image", mappedBy="place", cascade={"persist", "remove"}, orphanRemoval=true)
+     */
+    private $images;
+
     public function __construct(float $lat, float $lng, User $sendBy)
     {
         $this->lat = $lat;
@@ -45,5 +51,10 @@ class Place
     public function setLng(float $lng)
     {
         $this->lng = $lng;
+    }
+
+    public function addImage(Image $image)
+    {
+        $this->images->add($image);
     }
 }
