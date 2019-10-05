@@ -14,7 +14,7 @@ trait PointTrait
      */
     private $lng;
 
-    public function getLat(): ?float
+    public function getLat(): float
     {
         return $this->lat;
     }

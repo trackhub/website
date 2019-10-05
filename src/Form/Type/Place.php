@@ -56,7 +56,5 @@ class Place extends AbstractType
                 'constraints' => $coordinatesConstraints,
             ]
         );
-
-
     }
 }
