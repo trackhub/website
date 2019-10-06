@@ -3,7 +3,6 @@
 
 namespace App\Type;
 
-
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\DBAL\Types\Type;
 
@@ -37,7 +36,7 @@ class DifficultyType extends Type
 
     public function requiresSQLCommentHint(AbstractPlatform $platform)
     {
-        return True;
+        return true;
     }
 
     public function convertToDatabaseValue($value, AbstractPlatform $platform)

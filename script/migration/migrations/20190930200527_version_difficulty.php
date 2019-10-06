@@ -10,15 +10,15 @@ class VersionDifficulty extends AbstractMigration
             ALTER TABLE version
             ADD difficulty 
             ENUM('easiest', 'easy', 'more-difficult', 'very-difficult', 'extremely-difficult')
-            DEFAULT NULL;"
-        );
+            DEFAULT NULL;
+        ");
     }
 
     public function down()
     {
         $this->query("
             ALTER TABLE version
-            DROP COLUMN difficulty;"
-        );
+            DROP COLUMN difficulty;
+        ");
     }
 }
