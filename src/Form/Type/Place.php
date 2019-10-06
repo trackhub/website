@@ -37,7 +37,7 @@ class Place extends AbstractType
             [
                 'choices' => [
                     'form.place.type.generic' => \App\Entity\Place::TYPE_GENERIC,
-                    'form.place.type.water' => \App\Entity\Place::TYPE_WATER,
+                    'form.place.type.drinking_water' => \App\Entity\Place::TYPE_DRINKING_FOUNTAIN,
                 ],
             ],
         );

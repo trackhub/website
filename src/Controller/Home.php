@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Contract\Http\ApiResponseInterface;
 use App\Entity\Track\OptimizedPoint;
 use App\Repository\Track\ImageRepository;
 use App\Repository\TrackRepository;
@@ -79,9 +80,9 @@ class Home extends AbstractController
         $count = current($data);
 
         if ($count > 10) {
-            $status = 2; // 2 = too many tracks
+            $status = ApiResponseInterface::STATUS_TOO_MANY_ROWS_FOUND;
         } else {
-            $status = 1; // 1 = ok
+            $status = ApiResponseInterface::STATUS_OK;
         }
 
         $qb = $repo->createQueryBuilder('g');
@@ -137,9 +138,9 @@ class Home extends AbstractController
         $count = current($data);
 
         if ($count > 10) {
-            $status = 2; // 2 = too many tracks
+            $status = ApiResponseInterface::STATUS_TOO_MANY_ROWS_FOUND;
         } else {
-            $status = 1; // 1 = ok
+            $status = ApiResponseInterface::STATUS_OK;
         }
 
         $qb = $repo->createQueryBuilder('g');

@@ -17,7 +17,7 @@ return [
     'unlisted' => 'скрит',
 
     'form.place.type.generic' => 'Общ тип',
-    'form.place.type.water' => 'Вода',
+    'form.place.type.drinking_water' => 'Чешма',
 
     'Latest tracks' => 'Най-нови следи',
     'Latest tracks by bicycle' => 'Най-нови следи с колело',

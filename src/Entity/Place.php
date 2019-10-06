@@ -21,7 +21,7 @@ class Place implements CreatedAtInterface
     use SendByTrait;
 
     public const TYPE_GENERIC = 0;
-    public const TYPE_WATER = 1;
+    public const TYPE_DRINKING_FOUNTAIN = 1;
 
     /**
      * @ORM\Id
