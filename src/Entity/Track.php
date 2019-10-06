@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Contract\CreatedAtInterface;
 use App\Entity\Track\Image;
 use App\Entity\Track\OptimizedPoint;
 use App\Entity\Track\Version;
@@ -16,7 +17,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * @ORM\Entity(repositoryClass="App\Repository\TrackRepository")
  */
-class Track
+class Track implements CreatedAtInterface
 {
     use NameTrait;
     use SendByTrait;
@@ -85,6 +86,8 @@ class Track
     private $pointSouthWestLng = 999;
 
     /**
+     * Read-only property
+     *
      * @ORM\Column(type="datetime")
      */
     private $createdAt;

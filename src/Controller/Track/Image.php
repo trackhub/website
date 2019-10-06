@@ -4,8 +4,8 @@ namespace App\Controller\Track;
 
 use App\Image\ImageEdit;
 use App\Repository\TrackRepository;
+use App\Upload\ImageUploader;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -14,67 +14,31 @@ class Image extends AbstractController
 {
     public function addImage(string $id, Request $request, TrackRepository $trackRepo, TranslatorInterface $translator)
     {
-        $track = $trackRepo->findOneBy(['id' => $id]);
-
         $token = $request->request->get('token');
         if (!$this->isCsrfTokenValid('file_upload', $token)) {
             throw $this->createAccessDeniedException('csrf check failed');
         }
 
-        $file = $request->files->get('file');
-        /* @var $file UploadedFile */
-        if (!$file->isValid()) {
-            return new Response(
-                json_encode([
-                    'status' => 1,
-                    'error' => $translator->trans('Upload failed'),
-                ]),
-                Response::HTTP_BAD_REQUEST,
-                ['Content-Type' => 'text/json']
-            );
+        $uploader = new ImageUploader(
+            $this->getParameter('track_images_directory'),
+            $trackRepo,
+            $translator,
+        );
+
+        $user = $this->getUser();
+
+        $entityCreator = function($path, $parentEntity) use ($user) {
+            return new \App\Entity\Track\Image($path, $user, $parentEntity);
+        };
+
+        list($image, $response) = $uploader->addImage($id, $request, $entityCreator);
+
+        if ($image) {
+            $this->getDoctrine()->getManager()->persist($image);
+            $this->getDoctrine()->getManager()->flush();
         }
 
-        $extension = $file->getClientOriginalExtension();
-        $extension = mb_strtolower($extension);
-
-        if (!in_array($extension, ['jpeg', 'jpg', 'png', 'gif'])) {
-            return new Response(
-                json_encode([
-                    'status' => 1,
-                    'error' => $translator->trans('Image format is not allowed'),
-                ]),
-                Response::HTTP_BAD_REQUEST,
-                ['Content-Type' => 'text/json']
-            );
-        }
-
-        $uploadDirectory = $this->getParameter('track_images_directory') . DIRECTORY_SEPARATOR;
-        $sqlFilepath = $track->getCreatedAt()->format('Y') . DIRECTORY_SEPARATOR . $track->getId();
-        $uploadDirectory .= $sqlFilepath;
-
-        $uploadFilename = uniqid() . '.' . $extension;
-        $sqlFilepath .= DIRECTORY_SEPARATOR . $uploadFilename;
-
-        $file->move(
-            $uploadDirectory,
-            $uploadFilename
-        );
-
-        $image = new \App\Entity\Track\Image(
-            $sqlFilepath,
-            $this->getUser(),
-            $track
-        );
-
-        $this->getDoctrine()->getManager()->persist($image);
-
-        $this->getDoctrine()->getManager()->flush();
-
-        return new Response(
-            json_encode(['status' => 0]),
-            Response::HTTP_OK,
-            ['Content-Type' => 'text/json']
-        );
+        return $response;
     }
 
     /**
