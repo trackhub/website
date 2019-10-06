@@ -16,6 +16,9 @@ return [
     'public' => 'публичен',
     'unlisted' => 'скрит',
 
+    'form.place.type.generic' => 'Общ тип',
+    'form.place.type.water' => 'Вода',
+
     'Latest tracks' => 'Най-нови следи',
     'Latest tracks by bicycle' => 'Най-нови следи с колело',
     'Latest tracks by foot' => 'Най-нови пешеходни следи',

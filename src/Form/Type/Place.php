@@ -3,6 +3,7 @@
 namespace App\Form\Type;
 
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -28,6 +29,17 @@ class Place extends AbstractType
                 'required' => false,
                 'label' => 'Name in Bulgarian',
             ]
+        );
+
+        $builder->add(
+            'type',
+            ChoiceType::class,
+            [
+                'choices' => [
+                    'form.place.type.generic' => \App\Entity\Place::TYPE_GENERIC,
+                    'form.place.type.water' => \App\Entity\Place::TYPE_WATER,
+                ],
+            ],
         );
 
         $coordinatesConstraints = [

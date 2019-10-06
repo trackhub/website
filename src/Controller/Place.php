@@ -29,6 +29,8 @@ class Place extends AbstractController
                 $place->setNameBg($form->get('nameBg')->getData());
             }
 
+            $place->setType($form->get('type')->getData());
+
             $this->getDoctrine()->getManager()->persist($place);
             $this->getDoctrine()->getManager()->flush();
 
@@ -57,6 +59,7 @@ class Place extends AbstractController
         $form->get('lng')->setData($place->getLng());
         $form->get('nameEn')->setData($place->getNameEn());
         $form->get('nameBg')->setData($place->getNameBg());
+        $form->get('type')->setData($place->getType());
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
@@ -64,6 +67,7 @@ class Place extends AbstractController
             $place->setLng($form->get('lng')->getData());
             $place->setNameEn($form->get('nameEn')->getData());
             $place->setNameBg($form->get('nameBg')->getData());
+            $place->setType($form->get('type')->getData());
 
             $this->getDoctrine()->getManager()->flush();
 

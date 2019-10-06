@@ -13,6 +13,7 @@ class Places extends AbstractMigration
                 lng DOUBLE PRECISION NOT NULL,
                 name_en VARCHAR(255) DEFAULT NULL,
                 name_bg VARCHAR(255) DEFAULT NULL,
+                `type` TINYINT(1) NOT NULL,
                 send_by_id INT NOT NULL,
                 created_at DATETIME NOT NULL,
                 PRIMARY KEY(id)

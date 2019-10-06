@@ -20,6 +20,9 @@ class Place implements CreatedAtInterface
     use NameTrait;
     use SendByTrait;
 
+    public const TYPE_GENERIC = 0;
+    public const TYPE_WATER = 1;
+
     /**
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="UUID")
@@ -31,6 +34,11 @@ class Place implements CreatedAtInterface
      * @ORM\OneToMany(targetEntity="App\Entity\Place\Image", mappedBy="place", cascade={"persist", "remove"}, orphanRemoval=true)
      */
     private $images;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $type = self::TYPE_GENERIC;
 
     /**
      * @ORM\Column(type="datetime")
@@ -68,6 +76,16 @@ class Place implements CreatedAtInterface
     public function getCreatedAt(): \DateTime
     {
         return $this->createdAt;
+    }
+
+    public function getType(): int
+    {
+        return $this->type;
+    }
+
+    public function setType(int $type)
+    {
+        $this->type = $type;
     }
 
     /**
