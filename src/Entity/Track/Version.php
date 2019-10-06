@@ -188,7 +188,7 @@ class Version
      *
      * @param $difficulty
      */
-    public function setDifficulty($difficulty): void
+    public function setDifficulty(string $difficulty = null): void
     {
         $this->difficulty = $difficulty;
     }
