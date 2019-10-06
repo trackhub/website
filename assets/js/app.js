@@ -22,3 +22,5 @@ window.AppTrack = require('./components/appTrack.js');
 window.StarRating = require('./components/starRating');
 
 window.MapControlFullScreen =  require('./map/control/fullScreen')
+
+window.bsCustomFileInput = require('bs-custom-file-input');
