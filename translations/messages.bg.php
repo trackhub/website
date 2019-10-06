@@ -15,9 +15,10 @@ return [
     'Visibility' => 'Видимост',
     'public' => 'публичен',
     'unlisted' => 'скрит',
+    'Add pictures' => 'Добави снимки',
 
     'form.place.type.generic' => 'Общ тип',
-    'form.place.type.drinking_water' => 'Чешма',
+    'form.place.type.drinking_fountain' => 'Чешма',
 
     'Latest tracks' => 'Най-нови следи',
     'Latest tracks by bicycle' => 'Най-нови следи с колело',

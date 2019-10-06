@@ -3,6 +3,7 @@
 namespace App\Upload;
 
 use App\Contract\CreatedAtInterface;
+use App\Contract\Http\ApiResponseInterface;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
@@ -72,7 +73,7 @@ class ImageUploader
                 null,
                 new Response(
                     json_encode([
-                        'status' => 1,
+                        'status' => ApiResponseInterface::STATUS_ERROR,
                         'error' => $this->translator->trans('Image format is not allowed'),
                     ]),
                     Response::HTTP_BAD_REQUEST,
@@ -98,7 +99,7 @@ class ImageUploader
         return [
             $image,
             new Response(
-                json_encode(['status' => 0]),
+                json_encode(['status' => ApiResponseInterface::STATUS_OK]),
                 Response::HTTP_OK,
                 ['Content-Type' => 'text/json'],
             ),

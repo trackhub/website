@@ -109,7 +109,7 @@
                 (function (data) {
                     const responseStatus = data.status;
 
-                    if (responseStatus != 1 && responseStatus != 2) {
+                    if (responseStatus != 0 && responseStatus != 2) {
                         // unknown error
                         // @FIXME show error
                         return;
@@ -173,7 +173,7 @@
                 (function (data) {
                     const responseStatus = data.status;
 
-                    if (responseStatus != 1 && responseStatus != 2) {
+                    if (responseStatus != 0 && responseStatus != 2) {
                         // unknown error
                         // @FIXME show error
                         return;
