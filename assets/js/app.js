@@ -23,3 +23,4 @@ window.StarRating = require('./components/starRating');
 
 window.MapControlFullScreen =  require('./map/control/fullScreen')
 window.jsUpload = require('./components/fileUpload');
+window.bsCustomFileInput = require('bs-custom-file-input');
