@@ -16,16 +16,16 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Track
 {
-    const TYPE_CYCLING = 1;
-    const TYPE_HIKING = 2;
+    public const TYPE_CYCLING = 1;
+    public const TYPE_HIKING = 2;
 
-    const VALID_TYPES = [
+    public const VALID_TYPES = [
         self::TYPE_CYCLING => self::TYPE_CYCLING,
         self::TYPE_HIKING => self::TYPE_HIKING,
     ];
 
-    const VISIBILITY_PUBLIC = 0;
-    const VISIBILITY_UNLISTED = 1;
+    public const VISIBILITY_PUBLIC = 0;
+    public const VISIBILITY_UNLISTED = 1;
 
     /**
      * @ORM\Id

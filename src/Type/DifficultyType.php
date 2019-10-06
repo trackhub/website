@@ -1,6 +1,5 @@
 <?php
 
-
 namespace App\Type;
 
 use Doctrine\DBAL\Platforms\AbstractPlatform;
@@ -8,15 +7,15 @@ use Doctrine\DBAL\Types\Type;
 
 class DifficultyType extends Type
 {
-    const ENUM_DIFFICULTY = 'enum_difficulty';
+    private const ENUM_DIFFICULTY = 'enum_difficulty';
 
-    const ENUM_WHITE = 'white';
-    const ENUM_GREEN = 'green';
-    const ENUM_BLUE = 'blue';
-    const ENUM_BLACK = 'black';
-    const ENUM_DOUBLE_BLACK = 'double-black';
+    public const ENUM_WHITE = 'white';
+    public const ENUM_GREEN = 'green';
+    public const ENUM_BLUE = 'blue';
+    public const ENUM_BLACK = 'black';
+    public const ENUM_DOUBLE_BLACK = 'double-black';
 
-    const ENUM_VALUES = [
+    private const ENUM_VALUES = [
         self::ENUM_WHITE,
         self::ENUM_GREEN,
         self::ENUM_BLUE,
