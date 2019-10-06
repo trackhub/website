@@ -14,7 +14,7 @@ class TrackSeeder extends AbstractSeed
     /**
      * Default value for $trackCount
      */
-    private const DEFAULT_TRACK_COUNT = 40;
+    private const DEFAULT_TRACK_COUNT = 5;
 
     /**
      * Every N-th track will have 1 more version.
@@ -23,7 +23,7 @@ class TrackSeeder extends AbstractSeed
      * track3, track4, track5 - 2 versions
      * track5 - 3 versions
      */
-    private const NEW_VERSION_EVERY_NTH_TRACK = 3;
+    private const NEW_VERSION_EVERY_NTH_TRACK = 2;
 
     /**
      * How many track to generate

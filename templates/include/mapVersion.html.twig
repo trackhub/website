@@ -30,6 +30,20 @@
 
         </td>
         <td>
+            {% if version.difficulty == 'white' %}
+                <img src="{{ asset('images/trackhub/difficulty/white-circle-48x48.png') }}">
+            {% elseif version.difficulty == 'green' %}
+                <img src="{{ asset('images/trackhub/difficulty/green-circle-48x48.png') }}">
+            {% elseif version.difficulty == 'blue' %}
+                <img src="{{ asset('images/trackhub/difficulty/blue-square-48x48.png') }}">
+            {% elseif version.difficulty == 'black' %}
+                <img src="{{ asset('images/trackhub/difficulty/black-diamond-48x48.png') }}">
+            {% elseif version.difficulty == 'double-black' %}
+                <img src="{{ asset('images/trackhub/difficulty/double-black-diamond-96x48.png') }}">
+            {% endif %}
+
+        </td>
+        <td>
             <input type="checkbox" data-type="track-toggle" checked
                    id="export-{{ version.id }}"
                    name="versions[]"

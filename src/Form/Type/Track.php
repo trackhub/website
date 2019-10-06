@@ -94,6 +94,20 @@ class Track extends AbstractType
                 ]),
             ]
         );
+
+        $builder->add(
+            'difficulty',
+            ChoiceType::class,
+            [
+                'choices' => [
+                    'White' => \App\Type\DifficultyType::ENUM_WHITE,
+                    'Green' => \App\Type\DifficultyType::ENUM_GREEN,
+                    'Blue' => \App\Type\DifficultyType::ENUM_BLUE,
+                    'Black' => \App\Type\DifficultyType::ENUM_BLACK,
+                    'Double Black' => \App\Type\DifficultyType::ENUM_DOUBLE_BLACK,
+                ]
+            ]
+        );
     }
 
     public function configureOptions(OptionsResolver $resolver)
