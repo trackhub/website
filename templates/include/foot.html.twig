@@ -34,5 +34,10 @@
     jQuery(document).ready(function() {
         jQuery('[data-toggle="tooltip"]').tooltip();
         jQuery('[data-toggle="popover"]').popover();
+
+        /**
+         * Show selected file name, when using FileType::class with form builder.
+         */
+        window.bsCustomFileInput.init();
     });
 </script>
