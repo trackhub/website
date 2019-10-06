@@ -16,6 +16,7 @@ class DifficultyType extends Type
     public const ENUM_DOUBLE_BLACK = 'double-black';
 
     private const ENUM_VALUES = [
+        null,
         self::ENUM_WHITE,
         self::ENUM_GREEN,
         self::ENUM_BLUE,

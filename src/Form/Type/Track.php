@@ -103,6 +103,7 @@ class Track extends AbstractType
             ChoiceType::class,
             [
                 'choices' => [
+                    '' => null,
                     'White' => \App\Type\DifficultyType::ENUM_WHITE,
                     'Green' => \App\Type\DifficultyType::ENUM_GREEN,
                     'Blue' => \App\Type\DifficultyType::ENUM_BLUE,
