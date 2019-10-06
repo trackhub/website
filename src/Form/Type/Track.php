@@ -103,11 +103,11 @@ class Track extends AbstractType
             ChoiceType::class,
             [
                 'choices' => [
-                    'Easiest' => \App\Type\DifficultyType::ENUM_EASIEST,
-                    'Easy' => \App\Type\DifficultyType::ENUM_EASY,
-                    'More Difficult' => \App\Type\DifficultyType::ENUM_MORE_DIFFICULT,
-                    'Very Difficult' => \App\Type\DifficultyType::ENUM_VERY_DIFFICULT,
-                    'Extremely Difficult' => \App\Type\DifficultyType::ENUM_EXTREMELY_DIFFICULT,
+                    'White' => \App\Type\DifficultyType::ENUM_WHITE,
+                    'Green' => \App\Type\DifficultyType::ENUM_GREEN,
+                    'Blue' => \App\Type\DifficultyType::ENUM_BLUE,
+                    'Black' => \App\Type\DifficultyType::ENUM_BLACK,
+                    'Double Black' => \App\Type\DifficultyType::ENUM_DOUBLE_BLACK,
                 ]
             ]
         );

@@ -10,18 +10,18 @@ class DifficultyType extends Type
 {
     const ENUM_DIFFICULTY = 'enum_difficulty';
 
-    const ENUM_EASIEST = 'easiest';
-    const ENUM_EASY = 'easy';
-    const ENUM_MORE_DIFFICULT = 'more-difficult';
-    const ENUM_VERY_DIFFICULT = 'very-difficult';
-    const ENUM_EXTREMELY_DIFFICULT = 'extremely-difficult';
+    const ENUM_WHITE = 'white';
+    const ENUM_GREEN = 'green';
+    const ENUM_BLUE = 'blue';
+    const ENUM_BLACK = 'black';
+    const ENUM_DOUBLE_BLACK = 'double-black';
 
     const ENUM_VALUES = [
-        self::ENUM_EASIEST,
-        self::ENUM_EASY,
-        self::ENUM_MORE_DIFFICULT,
-        self::ENUM_VERY_DIFFICULT,
-        self::ENUM_EXTREMELY_DIFFICULT
+        self::ENUM_WHITE,
+        self::ENUM_GREEN,
+        self::ENUM_BLUE,
+        self::ENUM_BLACK,
+        self::ENUM_DOUBLE_BLACK
     ];
 
     public function getName()
@@ -31,7 +31,7 @@ class DifficultyType extends Type
 
     public function getSQLDeclaration(array $fieldDeclaration, AbstractPlatform $platform)
     {
-        return "ENUM('easiest', 'easy', 'more-difficult', 'very-difficult', 'extremely-difficult')";
+        return "ENUM('white', 'green', 'blue', 'black', 'double-black')";
     }
 
     public function requiresSQLCommentHint(AbstractPlatform $platform)
