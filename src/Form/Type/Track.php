@@ -8,7 +8,7 @@ use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\FormBuilderInterface;
-use \Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\Regex;
 
@@ -95,6 +95,20 @@ class Track extends AbstractType
                     'pattern' => '/^[a-zA-Z0-9_\-]+$/',
                     'message' => 'Should contains only letters, numbers, dash and underscore',
                 ]),
+            ]
+        );
+
+        $builder->add(
+            'difficulty',
+            ChoiceType::class,
+            [
+                'choices' => [
+                    'White' => \App\Type\DifficultyType::ENUM_WHITE,
+                    'Green' => \App\Type\DifficultyType::ENUM_GREEN,
+                    'Blue' => \App\Type\DifficultyType::ENUM_BLUE,
+                    'Black' => \App\Type\DifficultyType::ENUM_BLACK,
+                    'Double Black' => \App\Type\DifficultyType::ENUM_DOUBLE_BLACK,
+                ]
             ]
         );
     }

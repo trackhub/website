@@ -70,6 +70,11 @@ class Version
      */
     private $ratings;
 
+    /**
+     * @ORM\Column(type="enum_difficulty")
+     */
+    private $difficulty;
+
     public function __construct(User $sendBy)
     {
         $this->sendBy = $sendBy;
@@ -167,5 +172,24 @@ class Version
     public function getVotes(): int
     {
         return $this->ratings->count();
+    }
+
+    /**
+     * Get version difficulty
+     * @return string
+     */
+    public function getDifficulty(): ?string
+    {
+        return $this->difficulty;
+    }
+
+    /**
+     * Set track difficulty
+     *
+     * @param $difficulty
+     */
+    public function setDifficulty(string $difficulty = null): void
+    {
+        $this->difficulty = $difficulty;
     }
 }

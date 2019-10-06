@@ -5,11 +5,11 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class TrackSeeder extends AbstractSeed
 {
-    const TYPE_CYCLING = 1;
-    const TYPE_HIKING = 2;
+    private const TYPE_CYCLING = 1;
+    private const TYPE_HIKING = 2;
 
-    const VISIBILITY_PUBLIC = 0;
-    const VISIBILITY_UNLISTED = 1;
+    private const VISIBILITY_PUBLIC = 0;
+    private const VISIBILITY_UNLISTED = 1;
 
     /**
      * How many track to generate
@@ -19,7 +19,7 @@ class TrackSeeder extends AbstractSeed
     /**
      * Default value for $trackCount
      */
-    const DEFAULT_TRACK_COUNT = 40;
+    private const DEFAULT_TRACK_COUNT = 5;
 
     /**
      * Every N-th track will have 1 more version.
@@ -28,7 +28,7 @@ class TrackSeeder extends AbstractSeed
      * track3, track4, track5 - 2 versions
      * track5 - 3 versions
      */
-    const NEW_VERSION_EVERY_NTH_TRACK = 3;
+    private const NEW_VERSION_EVERY_NTH_TRACK = 2;
 
     public function getDependencies()
     {

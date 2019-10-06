@@ -30,6 +30,7 @@ return [
     'Climb' => 'Изкачване',
     'Descent' => 'Спускане',
     'Rating' => 'Рейтинг',
+    'Difficulty' => 'Трудност',
     'Include in export' => 'Включи в експорта',
     'Download main track' => 'Свали главната следа',
     'Download selected versions' => 'Свали избраните версии',

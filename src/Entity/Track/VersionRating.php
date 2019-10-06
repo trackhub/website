@@ -3,7 +3,6 @@
 namespace App\Entity\Track;
 
 use App\Entity\User\User;
-
 use Doctrine\ORM\Mapping as ORM;
 
 /**
