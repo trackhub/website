@@ -53,7 +53,7 @@ class ImageUploader
         if (!$file->isValid()) {
             return [
                 null,
-                    new Response(
+                new Response(
                     json_encode([
                         'status' => 1,
                         'error' => $this->translator->trans('Upload failed'),

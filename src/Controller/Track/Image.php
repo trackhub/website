@@ -27,7 +27,7 @@ class Image extends AbstractController
 
         $user = $this->getUser();
 
-        $entityCreator = function($path, $parentEntity) use ($user) {
+        $entityCreator = function ($path, $parentEntity) use ($user) {
             return new \App\Entity\Track\Image($path, $user, $parentEntity);
         };
 
