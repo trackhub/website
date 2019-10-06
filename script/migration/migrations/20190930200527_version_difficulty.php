@@ -9,7 +9,7 @@ class VersionDifficulty extends AbstractMigration
         $this->query("
             ALTER TABLE version
             ADD difficulty 
-            ENUM('easiest', 'easy', 'more-difficult', 'very-difficult', 'extremely-difficult')
+            ENUM('white', 'green', 'blue', 'black', 'double-black')
             DEFAULT NULL;
         ");
     }
