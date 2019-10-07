@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Controller\Track;
+namespace App\Controller\Place;
 
 use App\Image\ImageEdit;
-use App\Repository\TrackRepository;
+use App\Repository\PlaceRepository;
 use App\Upload\ImageUploader;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -12,7 +12,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class Image extends AbstractController
 {
-    public function addImage(string $id, Request $request, TrackRepository $trackRepo, TranslatorInterface $translator)
+    public function addImage(string $id, Request $request, PlaceRepository $placeRepo, TranslatorInterface $translator)
     {
         $token = $request->request->get('token');
         if (!$this->isCsrfTokenValid('file_upload', $token)) {
@@ -20,15 +20,15 @@ class Image extends AbstractController
         }
 
         $uploader = new ImageUploader(
-            $this->getParameter('track_images_directory'),
-            $trackRepo,
+            $this->getParameter('place_images_directory'),
+            $placeRepo,
             $translator,
         );
 
         $user = $this->getUser();
 
         $entityCreator = function ($path, $parentEntity) use ($user) {
-            return new \App\Entity\Track\Image($path, $user, $parentEntity);
+            return new \App\Entity\Place\Image($path, $user, $parentEntity);
         };
 
         list($image, $response) = $uploader->addImage($id, $request, $entityCreator);
@@ -45,14 +45,14 @@ class Image extends AbstractController
      * This method is called when thumbnails doesn't exists.
      * Thumbnail will be created and saved in the "public" directory.
      */
-    public function generateThumbnail(int $year, string $trackId, string $imagePath, int $maxWidth, int $maxHeight, Request $request)
+    public function generateThumbnail(int $year, string $placeId, string $imagePath, int $maxWidth, int $maxHeight, Request $request)
     {
-        $originalImagePath = $this->getParameter('track_images_directory') . DIRECTORY_SEPARATOR;
-        $originalImagePath .= $year . DIRECTORY_SEPARATOR . $trackId . DIRECTORY_SEPARATOR . $imagePath;
+        $originalImagePath = $this->getParameter('place_images_directory') . DIRECTORY_SEPARATOR;
+        $originalImagePath .= $year . DIRECTORY_SEPARATOR . $placeId . DIRECTORY_SEPARATOR . $imagePath;
 
-        $thumbnailPathDir = $this->getParameter('track_images_thumbnails_directory');
+        $thumbnailPathDir = $this->getParameter('place_images_thumbnails_directory');
         $thumbnailPathDir .= DIRECTORY_SEPARATOR . $maxWidth . DIRECTORY_SEPARATOR . $maxHeight;
-        $thumbnailPathDir .= DIRECTORY_SEPARATOR . $year . DIRECTORY_SEPARATOR . $trackId;
+        $thumbnailPathDir .= DIRECTORY_SEPARATOR . $year . DIRECTORY_SEPARATOR . $placeId;
         $thumbnailPath = $thumbnailPathDir . DIRECTORY_SEPARATOR . $imagePath;
 
         $resizer = new ImageEdit();

@@ -2,11 +2,14 @@
 
 namespace App\Entity;
 
+use App\Contract\CreatedAtInterface;
 use App\Entity\Track\Image;
 use App\Entity\Track\OptimizedPoint;
 use App\Entity\Track\Version;
 use App\Entity\User\User;
 use App\Entity\Video\Youtube;
+use App\EntityTraits\NameTrait;
+use App\EntityTraits\SendByTrait;
 use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
@@ -14,8 +17,11 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * @ORM\Entity(repositoryClass="App\Repository\TrackRepository")
  */
-class Track
+class Track implements CreatedAtInterface
 {
+    use NameTrait;
+    use SendByTrait;
+
     public const TYPE_CYCLING = 1;
     public const TYPE_HIKING = 2;
 
@@ -38,16 +44,6 @@ class Track
      * @ORM\Column(type="string", nullable=true)
      */
     private $slug;
-
-    /**
-     * @ORM\Column(type="string", nullable=true)
-     */
-    private $nameEn;
-
-    /**
-     * @ORM\Column(type="string", nullable=true)
-     */
-    private $nameBg;
 
     /**
      * @ORM\Column(type="boolean", nullable=false)
@@ -90,14 +86,11 @@ class Track
     private $pointSouthWestLng = 999;
 
     /**
+     * Read-only property
+     *
      * @ORM\Column(type="datetime")
      */
     private $createdAt;
-
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\User\User")
-     */
-    private $sendBy;
 
     /**
      * @ORM\Column(type="integer")
@@ -141,48 +134,6 @@ class Track
         $this->downhills = new ArrayCollection();
         $this->videosYoutube = new ArrayCollection();
         $this->images = new ArrayCollection();
-    }
-
-    public function getSendBy(): User
-    {
-        return $this->sendBy;
-    }
-
-    /**
-     * Get localized name.
-     * If localized name doesn't exists - fallback to EN
-     */
-    public function getName(string $locale): ?string
-    {
-        if ($locale === 'bg' && $this->nameBg !== null) {
-            return $this->nameBg;
-        }
-
-        if ($this->nameEn === null) {
-            return $this->nameBg;
-        }
-
-        return $this->nameEn;
-    }
-
-    public function getNameEn(): ?string
-    {
-        return $this->nameEn;
-    }
-
-    public function getNameBg(): ?string
-    {
-        return $this->nameBg;
-    }
-
-    public function setNameEn(string $nameEn = null): void
-    {
-        $this->nameEn = $nameEn;
-    }
-
-    public function setNameBg(string $nameBg = null): void
-    {
-        $this->nameBg = $nameBg;
     }
 
     public function getId(): ?string

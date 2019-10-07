@@ -2,15 +2,19 @@ label[for=file_input] {
     cursor: pointer;
 }
 
-.track_images {
+.uploaded_images {
     max-height: 300px;
-    overflow-x: auto;
+    overflow-x: hidden;
     overflow-y: hidden;
     white-space:nowrap;
 }
 
+.uploaded_images:hover {
+    overflow-x: auto;
+}
+
 @media all and (max-width: 950px) {
-    .track_images_all {
+    .uploaded_images_all {
         max-height: unset;
         display: grid;
         justify-items: center;
@@ -19,39 +23,29 @@ label[for=file_input] {
 }
 
 @media all and (max-width: 664px) {
-    .track_images_all {
+    .uploaded_images_all {
         grid-template-columns: 1fr;
     }
 }
 
 @media all and (max-width: 950px) and (min-width: 665px) {
-    .track_images_all {
+    .uploaded_images_all {
         grid-template-columns: 1fr 1fr;
     }
 }
 
-@media all and (min-width: 951px) {
-    .track_images_all {
-        overflow-x: hidden;
-    }
-
-    .track_images_all:hover {
-        overflow-x: auto;
-    }
-}
-
-.track_images img {
+.uploaded_images img {
     margin-right: 3px;
     max-width: 300px;
     max-height: 300px;
 }
 
-.track_images_all img {
+.uploaded_images_all img {
     margin-top: 3px;
     margin-bottom: 3px;
 }
 
-.track_images img:not:first-child {
+.uploaded_images img:not:first-child {
     margin-left: 2px;
 }
 

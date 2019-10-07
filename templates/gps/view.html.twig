@@ -9,13 +9,13 @@
     {% endif %}
 
     {% if app.user %}
-        <label for="file_input" class="btn btn-success mb-0">Add pictures</label>
+        <label for="file_input" class="btn btn-success mb-0">{{ 'Add pictures'|trans }}</label>
         <input  id="file_input" style="visibility: hidden;" type="file" name="files[]" multiple accept="image/jpeg, image/png">
         <div class="container">
             <div id="file_upload_progress" class="row"></div>
         </div>
     {% else %}
-        <a href="{{ path('hwi_oauth_connect') }}" class="btn btn-success">Add pictures</a>
+        <a href="{{ path('hwi_oauth_connect') }}" class="btn btn-success">{{ 'Add pictures'|trans }}</a>
     {% endif %}
 
     <hr>
@@ -79,7 +79,7 @@
     </div>
 
     {% if track.images is not empty %}
-        <div class="track_images" >
+        <div class="uploaded_images" >
             {% for image in track.images %}
                 <a href="{{ app_track_image(image, 3840, 2160) }}"
                    data-toggle="lightbox"

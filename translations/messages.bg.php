@@ -15,6 +15,10 @@ return [
     'Visibility' => 'Видимост',
     'public' => 'публичен',
     'unlisted' => 'скрит',
+    'Add pictures' => 'Добави снимки',
+
+    'form.place.type.generic' => 'Общ тип',
+    'form.place.type.drinking_fountain' => 'Чешма',
 
     'Latest tracks' => 'Най-нови следи',
     'Latest tracks by bicycle' => 'Най-нови следи с колело',
@@ -39,6 +43,9 @@ return [
     'Short link' => 'Кратък линк',
     'Picture from' => 'Снимка от',
     'View the trail' => 'Виж следата',
+    'Add place' => 'Добави място',
+    'Latitude' => 'Географска ширина',
+    'Longitude' => 'Географска дължина',
 
     // user menu
     'logout' => 'изход',

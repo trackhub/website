@@ -12,11 +12,6 @@ class TrackSeeder extends AbstractSeed
     private const VISIBILITY_UNLISTED = 1;
 
     /**
-     * How many track to generate
-     */
-    private $trackCount;
-
-    /**
      * Default value for $trackCount
      */
     private const DEFAULT_TRACK_COUNT = 5;
@@ -29,6 +24,11 @@ class TrackSeeder extends AbstractSeed
      * track5 - 3 versions
      */
     private const NEW_VERSION_EVERY_NTH_TRACK = 2;
+
+    /**
+     * How many track to generate
+     */
+    private $trackCount;
 
     public function getDependencies()
     {

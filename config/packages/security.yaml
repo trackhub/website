@@ -40,4 +40,5 @@ security:
   # - { path: ^/profile, roles: ROLE_USER }
   - { path: ^/([a-z]+/)?login, roles: IS_AUTHENTICATED_ANONYMOUSLY, requires_channel: https }
   - { path: ^/([a-z]+/)?gps/new, roles: ROLE_USER }
+  - { path: ^/([a-z]+/)?place/new, roles: ROLE_USER }
   - { path: ^/([a-z]+/)?admin, roles: ROLE_ADMIN }

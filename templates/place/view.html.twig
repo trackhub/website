@@ -1,0 +1,89 @@
+{% extends "base.html.twig" %}
+
+{% block content %}
+    <h1>
+        {{ place.name(app.request.locale) }}
+    </h1>
+
+    {% if canEdit %}
+        <a href="{{ path('app_place_edit', {id: place.id}) }}" class="btn btn-info">{{ 'Edit'|trans }}</a>
+    {% endif %}
+
+    {% if app.user %}
+        <label for="file_input" class="btn btn-success mb-0">{{ 'Add pictures'|trans }}</label>
+        <input  id="file_input" style="visibility: hidden;" type="file" name="files[]" multiple accept="image/jpeg, image/png">
+        <div class="container">
+            <div id="file_upload_progress" class="row"></div>
+        </div>
+    {% else %}
+        <a href="{{ path('hwi_oauth_connect') }}" class="btn btn-success">{{ 'Add pictures'|trans }}</a>
+    {% endif %}
+
+    <hr>
+
+    <!--- Initialize map --->
+    <div style="height: 50vh; min-height: 300px; width: 100%;" id="map"></div>
+
+    <br><br>
+
+    {% if place.images is not empty %}
+        <div class="uploaded_images" >
+            {% for image in place.images %}
+                <a href="{{ app_place_image(image, 3840, 2160) }}"
+                   data-toggle="lightbox"
+                   data-gallery="track-images"
+                   data-footer="&lt;a target=&quot;_blank&quot; href=&quot;{{ app_place_image(image, 3840, 2160) }}#&quot;&gt;{{ 'View full size'|trans() }}&lt;/a&gt;"
+                >
+                    <img src="{{ app_place_image(image, 300, 300) }}">
+
+                </a>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <script>
+        (function() {
+            const map = L.map('map', {
+                    gestureHandling: true,
+                }
+            );
+
+            map.setView([
+                {{ place.lat }}, {{ place.lng }}
+            ], 15);
+            map.addControl(new MapControlFullScreen());
+
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            }).addTo(map);
+
+            let popup = L.marker([{{ place.lat }}, {{ place.lng }}]);
+            popup.addTo(map);
+        })();
+    </script>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+
+    <script>
+        {# upload element doesn't exists if user is not logged in #}
+        {% if app.user %}
+        jsImageUpload(
+            document.getElementById('file_input'),
+                {{ csrf_token('file_upload')|json_encode|raw }},
+                {{ path('app_place_new_image', {id: place.id})|json_encode|raw }},
+            {
+                'uploaded': {{ 'Uploaded'|json_encode|raw }}
+            }
+        );
+        {% endif %}
+
+        jQuery(document).on('click', '[data-toggle="lightbox"]', function(event) {
+            event.preventDefault();
+            jQuery(this).ekkoLightbox({
+                alwaysShowClose: true
+            });
+        });
+    </script>
+{% endblock %}

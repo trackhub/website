@@ -14,9 +14,6 @@ use Symfony\Component\Validator\Constraints\Regex;
 
 class Track extends AbstractType
 {
-    /**
-     * {@inheritdoc}
-     */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $track = null;
