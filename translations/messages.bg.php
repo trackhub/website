@@ -16,9 +16,13 @@ return [
     'public' => 'публичен',
     'unlisted' => 'скрит',
     'Add pictures' => 'Добави снимки',
+    'Send by' => 'Изпратена от',
 
+    /* TODO: Duplicate translations. */
     'form.place.type.generic' => 'Общ тип',
+    'Generic' => 'Общ тип',
     'form.place.type.drinking_fountain' => 'Чешма',
+    'Drinking fountain' => 'Чешма',
 
     'Latest tracks' => 'Най-нови следи',
     'Latest tracks by bicycle' => 'Най-нови следи с колело',
@@ -46,6 +50,10 @@ return [
     'Add place' => 'Добави място',
     'Latitude' => 'Географска ширина',
     'Longitude' => 'Географска дължина',
+
+    // icons
+    'View on map' => 'Покажи на картата',
+    'View details' => 'Покажи подробно',
 
     // user menu
     'logout' => 'изход',

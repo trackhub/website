@@ -8,6 +8,19 @@ use Symfony\Component\HttpFoundation\Request;
 
 class Place extends AbstractController
 {
+    public function index(Request $request)
+    {
+        $placeRepo = $this->getDoctrine()->getRepository(\App\Entity\Place::class);
+        $places = $placeRepo->findAll();
+
+        return $this->render(
+            'place/index.html.twig',
+            [
+                'places' => $places
+            ]
+        );
+    }
+
     public function new(Request $request)
     {
         $form = $this->createForm(\App\Form\Type\Place::class);
