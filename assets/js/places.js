@@ -18,7 +18,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
     jQuery('.icon-view-on-map').click(function () {
         // Get place id
-        const id = this.dataset.id;
         const lat = this.dataset.lat;
         const lng = this.dataset.lng;
 
