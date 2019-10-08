@@ -33,7 +33,7 @@ class PlaceSeeder extends AbstractSeed
     public function run()
     {
         /* Fetch users */
-        $users = $this->fetchAll("SELECT id FROM user ORDER BY RAND() LIMIT " . self::MAX_USERS );
+        $users = $this->fetchAll("SELECT id FROM user ORDER BY RAND() LIMIT " . self::MAX_USERS);
         $place = $this->table('place');
 
         $this->getOutput()->writeln("Generating " . $this->placeCount . " places", OutputInterface::VERBOSITY_VERY_VERBOSE);

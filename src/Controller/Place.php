@@ -17,16 +17,11 @@ class Place extends AbstractController
 
         /** @var QueryBuilder $qb */
         $qb = $repo->createQueryBuilder('g')->orderBy('g.createdAt', 'DESC');
-
-        $places = $paginator->paginate(
-            $qb,
-            $request->query->getInt('page', 1),
-            10);
+        $places = $paginator->paginate($qb, $request->query->getInt('page', 1), 10);
 
         return $this->render(
             'place/index.html.twig',
             [
-//                'places' => [],
                 'places' => $places,
             ]
         );
