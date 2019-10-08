@@ -87,8 +87,8 @@ app_user_download_personal_data:
   path: /{_locale}/user/personal-data-download
   controller: App\Controller\User::downloadPersonalData
 
-app_place:
-  path: /{_locale}/place
+app_places:
+  path: /{_locale}/places
   controller: App\Controller\Place::index
 
 app_place_new:
