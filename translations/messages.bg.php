@@ -18,6 +18,7 @@ return [
     'Add pictures' => 'Добави снимки',
     'Send by' => 'Изпратена от',
     'Added' => 'Добавена на',
+    'Places' => 'Места',
 
     /* @TODO: Duplicate translations. */
     'form.place.type.generic' => 'Общ тип',
