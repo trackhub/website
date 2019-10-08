@@ -1,6 +1,5 @@
 <?php
 
-
 namespace App\Twig;
 
 use App\Entity\Place;
@@ -22,7 +21,7 @@ class PlaceTypeFilter extends AbstractExtension
      * @param int $type
      * @return string|null
      */
-    public function getType(int $type) : ?string
+    public function getType(int $type): ?string
     {
         switch ($type) {
             case Place::TYPE_GENERIC:
