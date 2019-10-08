@@ -15,20 +15,23 @@
         <table class="table table-sm table-hover" id="placesTable">
             <thead>
             <tr>
-                <th scope="col">Date</th>
+                <th scope="col">#</th>
+                <th scope="col" class="d-none d-md-table-cell">{{ "Added"|trans}}</th>
                 <th scope="col">{{ "Name"|trans }}</th>
-                <th scope="col">{{ "Type"|trans }}</th>
-                <th scope="col">{{ "Send by"|trans }}</th>
+                <th scope="col" class="d-none d-md-table-cell">{{ "Type"|trans }}</th>
+                <th scope="col" class="d-none d-md-table-cell">{{ "Send by"|trans }}</th>
                 <th></th>
             </tr>
             </thead>
             <tbody>
             {% for place in places %}
                 <tr>
-                    <th scope="row">{{ place.createdAt|date("d M Y") }}</th>
+
+                    <th scope="row">{{ loop.index + (places.itemNumberPerPage * (places.currentPageNumber - 1)) }}</th>
+                    <td class="d-none d-md-table-cell">{{ place.createdAt|date("d M Y") }}</td>
                     <td>{{ place.name(app.request.locale) }}</td>
-                    <td>{{ place.type|app_place_type|trans }}</td>
-                    <td>{{ place.sendBy }}</td>
+                    <td class="d-none d-md-table-cell">{{ place.type|app_place_type|trans }}</td>
+                    <td class="d-none d-md-table-cell">{{ place.sendBy }}</td>
                     <th>
                         <span class="clickable-icon icon-view-on-map"
                               data-lat="{{ place.lat }}"

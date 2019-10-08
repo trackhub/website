@@ -17,8 +17,9 @@ return [
     'unlisted' => 'скрит',
     'Add pictures' => 'Добави снимки',
     'Send by' => 'Изпратена от',
+    'Added' => 'Добавена на',
 
-    /* TODO: Duplicate translations. */
+    /* @TODO: Duplicate translations. */
     'form.place.type.generic' => 'Общ тип',
     'Generic' => 'Общ тип',
     'form.place.type.drinking_fountain' => 'Чешма',
