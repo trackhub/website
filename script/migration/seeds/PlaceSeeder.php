@@ -45,8 +45,8 @@ class PlaceSeeder extends AbstractSeed
                 'id' => uniqid(),
                 'name_en' => 'Dummy place ' . $i,
                 'name_bg' => 'Фалшиво място ' . $i,
-                'lat' => mt_rand(-90 * 1000000, 90 * 1000000) / 1000000,
-                'lng' => mt_rand(-180 * 1000000, 180 * 1000000) / 1000000,
+                'lat' => mt_rand(41 * 1000000, 43 * 1000000) / 1000000,
+                'lng' => mt_rand(24 * 1000000, 25 * 1000000) / 1000000,
                 'type' => random_int(0, 1),
                 'created_at' => date('Y-m-d H:i:s', strtotime(sprintf("-%d hours", $i))),
                 'send_by_id' => $user['id']
