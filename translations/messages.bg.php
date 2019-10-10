@@ -1,5 +1,10 @@
 <?php
 
+$duplicates = [
+    'Generic' => 'Общ тип',
+    'Drinking fountain' => 'Чешма',
+];
+
 return [
     'Add track' => 'Добави следа',
     'File' => 'Файл',
@@ -20,11 +25,10 @@ return [
     'Added' => 'Добавена на',
     'Places' => 'Места',
 
-    /* @TODO: Duplicate translations. */
-    'form.place.type.generic' => 'Общ тип',
-    'Generic' => 'Общ тип',
-    'form.place.type.drinking_fountain' => 'Чешма',
-    'Drinking fountain' => 'Чешма',
+    'form.place.type.generic' => $duplicates['Generic'],
+    'Generic' => $duplicates['Generic'],
+    'form.place.type.drinking_fountain' => $duplicates['Drinking fountain'],
+    'Drinking fountain' => $duplicates['Drinking fountain'],
 
     'Latest tracks' => 'Най-нови следи',
     'Latest tracks by bicycle' => 'Най-нови следи с колело',
