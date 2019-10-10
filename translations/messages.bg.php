@@ -1,5 +1,10 @@
 <?php
 
+$duplicates = [
+    'Generic' => 'Общ тип',
+    'Drinking fountain' => 'Чешма',
+];
+
 return [
     'Add track' => 'Добави следа',
     'File' => 'Файл',
@@ -16,9 +21,14 @@ return [
     'public' => 'публичен',
     'unlisted' => 'скрит',
     'Add pictures' => 'Добави снимки',
+    'Send by' => 'Изпратена от',
+    'Added' => 'Добавена на',
+    'Places' => 'Места',
 
-    'form.place.type.generic' => 'Общ тип',
-    'form.place.type.drinking_fountain' => 'Чешма',
+    'form.place.type.generic' => $duplicates['Generic'],
+    'Generic' => $duplicates['Generic'],
+    'form.place.type.drinking_fountain' => $duplicates['Drinking fountain'],
+    'Drinking fountain' => $duplicates['Drinking fountain'],
 
     'Latest tracks' => 'Най-нови следи',
     'Latest tracks by bicycle' => 'Най-нови следи с колело',
@@ -46,6 +56,10 @@ return [
     'Add place' => 'Добави място',
     'Latitude' => 'Географска ширина',
     'Longitude' => 'Географска дължина',
+
+    // icons
+    'View on map' => 'Покажи на картата',
+    'View details' => 'Покажи подробно',
 
     // user menu
     'logout' => 'изход',

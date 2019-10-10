@@ -15,5 +15,6 @@ echo "Web server is UP!"
 
 docker exec -it $(docker ps --format '{{.Names}}' | grep "web") /bin/bash -c "
     export TRACK_SEEDER_TRACK_COUNT=4 &&
+    export PLACE_SEEDER_PLACE_COUNT=5 &&
     cd script/migration && ./vendor/bin/phinx seed:run
 "

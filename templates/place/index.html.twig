@@ -1,0 +1,57 @@
+{% extends "base.html.twig" %}
+
+{% block content %}
+
+    <!--- Initialize map --->
+    <div style="height: 50vh; min-height: 300px; width: 100%;" id="map"></div>
+
+    <br><br>
+
+    {% if places.getTotalItemCount == 0 %}
+        <h1>There are not places yet</h1>
+        <br>
+        Be the first adding a place.
+    {% else %}
+        <table class="table table-sm table-hover" id="placesTable">
+            <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col" class="d-none d-md-table-cell">{{ "Added"|trans}}</th>
+                <th scope="col">{{ "Name"|trans }}</th>
+                <th scope="col" class="d-none d-md-table-cell">{{ "Type"|trans }}</th>
+                <th scope="col" class="d-none d-md-table-cell">{{ "Send by"|trans }}</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for place in places %}
+                <tr>
+
+                    <th scope="row">{{ loop.index + (places.itemNumberPerPage * (places.currentPageNumber - 1)) }}</th>
+                    <td class="d-none d-md-table-cell">{{ place.createdAt|date("d M Y") }}</td>
+                    <td>{{ place.name(app.request.locale) }}</td>
+                    <td class="d-none d-md-table-cell">{{ place.type|app_place_type|trans }}</td>
+                    <td class="d-none d-md-table-cell">{{ place.sendBy }}</td>
+                    <th>
+                        <span class="clickable-icon icon-view-on-map"
+                              data-lat="{{ place.lat }}"
+                              data-lng="{{ place.lng }}">
+                            <i class="fas fa-eye" title="{{ "View on map"|trans }}"></i>
+                        </span>
+                        <a href="{{ path('app_place_view', { id: place.id }) }}" class="clickable-icon">
+                            <i class="fas fa-directions" title="{{ "View details"|trans }}"></i>
+                        </a>
+                    </th>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        {{ knp_pagination_render(places) }}
+    {% endif %}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('places') }}
+{% endblock %}
+

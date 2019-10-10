@@ -2,12 +2,31 @@
 
 namespace App\Controller;
 
+use Doctrine\ORM\QueryBuilder;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\Request;
 
 class Place extends AbstractController
 {
+
+    public function index(Request $request, PaginatorInterface $paginator)
+    {
+        $repo = $this->getDoctrine()->getRepository(\App\Entity\Place::class);
+
+        /** @var QueryBuilder $qb */
+        $qb = $repo->createQueryBuilder('g')->orderBy('g.createdAt', 'DESC');
+        $places = $paginator->paginate($qb, $request->query->getInt('page', 1), 10);
+
+        return $this->render(
+            'place/index.html.twig',
+            [
+                'places' => $places,
+            ]
+        );
+    }
+
     public function new(Request $request)
     {
         $form = $this->createForm(\App\Form\Type\Place::class);
