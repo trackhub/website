@@ -94,3 +94,13 @@ services:
             - '%place_images_thumbnails_directory_url%'
         tags:
             - { name: twig.extension}
+
+    App\Track\SinglePointChecker\PointChecker:
+        arguments:
+            - 60
+
+    App\Track\Processor:
+        calls:
+            - method: addSinglePointChecker
+              arguments:
+                  - '@App\Track\SinglePointChecker\PointChecker'

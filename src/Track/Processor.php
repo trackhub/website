@@ -9,6 +9,26 @@ use App\Entity\Track\Version;
 
 class Processor
 {
+    /**
+     * @var SinglePointChecker\PointCheckerInterface[]
+     */
+    private $singlePointCheckers = [];
+
+    public function addSinglePointChecker(SinglePointChecker\PointCheckerInterface $checker) {
+        $this->singlePointCheckers[] = $checker;
+    }
+
+    private function isPointReal($distance, $elevation): bool
+    {
+        foreach ($this->singlePointCheckers as $singlePointChecker) {
+            if (!$singlePointChecker->isReal($distance, $elevation)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     public function process(string $source, Version $version)
     {
         $version->getPoints()->clear();
@@ -31,6 +51,7 @@ class Processor
         foreach ($xml->trk as $track) {
             foreach ($track->trkseg as $trackSegment) {
                 $previousElevation = null;
+                $distanceAddedFromPreviousRealPoint = 0;
                 foreach ($trackSegment->trkpt as $trackPoint) {
                     $attributes = $trackPoint->attributes();
 
@@ -77,9 +98,23 @@ class Processor
 
                         if ($previousElevation && $point->getElevation()) {
                             if ($point->getElevation() > $previousElevation) {
-                                $positiveElevation += $point->getElevation() - $previousElevation;
+                                $elevationChange = $point->getElevation() - $previousElevation;
+                                if ($this->isPointReal($distance + $distanceAddedFromPreviousRealPoint, $elevationChange)) {
+                                    $positiveElevation += $elevationChange;
+                                    $distanceAddedFromPreviousRealPoint = 0;
+                                } else {
+                                    $point->setElevation();
+                                    $distanceAddedFromPreviousRealPoint += $distance;
+                                }
                             } else {
-                                $negativeElevation += $previousElevation - $point->getElevation();
+                                $elevationChange = $previousElevation - $point->getElevation();
+                                if ($this->isPointReal($distance + $distanceAddedFromPreviousRealPoint, $elevationChange)) {
+                                    $negativeElevation += $elevationChange;
+                                    $distanceAddedFromPreviousRealPoint = 0;
+                                } else {
+                                    $point->setElevation();
+                                    $distanceAddedFromPreviousRealPoint += $distance;
+                                }
                             }
                         }
                     }
@@ -209,12 +244,19 @@ class Processor
         $collectionsCount = count($pointCollection);
 
         foreach ($labels as $labelIndex => $labelDistance) {
+            $lastKnownElevation = null;
             for ($q = 0; $q < $collectionsCount; $q++) {
                 $currentPoint = current($pointCollection[$q]);
+                if ($currentPoint->getElevation()) {
+                    $lastKnownElevation = $currentPoint->getElevation();
+                }
 
                 // case: skip point
                 while ($currentPoint && $currentPoint->getDistance() < $labelDistance) {
                     $currentPoint = next($pointCollection[$q]);
+                    if ($currentPoint->getElevation()) {
+                        $lastKnownElevation = $currentPoint->getElevation();
+                    }
                 }
 
                 if ($currentPoint === false) {
@@ -225,13 +267,13 @@ class Processor
                 if (isset($labels[$labelIndex + 1])) {
                     $nextLabelDistance = $labels[$labelIndex + 1];
                     if ($nextLabelDistance < $currentPoint->getDistance()) {
-                        $return[$q][] = $currentPoint->getElevation();
+                        $return[$q][] = $lastKnownElevation;
                         continue;
                     }
                 }
 
 
-                $return[$q][] = $this->getPointElevation($currentPoint, $pointCollection[$q]);
+                $return[$q][] = $this->getPointElevation($currentPoint, $pointCollection[$q], $lastKnownElevation);
                 next($pointCollection[$q]);
             }
         }
@@ -250,7 +292,7 @@ class Processor
         }
 
         reset($pointCollection);
-        while ($point === current($pointCollection)) {
+        while ($point !== current($pointCollection)) {
             next($pointCollection);
         }
         next($pointCollection);

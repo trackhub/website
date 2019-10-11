@@ -28,7 +28,7 @@ use Tekstove\UrlVideoParser\Youtube\YoutubeParser;
 
 class Track extends AbstractController
 {
-    public function new(Request $request, LoggerInterface $logger, SlugRepository $slugRepo)
+    public function new(Request $request, LoggerInterface $logger, SlugRepository $slugRepo, Processor $processor)
     {
         $form = $this->createForm(\App\Form\Type\Track::class);
         $form->add('submit', SubmitType::class);
@@ -42,7 +42,6 @@ class Track extends AbstractController
             $fileContent = file_get_contents($fileData->getRealPath());
             $track = new \App\Entity\Track($this->getUser());
             // we should have service for gpx processing
-            $processor = new Processor();
             $trackVersion = new Version($this->getUser());
             try {
                 $processor->process($fileContent, $trackVersion);
@@ -221,7 +220,7 @@ class Track extends AbstractController
         );
     }
 
-    public function newVersion(Request $request, string $id)
+    public function newVersion(Request $request, Processor $processor, string $id)
     {
         $track = $this->getDoctrine()->getRepository(\App\Entity\Track::class)->findOneBy(['id' => $id]);
         $this->denyAccessUnlessGranted('edit', $track);
@@ -242,7 +241,6 @@ class Track extends AbstractController
              */
 
             // we should have service for gpx processing
-            $processor = new Processor();
             $trackVersion = new Version($this->getUser());
             $processor->process($fileContent, $trackVersion);
 
@@ -355,7 +353,7 @@ class Track extends AbstractController
         ]);
     }
 
-    public function view($id, TrackRepository $repo, Request $request)
+    public function view($id, TrackRepository $repo, Request $request, Processor $processor)
     {
         $gps = $repo->findByIdOrSlug($id);
 
@@ -370,8 +368,6 @@ class Track extends AbstractController
                 ['id' => $gps->getSlug()],
             );
         }
-
-        $processor = new Processor();
 
         $pointsCollection = [];
 
