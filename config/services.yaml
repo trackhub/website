@@ -97,8 +97,7 @@ services:
 
     App\Track\SinglePointChecker\PointChecker:
         arguments:
-            - 60
-
+            - 40
     App\Track\Processor:
         calls:
             - method: addSinglePointChecker
