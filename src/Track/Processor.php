@@ -12,15 +12,15 @@ class Processor
     /**
      * @var TwoPointsChecker\PointCheckerInterface[]
      */
-    private $singlePointCheckers = [];
+    private $twoPointsCheckers = [];
 
     public function addTwoPointsChecker(TwoPointsChecker\PointCheckerInterface $checker) {
-        $this->singlePointCheckers[] = $checker;
+        $this->twoPointsCheckers[] = $checker;
     }
 
     private function isPointReal(Point $pointA, Point $pointB): bool
     {
-        foreach ($this->singlePointCheckers as $singlePointChecker) {
+        foreach ($this->twoPointsCheckers as $singlePointChecker) {
             if (!$singlePointChecker->isReal($pointA, $pointB)) {
                 return false;
             }
