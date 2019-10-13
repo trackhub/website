@@ -10,18 +10,18 @@ use App\Entity\Track\Version;
 class Processor
 {
     /**
-     * @var SinglePointChecker\PointCheckerInterface[]
+     * @var TwoPointsChecker\PointCheckerInterface[]
      */
     private $singlePointCheckers = [];
 
-    public function addSinglePointChecker(SinglePointChecker\PointCheckerInterface $checker) {
+    public function addTwoPointsChecker(TwoPointsChecker\PointCheckerInterface $checker) {
         $this->singlePointCheckers[] = $checker;
     }
 
-    private function isPointReal($distance, $elevation): bool
+    private function isPointReal(Point $pointA, Point $pointB): bool
     {
         foreach ($this->singlePointCheckers as $singlePointChecker) {
-            if (!$singlePointChecker->isReal($distance, $elevation)) {
+            if (!$singlePointChecker->isReal($pointA, $pointB)) {
                 return false;
             }
         }
@@ -51,7 +51,7 @@ class Processor
         foreach ($xml->trk as $track) {
             foreach ($track->trkseg as $trackSegment) {
                 $previousElevation = null;
-                $distanceAddedFromPreviousRealPoint = 0;
+                $previousRealPoint = null;
                 foreach ($trackSegment->trkpt as $trackPoint) {
                     $attributes = $trackPoint->attributes();
 
@@ -93,27 +93,25 @@ class Processor
                     }
 
                     if ($previousPoint) {
-                        $distance = $this->calculateDistance($point, $previousPoint);
+                        $distance = $point->distance($previousPoint);
                         $point->setDistance($distance + $previousPoint->getDistance());
 
                         if ($previousElevation && $point->getElevation()) {
                             if ($point->getElevation() > $previousElevation) {
                                 $elevationChange = $point->getElevation() - $previousElevation;
-                                if ($this->isPointReal($distance + $distanceAddedFromPreviousRealPoint, $elevationChange)) {
+                                if ($previousRealPoint === null || $this->isPointReal($previousRealPoint, $point)) {
                                     $positiveElevation += $elevationChange;
-                                    $distanceAddedFromPreviousRealPoint = 0;
+                                    $previousRealPoint = $point;
                                 } else {
                                     $point->setElevation();
-                                    $distanceAddedFromPreviousRealPoint += $distance;
                                 }
                             } else {
                                 $elevationChange = $previousElevation - $point->getElevation();
-                                if ($this->isPointReal($distance + $distanceAddedFromPreviousRealPoint, $elevationChange)) {
+                                if ($previousRealPoint === null || $this->isPointReal($previousRealPoint, $point)) {
                                     $negativeElevation += $elevationChange;
-                                    $distanceAddedFromPreviousRealPoint = 0;
+                                    $previousRealPoint = $point;
                                 } else {
                                     $point->setElevation();
-                                    $distanceAddedFromPreviousRealPoint += $distance;
                                 }
                             }
                         }
@@ -148,22 +146,6 @@ class Processor
             }
             $version->addWayPoint($wayPoint);
         }
-    }
-
-    private function calculateDistance(Point $a, Point $b)
-    {
-        $r = 6371000;
-
-        $dLan = deg2rad($b->getLat() - $a->getLat());
-        $dLng = deg2rad($b->getLng() - $a->getLng());
-
-        $lat1 = deg2rad($a->getLat());
-        $lat2 = deg2rad($b->getLat());
-
-        $a = (sin($dLan / 2) ** 2) + (sin($dLng / 2) ** 2) * cos($lat1) * cos($lat2);
-        $c = 2 * atan2(sqrt($a), sqrt(1 - $a));
-
-        return $c * $r;
     }
 
     /**

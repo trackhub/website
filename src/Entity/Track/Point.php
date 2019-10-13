@@ -3,12 +3,13 @@
 namespace App\Entity\Track;
 
 use App\Entity\Point\ElevationPointTrait;
+use App\Entity\Point\PointInterface;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity
  */
-class Point
+class Point implements PointInterface
 {
     use ElevationPointTrait;
 
