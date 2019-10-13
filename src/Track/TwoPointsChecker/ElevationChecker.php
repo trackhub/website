@@ -19,8 +19,7 @@ class ElevationChecker implements PointCheckerInterface
     public function isReal(Point $pointA, Point $pointB): bool
     {
         $distance = $pointA->distance($pointB);
-        $elevation = max($pointA->getElevation(), $pointB->getElevation()) - min($pointA->getElevation(), $pointB->getElevation());
-        $elevation = abs($elevation);
+        $elevation = abs($pointA->getElevation() - $pointB->getElevation());
 
         $atan = atan2($elevation, $distance);
         $angle = rad2deg($atan);
