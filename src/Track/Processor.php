@@ -14,7 +14,8 @@ class Processor
      */
     private $twoPointsCheckers = [];
 
-    public function addTwoPointsChecker(TwoPointsChecker\PointCheckerInterface $checker) {
+    public function addTwoPointsChecker(TwoPointsChecker\PointCheckerInterface $checker)
+    {
         $this->twoPointsCheckers[] = $checker;
     }
 
