@@ -88,9 +88,20 @@ services:
             - '%track_images_thumbnails_directory_url%'
         tags:
             - { name: twig.extension}
+
     App\Twig\PlaceImageExtension:
         class: App\Twig\PlaceImageExtension
         arguments:
             - '%place_images_thumbnails_directory_url%'
         tags:
             - { name: twig.extension}
+
+    App\Track\TwoPointsChecker\ElevationChecker:
+        arguments:
+            - 40
+
+    App\Track\Processor:
+        calls:
+            - method: addTwoPointsChecker
+              arguments:
+                  - '@App\Track\TwoPointsChecker\ElevationChecker'

@@ -15,15 +15,18 @@ class ReprocessGpsData extends Command
 
     private $em;
 
-    public function __construct(EntityManagerInterface $em)
+    private $processor;
+
+    public function __construct(EntityManagerInterface $em, Processor $processor)
     {
         $this->em = $em;
+        $this->processor = $processor;
         parent::__construct();
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $processor = new Processor();
+        $processor = $this->processor;
         // @TODO use query and fetch tracks 1 by 1
         $repo = $this->em->getRepository(Track::class);
         $trackCollection = $repo->findAll();
