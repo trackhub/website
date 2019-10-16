@@ -2,8 +2,11 @@
 @import "~ekko-lightbox/dist/ekko-lightbox.css";
 @import "~@fortawesome/fontawesome-free/scss/fontawesome.scss";
 @import "~@fortawesome/fontawesome-free/scss/solid.scss";
+@import "~@fortawesome/fontawesome-free/scss/brands.scss";
 
+@import "difficulty";
+@import "footer";
+@import "icons";
 @import "rating";
 @import "uploaded_image.css";
-@import "difficulty";
-@import "icons";
+
