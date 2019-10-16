@@ -230,6 +230,11 @@ class Processor
             $lastKnownElevation = null;
             for ($q = 0; $q < $collectionsCount; $q++) {
                 $currentPoint = current($pointCollection[$q]);
+
+                if ($currentPoint === false) {
+                    continue;
+                }
+
                 if ($currentPoint->getElevation()) {
                     $lastKnownElevation = $currentPoint->getElevation();
                 }
@@ -237,6 +242,10 @@ class Processor
                 // case: skip point
                 while ($currentPoint && $currentPoint->getDistance() < $labelDistance) {
                     $currentPoint = next($pointCollection[$q]);
+                    if ($currentPoint === false) {
+                        break;
+                    }
+
                     if ($currentPoint->getElevation()) {
                         $lastKnownElevation = $currentPoint->getElevation();
                     }
