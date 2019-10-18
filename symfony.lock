@@ -305,6 +305,9 @@
             "ref": "e3868d2f4a5104f19f844fe551099a00c6562527"
         }
     },
+    "symfony/contracts": {
+        "version": "v1.1.6"
+    },
     "symfony/debug": {
         "version": "v4.1.6"
     },
