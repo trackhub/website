@@ -2,6 +2,8 @@
 
 namespace App\Tests\Controller;
 
+use App\Tests\functionalTests\test\Helper\UserGenerator;
+use FOS\UserBundle\Util\TokenGenerator;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class TrackTest extends WebTestCase

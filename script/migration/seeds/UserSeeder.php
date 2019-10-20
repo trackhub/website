@@ -8,26 +8,17 @@ class UserSeeder extends AbstractSeed
     /* How many users to generate */
     private const USER_COUNT = 30;
 
+    public function getDependencies()
+    {
+        return [
+            'CleanerSeeder',
+        ];
+    }
+
     public function run()
     {
         $faker = Faker\Factory::create();
         $data = [];
-
-        /* Delete previous data */
-        $this->query("UPDATE track_file SET version_id = NULL");
-        $this->query("UPDATE version SET file_id = NULL");
-        $this->query("DELETE FROM track_slug");
-        $this->query("DELETE FROM track_file");
-        $this->query("DELETE FROM track_image");
-        $this->query("DELETE FROM place_image");
-        $this->query("DELETE FROM version_waypoint");
-        $this->query("DELETE FROM point");
-        $this->query("DELETE FROM optimized_point");
-        $this->query("DELETE FROM version");
-        $this->query("DELETE FROM track");
-        $this->query("DELETE FROM place");
-        $this->query("DELETE FROM user");
-        $this->query("ALTER TABLE user AUTO_INCREMENT = 1");
 
         for ($i = 0; $i < self::USER_COUNT; $i++) {
             $username = $faker->firstName . ' ' . $faker->lastName;

@@ -4,7 +4,7 @@
          xsi:noNamespaceSchemaLocation="http://schema.phpunit.de/6.5/phpunit.xsd"
          failOnWarning="true"
          backupGlobals="false"
-         bootstrap="./../../config/bootstrap.php"
+         bootstrap="./bootstrap.php"
 >
     <testsuites>
         <testsuite name="My Test Suite">
