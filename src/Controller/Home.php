@@ -79,7 +79,10 @@ class Home extends AbstractController
 
         $count = current($data);
 
-        if ($count > $size) {
+        /**
+         * If 'size' is null always return STATUS_OK
+         */
+        if ($size !== null && $count > $size) {
             $status = ApiResponseInterface::STATUS_TOO_MANY_ROWS_FOUND;
         } else {
             $status = ApiResponseInterface::STATUS_OK;
@@ -137,7 +140,10 @@ class Home extends AbstractController
 
         $count = current($data);
 
-        if ($count > $size) {
+        /**
+         * If 'size' is null always return STATUS_OK
+         */
+        if ($size !== null && $count > $size) {
             $status = ApiResponseInterface::STATUS_TOO_MANY_ROWS_FOUND;
         } else {
             $status = ApiResponseInterface::STATUS_OK;
