@@ -180,6 +180,12 @@
                     }
 
                     const placesData = data.data;
+                    let placesMarkers = L.markerClusterGroup({
+                        animateAddingMarkers: true,
+                        chunkedLoading: true
+                    });
+
+                    console.log(placesData.length);
 
                     for (let i = 0; i < placesData.length; i++) {
                         const id = placesData[i].id;
@@ -201,10 +207,10 @@
                             .setLatLng([placesData[i].lat, placesData[i].lng])
                             .setContent(ahrefPop.outerHTML);
                         marker.bindPopup(popup);
-                        marker.addTo(map);
-
+                        placesMarkers.addLayer(marker);
                         loadedPlaces[id] = placesData[i];
                     }
+                    map.addLayer(placesMarkers);
 
                     if (responseStatus == 2) {
                         moveEndListener();
