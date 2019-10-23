@@ -37,16 +37,16 @@ class Home extends AbstractController
         );
     }
 
-    public function find($neLat, $neLon, $swLat, $swLon, Request $request, TrackRepository $repo)
+    public function find($neLat, $neLon, $swLat, $swLon, $size, Request $request, TrackRepository $repo)
     {
         $skipTracks = $request->request->get('skipTracks', '');
         $skipTracksAsArray = explode(',', $skipTracks);
 
-        $tracks = $this->findTracks($neLat, $neLon, $swLat, $swLon, $repo, $skipTracksAsArray, $request->getLocale());
+        $tracks = $this->findTracks($neLat, $neLon, $swLat, $swLon, $size, $repo, $skipTracksAsArray, $request->getLocale());
 
         $skipTracks = $request->request->get('skipPlaces', '');
         $skipPlacesAsArray = explode(',', $skipTracks);
-        $places = $this->findPlaces($neLat, $neLon, $swLat, $swLon, $skipPlacesAsArray, $request->getLocale());
+        $places = $this->findPlaces($neLat, $neLon, $swLat, $swLon, $size, $skipPlacesAsArray, $request->getLocale());
 
         return new Response(
             json_encode([
@@ -66,7 +66,7 @@ class Home extends AbstractController
         );
     }
 
-    private function findTracks($neLat, $neLon, $swLat, $swLon, $repo, $skipTracks, $locale)
+    private function findTracks($neLat, $neLon, $swLat, $swLon, $size, $repo, $skipTracks, $locale)
     {
         $qb = $repo->createQueryBuilder('g');
 
@@ -79,7 +79,7 @@ class Home extends AbstractController
 
         $count = current($data);
 
-        if ($count > 10) {
+        if ($count > $size) {
             $status = ApiResponseInterface::STATUS_TOO_MANY_ROWS_FOUND;
         } else {
             $status = ApiResponseInterface::STATUS_OK;
@@ -93,7 +93,7 @@ class Home extends AbstractController
         /* @var $qResult Track[] */
         $qResult = $qb
             ->select('g')
-            ->setMaxResults(10)
+            ->setMaxResults($size)
             ->getQuery()
             ->getResult();
 
@@ -123,7 +123,7 @@ class Home extends AbstractController
         ];
     }
 
-    private function findPlaces($neLat, $neLon, $swLat, $swLon, $skipTracks, $locale)
+    private function findPlaces($neLat, $neLon, $swLat, $swLon, $size, $skipTracks, $locale)
     {
         $repo = $this->getDoctrine()->getRepository(\App\Entity\Place::class);
 
@@ -137,7 +137,7 @@ class Home extends AbstractController
 
         $count = current($data);
 
-        if ($count > 10) {
+        if ($count > $size) {
             $status = ApiResponseInterface::STATUS_TOO_MANY_ROWS_FOUND;
         } else {
             $status = ApiResponseInterface::STATUS_OK;
@@ -150,7 +150,7 @@ class Home extends AbstractController
         /* @var $qResult \App\Entity\Place[] */
         $qResult = $qb
             ->select('g')
-            ->setMaxResults(10)
+            ->setMaxResults($size)
             ->getQuery()
             ->getResult();
 
