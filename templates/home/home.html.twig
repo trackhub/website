@@ -96,6 +96,11 @@
         var loadedTracks = {};
         var loadedPlaces = {};
 
+        let placesMarkers = L.markerClusterGroup({
+            animateAddingMarkers: true,
+            chunkedLoading: true
+        });
+
         var moveEndListener = function() {
             var ajax = new XMLHttpRequest();
             ajax.onreadystatechange = function() {
@@ -180,12 +185,6 @@
                     }
 
                     const placesData = data.data;
-                    let placesMarkers = L.markerClusterGroup({
-                        animateAddingMarkers: true,
-                        chunkedLoading: true
-                    });
-
-                    console.log(placesData.length);
 
                     for (let i = 0; i < placesData.length; i++) {
                         const id = placesData[i].id;
@@ -211,6 +210,7 @@
                         loadedPlaces[id] = placesData[i];
                     }
                     map.addLayer(placesMarkers);
+                    placesMarkers.refreshClusters();
 
                     if (responseStatus == 2) {
                         moveEndListener();
