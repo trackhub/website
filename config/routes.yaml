@@ -37,7 +37,9 @@ gps-rate:
   controller: App\Controller\Track::rate
 
 gps-list:
-  path: /{_locale}/gps/list/{neLat}/{neLon}/{swLat}/{swLon}
+  path: /{_locale}/gps/list/{neLat}/{neLon}/{swLat}/{swLon}/{size}
+  defaults:
+    size: 10
   controller: App\Controller\Home::find
 
 app_track_edit:
