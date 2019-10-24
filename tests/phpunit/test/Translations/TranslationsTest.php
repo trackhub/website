@@ -44,19 +44,6 @@ class TranslationsTest extends TestCase
     }
 
     /**
-     * Test if there is duplicate values, that not in $duplicates array
-     */
-    public function testDuplicateValues(): void
-    {
-        foreach (self::FILES as $file) {
-            $trans = $this->load($file);
-
-            $duplicates = array_diff_assoc($trans['translations'], array_unique($trans['translations']));
-            $this->assertEquals(0, count(array_diff($duplicates, $trans['allowed'])));
-        }
-    }
-
-    /**
      * Test for duplicate keys
      */
     public function testDuplicateKeys(): void
