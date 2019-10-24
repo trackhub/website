@@ -31,6 +31,7 @@
         "phpunit/phpunit": "^8.1",
         "symfony/debug-bundle": "*",
         "symfony/maker-bundle": "^1.12",
+        "symfony/process": "*",
         "symfony/profiler-pack": "^1.0",
         "symfony/var-dumper": "*"
     },

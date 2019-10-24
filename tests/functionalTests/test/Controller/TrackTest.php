@@ -3,11 +3,16 @@
 namespace App\Tests\Controller;
 
 use App\Tests\functionalTests\test\Helper\UserGenerator;
-use FOS\UserBundle\Util\TokenGenerator;
-use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use App\Test\WebTestCase;
 
 class TrackTest extends WebTestCase
 {
+    public function setUp(): void
+    {
+        parent::setUp();
+        $this->seedTestCase('One');
+    }
+
     public function testViewTrack()
     {
         $client = static::createClient();

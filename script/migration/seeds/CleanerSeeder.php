@@ -1,5 +1,6 @@
 <?php
 
+use Phinx\Seed\AbstractSeed;
 
 class CleanerSeeder extends AbstractSeed
 {
