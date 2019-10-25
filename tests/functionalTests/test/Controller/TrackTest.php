@@ -13,11 +13,54 @@ class TrackTest extends WebTestCase
         $this->seedTestCase('One');
     }
 
-    public function testViewTrack()
+    public function trackViewDataProvider()
+    {
+        return [
+            [
+                '/en/gps/view/track-one',
+
+            ],
+            [
+                '/en/gps/view/track-two',
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider trackViewDataProvider
+     */
+    public function testViewTrack($url)
     {
         $client = static::createClient();
 
-        $client->request('GET', '/en/gps/view/24h_2019');
+        $client->request('GET', $url);
+
+        $this->assertEquals(
+            200,
+            $client->getResponse()->getStatusCode(),
+        );
+    }
+
+    public function trackDownloadDataProvider()
+    {
+        return [
+            [
+                '/en/gps/download/track-one',
+            ],
+            [
+                '/en/gps/download/track-two',
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider trackDownloadDataProvider
+     */
+    public function testDownloadLink($url)
+    {
+        $client = static::createClient();
+
+        $client->request('GET', $url);
 
         $this->assertEquals(200, $client->getResponse()->getStatusCode());
     }
