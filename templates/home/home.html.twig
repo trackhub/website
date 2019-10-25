@@ -96,6 +96,11 @@
         var loadedTracks = {};
         var loadedPlaces = {};
 
+        let placesMarkers = L.markerClusterGroup({
+            animateAddingMarkers: true,
+            chunkedLoading: true
+        });
+
         var moveEndListener = function() {
             var ajax = new XMLHttpRequest();
             ajax.onreadystatechange = function() {
@@ -201,10 +206,11 @@
                             .setLatLng([placesData[i].lat, placesData[i].lng])
                             .setContent(ahrefPop.outerHTML);
                         marker.bindPopup(popup);
-                        marker.addTo(map);
-
+                        placesMarkers.addLayer(marker);
                         loadedPlaces[id] = placesData[i];
                     }
+                    map.addLayer(placesMarkers);
+                    placesMarkers.refreshClusters();
 
                     if (responseStatus == 2) {
                         moveEndListener();
