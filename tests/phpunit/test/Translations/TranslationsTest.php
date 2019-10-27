@@ -3,14 +3,15 @@
 namespace App\Tests\test\Translations;
 
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\Translation\Loader\YamlFileLoader;
 
 class TranslationsTest extends TestCase
 {
 
     private const FILES = [
-        'messages.bg.php',
-        'messages.en.php',
-        'validators.bg.php'
+        'messages.bg.yaml',
+        'messages.en.yaml',
+        'validators.bg.yaml'
     ];
 
     /**
@@ -19,8 +20,13 @@ class TranslationsTest extends TestCase
      */
     public function testArrangement(): void
     {
+        $parser = new YamlFileLoader();
+
+
         foreach (self::FILES as $file) {
-            $trans = require 'translations/' . $file;
+            [$domain, $locale] = explode('.', $file);
+
+            $trans = $parser->load('translations/' . $file, $locale)->all($domain);
 
             $sorted = $trans;
             ksort($sorted);
