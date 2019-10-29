@@ -10,7 +10,7 @@ class TrackTest extends WebTestCase
     public function setUp(): void
     {
         parent::setUp();
-        $this->seedTestCase('One');
+        $this->seedTestCase('User', 'TestCaseOne');
     }
 
     public function trackViewDataProvider()

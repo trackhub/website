@@ -131,11 +131,11 @@ class TrackSeeder extends AbstractSeed
         }
     }
 
-    protected function generateGpxFile(int $pintsCount, float $latStart, float $lonStart, float $elevStart): string
+    protected function generateGpxFile(int $pointsCount, float $latStart, float $lonStart, float $elevStart): string
     {
         $gpxGenerator = new GpxGenerator();
         $gpxGenerator->elevationStart = $elevStart;
-        $gpxGenerator->pointsCount = $pintsCount;
+        $gpxGenerator->pointsCount = $pointsCount;
 
         return $gpxGenerator->generate($latStart, $lonStart);
 

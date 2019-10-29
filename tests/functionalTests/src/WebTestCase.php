@@ -7,10 +7,16 @@ use Symfony\Component\Process\Exception\ProcessFailedException;
 
 class WebTestCase extends Base
 {
-    public function seedTestCase($case)
+    public function seedTestCase(... $cases)
     {
+        foreach($cases as &$case) {
+            $case = '-s ' . $case . 'Seeder';
+        }
+
+        $seedersAsString = implode(' ', $cases);
+
         $seeder = new \Symfony\Component\Process\Process(
-            './vendor/bin/phinx seed:run -s CleanerSeeder -s UserSeeder -s TestCase' . $case . 'Seeder',
+            './vendor/bin/phinx seed:run -s CleanerSeeder ' . $seedersAsString,
             'script/migration',
         );
 
