@@ -1,7 +1,5 @@
 <?php
 
-require_once __DIR__ . '/../src/GpxGenerator.php';
-
 use Phinx\Seed\AbstractSeed;
 
 class TestCaseOneSeeder extends AbstractSeed
