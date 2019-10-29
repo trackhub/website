@@ -60,7 +60,7 @@ class TestCaseOneSeeder extends AbstractSeed
         $this->query("UPDATE version SET file_id = '{$versionFileData['id']}' WHERE id = '{$versionId}'");
 
         $track->insert([
-            'id' => 'track-two',
+            'id' => 'track-one',
             'last_check' => date('Y-m-d H:i:s'),
             'name_en' => 'test track 2',
             'name_bg' => 'Тест трак 2',
