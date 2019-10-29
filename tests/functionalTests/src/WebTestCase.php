@@ -7,9 +7,9 @@ use Symfony\Component\Process\Exception\ProcessFailedException;
 
 class WebTestCase extends Base
 {
-    public function seedTestCase(... $cases)
+    public function seedTestCase(...$cases)
     {
-        foreach($cases as &$case) {
+        foreach ($cases as &$case) {
             $case = '-s ' . $case . 'Seeder';
         }
 
