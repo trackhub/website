@@ -5,6 +5,7 @@
         "php": ">=7.3",
         "ext-ctype": "*",
         "ext-iconv": "*",
+        "eko/feedbundle": "^1.2",
         "friendsofsymfony/user-bundle": "^2.1",
         "hwi/oauth-bundle": "^0.6.3",
         "knplabs/knp-paginator-bundle": "^4.0",
@@ -74,7 +75,7 @@
     },
     "extra": {
         "symfony": {
-            "allow-contrib": false,
+            "allow-contrib": true,
             "require": "4.3.*"
         }
     }
