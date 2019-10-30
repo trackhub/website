@@ -2,6 +2,10 @@ indexWithoutLocale:
   path: /
   controller: App\Controller\Home::index
 
+feeds:
+  path: /feeds/{feedName}
+  controller: App\Controller\Feeds::feeds
+
 home:
   path: /{_locale}
   controller: App\Controller\Home::home
@@ -114,7 +118,3 @@ place_image_thumbnail:
     year: '\d+'
     maxWidth: '\d+'
     maxHeight: '\d+'
-
-feeds:
-  path: /{_locale}/feeds/{format}/{feed}
-  controller: App\Controller\Feeds::feeds

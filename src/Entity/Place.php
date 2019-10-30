@@ -3,25 +3,25 @@
 namespace App\Entity;
 
 use App\Contract\CreatedAtInterface;
-use App\Entity\Place\PlaceTrait;
+use App\Entity\Place\FeedTrait;
 use App\Entity\Point\PointTrait;
 use App\Entity\Place\Image;
 use App\Entity\User\User;
 use App\EntityTraits\NameTrait;
 use App\EntityTraits\SendByTrait;
 use Doctrine\ORM\Mapping as ORM;
-use Eko\FeedBundle\Item\Writer\ItemInterface;
+use Eko\FeedBundle\Item\Writer\RoutedItemInterface;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\PlaceRepository")
  * @ORM\Table(name="place")
  */
-class Place implements CreatedAtInterface, ItemInterface
+class Place implements CreatedAtInterface, RoutedItemInterface
 {
     use PointTrait;
     use NameTrait;
     use SendByTrait;
-    use PlaceTrait;
+    use FeedTrait;
 
     public const TYPE_GENERIC = 0;
     public const TYPE_DRINKING_FOUNTAIN = 1;
