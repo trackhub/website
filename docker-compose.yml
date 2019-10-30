@@ -17,5 +17,7 @@ services:
       MYSQL_USER: gps
       MYSQL_PASSWORD: 1
       MYSQL_DATABASE: gps
+    ports:
+      - 33066:3306
     volumes:
     - ./docker/var/sql:/var/lib/mysql

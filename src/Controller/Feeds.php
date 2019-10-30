@@ -4,8 +4,9 @@ namespace App\Controller;
 
 use Eko\FeedBundle\Feed\FeedManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Cache\Adapter\AdapterInterface;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Contracts\Cache\CacheInterface;
+use Symfony\Contracts\Cache\ItemInterface;
 
 class Feeds extends AbstractController
 {
@@ -14,15 +15,15 @@ class Feeds extends AbstractController
     ];
 
     /**
-     * Generate RSS or Atom feed
+     * Generate RSS feed
      *
      * @param string $feedName
      * @param FeedManager $feedManager
-     * @param AdapterInterface $adapter
+     * @param CacheInterface $feedsCache
      * @return Response
-
+     * @throws \Psr\Cache\InvalidArgumentException
      */
-    public function feeds(string $feedName, FeedManager $feedManager, AdapterInterface $adapter) : Response
+    public function feeds(string $feedName, FeedManager $feedManager, CacheInterface $feedsCache) : Response
     {
         /**
          * This will throw InvalidArgumentException if the feed name is invalid. Thus
@@ -33,14 +34,13 @@ class Feeds extends AbstractController
         /**
          * Check for existing cache
          */
-        $item = $adapter->getItem($feedName);
+        $items = $feedsCache->get($feedName, function (ItemInterface $item) {
+            $item->expiresAfter(3600);
 
-        if (!$item->isHit()) {
-            $item->set($this->getDoctrine()->getRepository(self::FEEDS[$feedName])->findAll());
-            $adapter->save($item);
-        }
-        $items = $item->get();
-        $feed->addFromArray(array_slice($items, 0, 10)) ;
+            return $this->getDoctrine()->getRepository(self::FEEDS[$item->getKey()])->findAll();
+        });
+
+        $feed->addFromArray($items) ;
 
         /**
          * Again skip $format validation and the one provided by the bundle.
