@@ -29,6 +29,9 @@ jobs:
     - name: Seeders tests
       script:  bash tests/travis/seeds_test.sh
 
+    - name: Symfony functional tests
+      script: bash tests/travis/symfony_functional-test.sh
+
 stages:
   - tests
 

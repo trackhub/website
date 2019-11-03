@@ -131,31 +131,13 @@ class TrackSeeder extends AbstractSeed
         }
     }
 
-    protected function generateGpxFile(int $pintsCount, float $latStart, float $lonStart, float $elevStart): string
+    protected function generateGpxFile(int $pointsCount, float $latStart, float $lonStart, float $elevStart): string
     {
-        $data = '<?xml version="1.0"?>
-            <gpx version="1.1" creator="track-hub.com: http://track-hub.com/">
-            <trk>
-            <name>Dummy</name>
-            <trkseg>
-        ';
+        $gpxGenerator = new GpxGenerator();
+        $gpxGenerator->elevationStart = $elevStart;
+        $gpxGenerator->pointsCount = $pointsCount;
 
-        $lat = $latStart;
-        $lon = $lonStart;
-
-        for ($i = 0; $i < $pintsCount; $i++) {
-            $lat += 0.00001 * rand(1, 10);
-            $lon += 0.00001 * rand(1, 10);
-            $elev = $elevStart + $i / 4.0;
-
-            $data .= '<trkpt lat = "' . $lat . '" lon = "' . $lon . '" ><ele>' . $elev . '</ele></trkpt>';
-        }
-
-        $data .= ';
-            </trkseg>
-            </trk>
-            </gpx>
-        ';
+        return $gpxGenerator->generate($latStart, $lonStart);
 
         return $data;
     }
