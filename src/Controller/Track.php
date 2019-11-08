@@ -63,6 +63,8 @@ class Track extends AbstractController
             $track->setNameEn($form->get('nameEn')->getData());
             $track->setNameBg($form->get('nameBg')->getData());
             $track->setVisibility($form->get('visibility')->getData());
+            $track->setDescriptionBg($form->get('descriptionBg')->getData());
+            $track->setDescriptionEn($form->get('descriptionEn')->getData());
 
             $videoParser = new YoutubeParser();
             $youtubeVideos = [];
@@ -137,6 +139,8 @@ class Track extends AbstractController
         $form->get('type')->setData($track->getType());
         $form->get('visibility')->setData($track->getVisibility());
         $form->get('slug')->setData($track->getSlug());
+        $form->get('descriptionBg')->setData($track->getDescriptionBg());
+        $form->get('descriptionEn')->setData($track->getDescriptionEn());
 
         $youtubeFormData = [];
         foreach ($track->getVideosYoutube() as $youtube) {
@@ -177,6 +181,8 @@ class Track extends AbstractController
             $track->setNameBg($form->get('nameBg')->getData());
             $track->setType($form->get('type')->getData());
             $track->setVisibility($form->get('visibility')->getData());
+            $track->setDescriptionBg($form->get('descriptionBg')->getData());
+            $track->setDescriptionEn($form->get('descriptionEn')->getData());
 
             if (!$form->get('slug')->isEmpty()) {
                 $slug = $form->get('slug')->getData();
