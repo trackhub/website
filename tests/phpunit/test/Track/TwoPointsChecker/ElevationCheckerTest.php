@@ -31,6 +31,16 @@ class ElevationCheckerTest extends TestCase
                 42.138385,
                 10,
             ],
+            [ // case for >=
+                false,
+                10,
+                24.763194,
+                42.138433,
+                0,
+                24.763224,
+                42.138385,
+                1.03744279582964,
+            ],
         ];
     }
 
