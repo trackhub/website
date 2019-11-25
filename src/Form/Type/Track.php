@@ -116,6 +116,7 @@ class Track extends AbstractType
             TextareaType::class,
             [
                 'required' => false,
+                'label' => 'Description in Bulgarian',
             ]
         );
 
@@ -124,6 +125,7 @@ class Track extends AbstractType
             TextareaType::class,
             [
                 'required' => false,
+                'label' => 'Description in English',
             ]
         );
     }
