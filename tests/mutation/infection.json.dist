@@ -1,0 +1,22 @@
+{
+    "timeout": 10,
+    "source": {
+        "directories": [
+            ".\/..\/..\/src"
+        ],
+        "excludes": [
+            "todo"
+        ]
+    },
+    "phpUnit": {
+        "configDir": "..\/..\/tests\/phpunit",
+        "customPath": "..\/..\/vendor\/bin\/phpunit"
+    },
+    "logs": {
+        "text": "infection.log"
+    },
+    "mutators": {
+        "@default": true
+    },
+    "bootstrap":"./bootstrap.php"
+}

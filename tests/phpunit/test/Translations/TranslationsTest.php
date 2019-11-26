@@ -26,7 +26,7 @@ class TranslationsTest extends TestCase
         foreach (self::FILES as $file) {
             [$domain, $locale] = explode('.', $file);
 
-            $trans = $parser->load('translations/' . $file, $locale)->all($domain);
+            $trans = $parser->load(__DIR__ . '/../../../../translations/' . $file, $locale)->all($domain);
 
             $sorted = $trans;
             ksort($sorted);
