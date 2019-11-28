@@ -37,7 +37,7 @@ class TrackSeeder extends AbstractSeed
         ];
     }
 
-    protected function getVisibility($index): int
+    protected function getVisibility(int $index): int
     {
         if ($index % 4 === 1) {
             return self::VISIBILITY_UNLISTED;
@@ -46,13 +46,31 @@ class TrackSeeder extends AbstractSeed
         return self::VISIBILITY_PUBLIC;
     }
 
-    protected function getType($index): int
+    protected function getType(int $index): int
     {
         if ($index % 3 == 1) {
             return self::TYPE_HIKING;
         }
 
         return self::TYPE_CYCLING;
+    }
+
+    protected function getDescriptionEn(int $index): ?string
+    {
+        if ($index % 2 == 0) {
+            return str_repeat(uniqid('en_') . PHP_EOL, $index);
+        }
+
+        return null;
+    }
+
+    protected function getDescriptionBg(int $index): ?string
+    {
+        if ($index % 3 == 0) {
+            return str_repeat(uniqid('bg_') . PHP_EOL, $index);
+        }
+
+        return null;
     }
 
     protected function init()
@@ -83,7 +101,9 @@ class TrackSeeder extends AbstractSeed
                 'type' => $this->getType($i),
                 'created_at' => date('Y-m-d H:i:s', strtotime(sprintf("-%d hours", $i))),
                 'visibility' => $this->getVisibility($i),
-                'send_by_id' => $user['id']
+                'send_by_id' => $user['id'],
+                'description_bg' => $this->getDescriptionBg($i),
+                'description_en' => $this->getDescriptionEn($i),
             ];
 
             $track->insert($data)->saveData();
@@ -103,7 +123,7 @@ class TrackSeeder extends AbstractSeed
                     'positive_elevation' => 0,
                     'negative_elevation' => 0,
                     'file_id' => null,
-                    'send_by_id' => $user['id']
+                    'send_by_id' => $user['id'],
                 ];
 
                 $version->insert($versionData)->saveData();
@@ -138,7 +158,5 @@ class TrackSeeder extends AbstractSeed
         $gpxGenerator->pointsCount = $pointsCount;
 
         return $gpxGenerator->generate($latStart, $lonStart);
-
-        return $data;
     }
 }

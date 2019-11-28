@@ -7,6 +7,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -106,7 +107,25 @@ class Track extends AbstractType
                     'Blue' => \App\Type\DifficultyType::ENUM_BLUE,
                     'Black' => \App\Type\DifficultyType::ENUM_BLACK,
                     'Double Black' => \App\Type\DifficultyType::ENUM_DOUBLE_BLACK,
-                ]
+                ],
+            ]
+        );
+
+        $builder->add(
+            'descriptionBg',
+            TextareaType::class,
+            [
+                'required' => false,
+                'label' => 'Description in Bulgarian',
+            ]
+        );
+
+        $builder->add(
+            'descriptionEn',
+            TextareaType::class,
+            [
+                'required' => false,
+                'label' => 'Description in English',
             ]
         );
     }
