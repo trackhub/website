@@ -11,7 +11,7 @@ services:
       - sql
   sql:
     restart: unless-stopped
-    image: mariadb:10.3
+    image: mariadb:10.3.17
     environment:
       MYSQL_ROOT_PASSWORD: 1
       MYSQL_USER: gps
