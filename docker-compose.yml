@@ -1,4 +1,5 @@
 version: "3"
+
 services:
   web:
     restart: unless-stopped
@@ -18,4 +19,7 @@ services:
       MYSQL_PASSWORD: 1
       MYSQL_DATABASE: gps
     volumes:
-    - ./docker/var/sql:/var/lib/mysql
+    - database_data:/var/lib/mysql
+
+volumes:
+  database_data:
