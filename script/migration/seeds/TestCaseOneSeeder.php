@@ -25,8 +25,6 @@ class TestCaseOneSeeder extends AbstractSeed
         $track->insert([
             'id' => 'track-one',
             'last_check' => date('Y-m-d H:i:s'),
-            'name_en' => 'test track 1',
-            'name_bg' => 'Тест трак 1',
             'point_north_east_lat' => 0,
             'point_north_east_lng' => 0,
             'point_south_west_lat' => 0,

@@ -33,6 +33,7 @@ class TrackSeeder extends AbstractSeed
     public function getDependencies()
     {
         return [
+            'LanguageSeeder',
             'UserSeeder',
         ];
     }
@@ -86,14 +87,13 @@ class TrackSeeder extends AbstractSeed
         $user = $this->fetchRow("SELECT id FROM user ORDER BY RAND() LIMIT 1");
 
         $track = $this->table('track');
+        $track_tr = $this->table('track_tr');
 
         for ($i = 0; $i < $this->trackCount; $i++) {
             $trackId = uniqid();
             $data = [
                 'id' => $trackId,
                 'last_check' => date('Y-m-d H:i:s', strtotime(sprintf("-%d hours", $i))),
-                'name_en' => 'Dummy track ' . $i,
-                'name_bg' => 'Фалшив трак ' . $i,
                 'point_north_east_lat' => 0,
                 'point_north_east_lng' => 0,
                 'point_south_west_lat' => 0,
@@ -107,6 +107,19 @@ class TrackSeeder extends AbstractSeed
             ];
 
             $track->insert($data)->saveData();
+
+            $track_tr->insert([
+                [
+                    'track_id' => $trackId,
+                    'language_id' => $this->fetchRow('SELECT id FROM "language" WHERE (code = "en")')[0],
+                    'name' => 'Dummy track ' . $i
+                ],
+                [
+                    'track_id' => $trackId,
+                    'language_id' => $this->fetchRow('SELECT id FROM "language" WHERE (code = "bg")')[0],
+                    'name' => 'Фалшив трак ' . $i
+                ]
+            ])->saveData();
 
             for ($j = 0; $j <= $i; $j += self::NEW_VERSION_EVERY_NTH_TRACK) {
                 $version = $this->table('version');

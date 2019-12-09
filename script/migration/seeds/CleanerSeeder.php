@@ -17,9 +17,13 @@ class CleanerSeeder extends AbstractSeed
         $this->query("DELETE FROM point");
         $this->query("DELETE FROM optimized_point");
         $this->query("DELETE FROM version");
+        $this->query("DELETE FROM track_tr");
+        $this->query("ALTER TABLE track_tr AUTO_INCREMENT = 1");
         $this->query("DELETE FROM track");
         $this->query("DELETE FROM place");
         $this->query("DELETE FROM user");
         $this->query("ALTER TABLE user AUTO_INCREMENT = 1");
+        $this->query("DELETE FROM language");
+        $this->query("ALTER TABLE language AUTO_INCREMENT = 1");
     }
 }

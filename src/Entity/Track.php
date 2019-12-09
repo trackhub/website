@@ -5,10 +5,10 @@ namespace App\Entity;
 use App\Contract\CreatedAtInterface;
 use App\Entity\Track\Image;
 use App\Entity\Track\OptimizedPoint;
+use App\Entity\Track\TrackTranslation;
 use App\Entity\Track\Version;
 use App\Entity\User\User;
 use App\Entity\Video\Youtube;
-use App\EntityTraits\NameTrait;
 use App\EntityTraits\SendByTrait;
 use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -19,7 +19,6 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Track implements CreatedAtInterface
 {
-    use NameTrait;
     use SendByTrait;
 
     public const TYPE_CYCLING = 1;
@@ -39,6 +38,16 @@ class Track implements CreatedAtInterface
      * @ORM\Column(name="id", type="guid")
      */
     private $id;
+
+    /**
+     * @ORM\OneToMany(
+     *     targetEntity="App\Entity\Track\TrackTranslation",
+     *     mappedBy="track",
+     *     cascade={"persist", "remove"},
+     *     orphanRemoval=true
+     *     )
+     */
+    private $translations;
 
     /**
      * @ORM\Column(type="string", nullable=true)
@@ -144,6 +153,7 @@ class Track implements CreatedAtInterface
         $this->downhills = new ArrayCollection();
         $this->videosYoutube = new ArrayCollection();
         $this->images = new ArrayCollection();
+        $this->translations = new ArrayCollection();
     }
 
     public function getId(): ?string
@@ -443,6 +453,39 @@ class Track implements CreatedAtInterface
     public function getImages()
     {
         return $this->images;
+    }
+
+    /**
+     * Get track translation
+     *
+     * @return TrackTranslation[]|ArrayCollection
+     */
+    public function getTranslations()
+    {
+        return $this->translations;
+    }
+
+    /**
+     * Get track name
+     *
+     * @param string $locale
+     * @return string|null
+     */
+    public function getName(string $locale): ?string
+    {
+        $name = null;
+
+        foreach ($this->getTranslations() as $translation) {
+            $code = $translation->getLanguage()->getCode();
+
+            if ($code === $locale) {
+                return $translation->getName();
+            } elseif ($code === 'en') {
+                $name = $translation->getName();
+            }
+        }
+
+        return $name;
     }
 
     public function __toString(): string

@@ -8,7 +8,7 @@ class LanguageSeeder extends AbstractSeed
 {
     public function run()
     {
-        $languages = $this->table('languages');
+        $languages = $this->table('language');
         $languages->insert([
             [
                 'code' => 'en',
@@ -17,7 +17,7 @@ class LanguageSeeder extends AbstractSeed
             ],
             [
                 'code' => 'bg',
-                'englishName' => 'bulgaria',
+                'englishName' => 'bulgarian',
                 'nativeName' => 'български'
             ],
         ]);
