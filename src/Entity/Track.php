@@ -102,16 +102,6 @@ class Track implements CreatedAtInterface
     private $createdAt;
 
     /**
-     * @ORM\Column(type="string", nullable=true)
-     */
-    private $descriptionEn;
-
-    /**
-     * @ORM\Column(type="string", nullable=true)
-     */
-    private $descriptionBg;
-
-    /**
      * @ORM\Column(type="integer")
      */
     private $type = self::TYPE_CYCLING;
@@ -410,43 +400,6 @@ class Track implements CreatedAtInterface
         return $this->createdAt;
     }
 
-    public function getDescriptionEn(): ?string
-    {
-        return $this->descriptionEn;
-    }
-
-    public function setDescriptionEn(string $text = null): void
-    {
-        $this->descriptionEn = $text;
-    }
-
-    public function getDescriptionBg(): ?string
-    {
-        return $this->descriptionBg;
-    }
-
-    public function setDescriptionBg(string $text = null): void
-    {
-        $this->descriptionBg = $text;
-    }
-
-    /**
-     * Get localized name.
-     * If localized name doesn't exists - fallback to EN
-     */
-    public function getDescription(string $locale): ?string
-    {
-        if ($locale === 'bg' && $this->descriptionBg !== null) {
-            return $this->descriptionBg;
-        }
-
-        if ($this->descriptionEn === null) {
-            return $this->descriptionBg;
-        }
-
-        return $this->descriptionEn;
-    }
-
     /**
      * @return Image[]|ArrayCollection
      */
@@ -486,6 +439,30 @@ class Track implements CreatedAtInterface
         }
 
         return $name;
+    }
+
+    /**
+     * Get track description
+     *
+     * @param string $locale
+     * @return string|null
+     */
+    public function getDescription(string $locale): ?string
+    {
+        $description = null;
+
+
+        foreach ($this->getTranslations() as $translation) {
+            $code = $translation->getLanguage()->getCode();
+
+            if ($code === $locale) {
+                return $translation->getDescription();
+            } elseif ($code === 'en') {
+                $description = $translation->getDescription();
+            }
+        }
+
+        return $description;
     }
 
     public function __toString(): string

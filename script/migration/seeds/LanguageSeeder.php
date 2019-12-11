@@ -12,13 +12,13 @@ class LanguageSeeder extends AbstractSeed
         $languages->insert([
             [
                 'code' => 'en',
-                'englishName' => 'english',
-                'nativeName' => 'english'
+                'name_en' => 'English',
+                'name' => 'English'
             ],
             [
                 'code' => 'bg',
-                'englishName' => 'bulgarian',
-                'nativeName' => 'български'
+                'name_en' => 'Bulgarian',
+                'name' => 'Български'
             ],
         ]);
 

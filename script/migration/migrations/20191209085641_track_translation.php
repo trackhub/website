@@ -15,6 +15,12 @@ class TrackTranslation extends AbstractMigration
 
             ALTER TABLE track
                 DROP COLUMN name_bg;
+                
+            ALTER TABLE track
+                DROP COLUMN description_en;
+        
+            ALTER TABLE track
+                DROP COLUMN description_bg;
         ");
 
         /**
@@ -27,6 +33,7 @@ class TrackTranslation extends AbstractMigration
                 track_id CHAR(36) NOT NULL COMMENT '(DC2Type:guid)',
                 language_id INT NOT NULL,
                 name VARCHAR(255) DEFAULT NULL,
+                description TEXT DEFAULT NULL,
                 CONSTRAINT track_tr_pk
 		            PRIMARY KEY (id),
 	            CONSTRAINT track_tr_track_id_fk
@@ -46,9 +53,15 @@ class TrackTranslation extends AbstractMigration
         $this->query("
             ALTER TABLE track
 	            ADD name_en VARCHAR(255) DEFAULT NULL;
+
+            ALTER TABLE track
+	            ADD name_bg VARCHAR(255) DEFAULT NULL;
 	            
             ALTER TABLE track
-	            ADD name_bg VARCHAR(255) DEFAULT NULL;	            
+                ADD description_en TEXT DEFAULT NULL;
+
+            ALTER TABLE track
+                ADD description_bg TEXT DEFAULT NULL;
         ");
     }
 }

@@ -102,8 +102,7 @@ class TrackSeeder extends AbstractSeed
                 'created_at' => date('Y-m-d H:i:s', strtotime(sprintf("-%d hours", $i))),
                 'visibility' => $this->getVisibility($i),
                 'send_by_id' => $user['id'],
-                'description_bg' => $this->getDescriptionBg($i),
-                'description_en' => $this->getDescriptionEn($i),
+
             ];
 
             $track->insert($data)->saveData();
@@ -111,13 +110,15 @@ class TrackSeeder extends AbstractSeed
             $track_tr->insert([
                 [
                     'track_id' => $trackId,
-                    'language_id' => $this->fetchRow('SELECT id FROM "language" WHERE (code = "en")')[0],
-                    'name' => 'Dummy track ' . $i
+                    'language_id' => $this->fetchRow('SELECT id FROM language WHERE (code = "en")')[0],
+                    'name' => 'Dummy track ' . $i,
+                    'description' => $this->getDescriptionEn($i),
                 ],
                 [
                     'track_id' => $trackId,
-                    'language_id' => $this->fetchRow('SELECT id FROM "language" WHERE (code = "bg")')[0],
-                    'name' => 'Фалшив трак ' . $i
+                    'language_id' => $this->fetchRow('SELECT id FROM language WHERE (code = "bg")')[0],
+                    'name' => 'Фалшив трак ' . $i,
+                    'description' => $this->getDescriptionBg($i),
                 ]
             ])->saveData();
 
