@@ -8,6 +8,7 @@ use App\Entity\Track\VersionRating;
 use App\Entity\Track\Version;
 use App\Entity\Video\Youtube;
 use App\Form\Type\TrackVersion;
+use App\Repository\LanguageRepository;
 use App\Repository\Track\SlugRepository;
 use App\Repository\TrackRepository;
 use App\Track\Exporter;
@@ -28,7 +29,17 @@ use Tekstove\UrlVideoParser\Youtube\YoutubeParser;
 
 class Track extends AbstractController
 {
-    public function new(Request $request, LoggerInterface $logger, SlugRepository $slugRepo, Processor $processor)
+    private $languageRepository;
+
+    private $slugRepository;
+
+    public function __construct(LanguageRepository $languageRepository, SlugRepository $slugRepository)
+    {
+        $this->languageRepository = $languageRepository;
+        $this->slugRepository = $slugRepository;
+    }
+
+    public function new(Request $request, LoggerInterface $logger, Processor $processor)
     {
         $form = $this->createForm(\App\Form\Type\Track::class);
         $form->add('submit', SubmitType::class);
@@ -41,6 +52,7 @@ class Track extends AbstractController
             /* @var $fileData UploadedFile */
             $fileContent = file_get_contents($fileData->getRealPath());
             $track = new \App\Entity\Track($this->getUser());
+            $translation = new \App\Entity\Track\TrackTranslation();
             // we should have service for gpx processing
             $trackVersion = new Version($this->getUser());
             try {
@@ -124,6 +136,8 @@ class Track extends AbstractController
             'gps/edit.html.twig',
             [
                 'form' => $form->createView(),
+                'languages' => $this->languageRepository->findAll(),
+
             ]
         );
     }

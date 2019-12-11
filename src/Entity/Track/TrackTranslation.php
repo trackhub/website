@@ -46,9 +46,14 @@ class TrackTranslation
     private $language;
 
     /**
-     * @ORM\Column(type="string")
+     * @ORM\Column(type="string", nullable=true)
      */
     private $name;
+
+    /**
+     * @ORM\Column(type="string", nullable=true)
+     */
+    private $description;
 
     /**
      * @return int
@@ -91,9 +96,9 @@ class TrackTranslation
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getName(): string
+    public function getName(): ?string
     {
         return $this->name;
     }
@@ -104,5 +109,29 @@ class TrackTranslation
     public function setName(string $name): void
     {
         $this->name = $name;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    /**
+     * @param string $description
+     */
+    public function setDescription(string $description): void
+    {
+        $this->description = $description;
+    }
+
+    public function __toString(): string
+    {
+        if ($this->getName('en')) {
+            return $this->getName('en');
+        }
+        return $this->getId();
     }
 }

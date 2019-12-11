@@ -43,13 +43,19 @@
                 </div>
 
                 <div class="col">
-                    <a href="{{ path(app.request.get('_route'), app.request.get('_route_params')|merge({'_locale': 'en'}))}}">en</a>
-                    <a href="{{ path(app.request.get('_route'), app.request.get('_route_params')|merge({'_locale': 'bg'}))}}">bg</a>
+                    {% for language in languages.findAll %}
+                    <a href="{{ path(app.request.get('_route'), app.request.get('_route_params')|merge({'_locale': language.code }))}}">{{ language.code }}</a>
+
+                    {% endfor %}
+
                 </div>
             </div>
             <hr>
         </nav>
-        {% block content %}{% endblock %}
+        <div class="container-fluid">
+        {% block content %}
+        {% endblock %}
+        </div>
         <hr>
 
         {% include "include/footer.html.twig" %}

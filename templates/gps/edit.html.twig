@@ -1,22 +1,39 @@
 {% extends "base.html.twig" %}
 
 {% block content %}
-    {{ form_start(form) }}
 
-    {{ form_row(form.nameEn) }}
-    {{ form_row(form.nameBg) }}
-    {{ form_row(form.type) }}
-    {{ form_row(form.visibility) }}
+    <div class="container">
+        {{ form_start(form) }}
 
-    {% if form.file is defined %}
-        {{ form_row(form.file) }}
-    {% endif %}
+        <div class="input-group mb-3">
+            <div class="input-group-prepend">
+                <select class="form-control" id="exampleFormControlSelect1">
+                    {% for lang in languages %}
+                    <option>{{ lang.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            {{ form_widget(form.nameEn) }}
+        </div>
 
 
-    <ul id="form_track_video_youtube" class="tags" data-prototype="{{ form_widget(form.videosYoutube.vars.prototype)|e('html_attr') }}">
-    </ul>
+        {{ form_row(form.descriptionEn) }}
 
-    {{ form_end(form) }}
+        <hr>
+
+        {{ form_row(form.type) }}
+        {{ form_row(form.visibility) }}
+
+        {% if form.file is defined %}
+            {{ form_row(form.file) }}
+        {% endif %}
+
+
+        <ul id="form_track_video_youtube" class="tags" data-prototype="{{ form_widget(form.videosYoutube.vars.prototype)|e('html_attr') }}">
+        </ul>
+
+        {{ form_end(form) }}
+    </div>
 
     <script>
         let collectionHolder;

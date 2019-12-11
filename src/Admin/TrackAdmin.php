@@ -23,8 +23,6 @@ class TrackAdmin extends AbstractAdmin
     protected function configureShowFields(ShowMapper $showMapper)
     {
         $showMapper
-            ->add('nameEn')
-            ->add('nameBg')
             ->add('id')
             ->add('type')
         ;
@@ -34,8 +32,7 @@ class TrackAdmin extends AbstractAdmin
     {
         $listMapper
             ->addIdentifier('id')
-            ->add('nameEn')
-            ->add('nameBg')
+            ->add('translations')
             ->add('slug')
             ->add('sendBy')
             ->add('_action', 'actions', [
@@ -48,8 +45,6 @@ class TrackAdmin extends AbstractAdmin
     protected function configureFormFields(FormMapper $formMapper)
     {
         $formMapper
-            ->add('nameEn')
-            ->add('nameBg')
             ->add('type')
             ->add(
                 'uphills',
@@ -75,8 +70,7 @@ class TrackAdmin extends AbstractAdmin
     {
         $datagridMapper
             ->add('id')
-            ->add('nameEn')
-            ->add('nameBg')
+            ->add('translations.name')
             ->add('slug')
         ;
     }
