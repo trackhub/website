@@ -43,7 +43,7 @@
                 </div>
 
                 <div class="col">
-                    {% for language in languages.findAll %}
+                    {% for language in languages %}
                     <a href="{{ path(app.request.get('_route'), app.request.get('_route_params')|merge({'_locale': language.code }))}}">{{ language.code }}</a>
 
                     {% endfor %}

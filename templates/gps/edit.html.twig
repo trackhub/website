@@ -1,91 +1,178 @@
+{% macro name_prototype(item) %}
+    <div class="form-row mb-1">
+        <div class="col-auto">
+            {{ form_widget(item.language) }}
+        </div>
+        <div class="col">
+            {{ form_widget(item.name) }}
+        </div>
+        <button class="btn btn-danger ml-2" id="buttonRemove">
+            <i class="fas fa-trash"></i>
+        </button>
+    </div>
+{% endmacro %}
+
+{% macro description_prototype(item) %}
+    <div class="form-row mb-1">
+        <div class="col-auto">
+            {{ form_widget(item.language) }}
+        </div>
+        <div class="col">
+            {{ form_widget(item.description) }}
+        </div>
+        <button class="btn btn-danger ml-2" id="buttonRemove">
+            <i class="fas fa-trash"></i>
+        </button>
+    </div>
+{% endmacro %}
 {% extends "base.html.twig" %}
 
 {% block content %}
 
+
+
     <div class="container">
+
         {{ form_start(form) }}
 
-        <div class="input-group mb-3">
-            <div class="input-group-prepend">
-                <select class="form-control" id="exampleFormControlSelect1">
-                    {% for lang in languages %}
-                    <option>{{ lang.name }}</option>
-                    {% endfor %}
-                </select>
-            </div>
-            {{ form_widget(form.nameEn) }}
-        </div>
+        <h3>Track name</h3>
+        <ul class="list-group mb-2"
+            id="form_track_name"
+            data-index="0"
+            data-prototype="{{ _self.name_prototype(form.name.vars.prototype)|e('html_attr') }}">
+        </ul>
 
-
-        {{ form_row(form.descriptionEn) }}
-
+        <button type="button" class="btn btn-success" id="buttonAddName">
+            <i class="fas fa-plus mr-2" title="Add name"></i>
+            Add name
+        </button>
         <hr>
 
-        {{ form_row(form.type) }}
-        {{ form_row(form.visibility) }}
-
-        {% if form.file is defined %}
-            {{ form_row(form.file) }}
-        {% endif %}
-
-
-        <ul id="form_track_video_youtube" class="tags" data-prototype="{{ form_widget(form.videosYoutube.vars.prototype)|e('html_attr') }}">
+        <h3>Track description</h3>
+        <ul class="list-group mb-2"
+            id="form_track_description"
+            data-index="0"
+            data-prototype="{{ _self.description_prototype(form.description.vars.prototype)|e('html_attr') }}">
         </ul>
+
+        <button type="button" class="btn btn-success" id="buttonAddDescription">
+            <i class="fas fa-plus mr-2" title="Add description"></i>
+            Add description
+        </button>
+        <hr>
+
+
+
+
+
+{#        <hr>#}
+
+{#        {{ form_row(form.type) }}#}
+{#        {{ form_row(form.visibility) }}#}
+
+{#        {% if form.file is defined %}#}
+{#            {{ form_row(form.file) }}#}
+{#        {% endif %}#}
+
+
+{#        <ul id="form_track_video_youtube" class="tags" data-prototype="{{ form_widget(form.videosYoutube.vars.prototype)|e('html_attr') }}">#}
+{#        </ul>#}
 
         {{ form_end(form) }}
     </div>
 
     <script>
-        let collectionHolder;
 
-        // setup an "add a tag" link
-        let addTagButton = document.createElement('button');
-        addTagButton.type = "button";
-        addTagButton.classList.add('btn', 'btn-success');
-        addTagButton.innerText = 'Add a video';
-        let newLinkLi = document.createElement('li');
-        newLinkLi.append(addTagButton);
+        nameHolder = document.getElementById('form_track_name');
+        descriptionHolder = document.getElementById('form_track_description');
 
-        jQuery(document).ready(function() {
-            // Get the ul that holds the collection of tags
-            collectionHolder = document.getElementById('form_track_video_youtube');
+        function addForm(holder) {
+            let index = holder.dataset.index;
+            let prototype = holder.dataset.prototype;
 
-            // add the "add a tag" anchor and li to the tags ul
-            collectionHolder.append(newLinkLi);
+            let li = document.createElement('li');
+            li.classList.add('list-group-item', 'border-1', 'mb-2');
+            li.innerHTML = prototype.replace(/__name__/g, index);
 
-            // (new Date()).getTime()) is generating random key for the video element
-            collectionHolder.setAttribute('data-index', (new Date()).getTime());
+            holder.append(li);
+            holder.dataset.index++;
 
-            addTagButton.addEventListener('click', function(e) {
-                // add a new tag form (see next code block)
-                addTagForm(collectionHolder, newLinkLi);
+            const button = li.querySelector("#buttonRemove");
+
+            button.addEventListener('click', function(e) {
+                e.preventDefault();
+                holder.removeChild(li);
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+
+            const buttonAddName = document.getElementById('buttonAddName');
+            const buttonAddDescription = document.getElementById('buttonAddDescription');
+
+            buttonAddName.addEventListener('click', function() {
+                addForm(nameHolder);
+            });
+
+            buttonAddDescription.addEventListener('click', function() {
+                addForm(descriptionHolder);
             });
         });
 
-        function addTagForm(collectionHolder, newLinkLi) {
-            // Get the data-prototype explained earlier
-            let prototype = collectionHolder.getAttribute('data-prototype');
-
-            // get the new index
-            let index = collectionHolder.getAttribute('data-index');
-
-            let newForm = prototype;
-            // You need this only if you didn't set 'label' => false in your tags field in TaskType
-            // Replace '__name__label__' in the prototype's HTML to
-            // instead be a number based on how many items we have
-            // newForm = newForm.replace(/__name__label__/g, index);
-
-            // Replace '__name__' in the prototype's HTML to
-            // instead be a number based on how many items we have
-            newForm = newForm.replace(/__name__/g, index);
-
-            // increase the index with one for the next item
-            collectionHolder.setAttribute('data-index', index + 1);
-
-            // Display the form in the page in an li, before the "Add a tag" link li
-            let newFormLi = document.createElement('li');
-            newFormLi.innerHTML = newForm;
-            newLinkLi.before(newFormLi);
-        }
+        //
+        //
+        //
+        //
+        // let addTitleButton = document.getElementById('addTitle');
+        //
+        // // setup an "add a tag" link
+        // let addTagButton = document.createElement('button');
+        // addTagButton.type = "button";
+        // addTagButton.classList.add('btn', 'btn-success');
+        // addTagButton.innerText = 'Add a video';
+        // let newLinkLi = document.createElement('li');
+        // newLinkLi.append(addTagButton);
+        //
+        // jQuery(document).ready(function() {
+        //     // Get the ul that holds the collection of tags
+        //     collectionHolder = document.getElementById('form_track_video_youtube');
+        //
+        //     // add the "add a tag" anchor and li to the tags ul
+        //     collectionHolder.append(newLinkLi);
+        //
+        //     // (new Date()).getTime()) is generating random key for the video element
+        //     collectionHolder.setAttribute('data-index', (new Date()).getTime());
+        //
+        //     addTagButton.addEventListener('click', function(e) {
+        //         // add a new tag form (see next code block)
+        //         addTagForm(collectionHolder, newLinkLi);
+        //     });
+        // });
+        //
+        // function addTagForm(collectionHolder, newLinkLi) {
+        //     // Get the data-prototype explained earlier
+        //     let prototype = collectionHolder.getAttribute('data-prototype');
+        //
+        //     // get the new index
+        //     let index = collectionHolder.getAttribute('data-index');
+        //
+        //     let newForm = prototype;
+        //     // You need this only if you didn't set 'label' => false in your tags field in TaskType
+        //     // Replace '__name__label__' in the prototype's HTML to
+        //     // instead be a number based on how many items we have
+        //     // newForm = newForm.replace(/__name__label__/g, index);
+        //
+        //     // Replace '__name__' in the prototype's HTML to
+        //     // instead be a number based on how many items we have
+        //     newForm = newForm.replace(/__name__/g, index);
+        //
+        //     // increase the index with one for the next item
+        //     collectionHolder.setAttribute('data-index', index + 1);
+        //
+        //     // Display the form in the page in an li, before the "Add a tag" link li
+        //     let newFormLi = document.createElement('li');
+        //     newFormLi.innerHTML = newForm;
+        //     newLinkLi.before(newFormLi);
+        // }
     </script>
 {% endblock %}

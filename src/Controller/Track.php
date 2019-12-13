@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\File\TrackFile;
 use App\Entity\Track\Slug;
+use App\Entity\Track\TrackTranslation;
 use App\Entity\Track\VersionRating;
 use App\Entity\Track\Version;
 use App\Entity\Video\Youtube;
@@ -46,6 +47,21 @@ class Track extends AbstractController
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
+
+            foreach ($form->get('name')->getData() as $name) {
+                var_dump($name);
+                continue;
+                $translation = new TrackTranslation();
+                $translation->setTrack();
+                $translation->setLanguage($name['language']);
+                $translation->setName($name['name']);
+                $translation->setDescription($name['description']);
+
+                $this->getDoctrine()->getManager()->persist($translation);
+                $this->getDoctrine()->getManager()->flush();
+            }
+            die();
+
             $formIsValid = true;
             $file = $form->get('file');
             $fileData = $file->getData();
@@ -67,16 +83,24 @@ class Track extends AbstractController
 
             $optimizedPoints = $processor->generateOptimizedPoints($trackVersion);
 
+            foreach ($form->get('name')->getData() as $name) {
+                $translation = new TrackTranslation();
+                $translation->setTrack();
+                $translation->setLanguage($name['language']);
+                $translation->setName($name['name']);
+                $translation->setDescription($name['description']);
+
+                $this->getDoctrine()->getManager()->persist($translation);
+                $this->getDoctrine()->getManager()->flush();
+            }
+            die();
+
             $trackVersion->setDifficulty($form->get('difficulty')->getData());
 
             $track->addOptimizedPoints($optimizedPoints);
             $track->addVersion($trackVersion);
             $track->setType($form->get('type')->getData());
-            $track->setNameEn($form->get('nameEn')->getData());
-            $track->setNameBg($form->get('nameBg')->getData());
             $track->setVisibility($form->get('visibility')->getData());
-            $track->setDescriptionBg($form->get('descriptionBg')->getData());
-            $track->setDescriptionEn($form->get('descriptionEn')->getData());
 
             $videoParser = new YoutubeParser();
             $youtubeVideos = [];
