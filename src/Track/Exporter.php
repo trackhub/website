@@ -32,7 +32,11 @@ class Exporter
 
         foreach ($versionCollection as $version) {
             $trkXml = $xml->addChild('trk');
-            $trkXml->addChild('name', $version->getTrack()->getNameEn());
+
+            $name = $version->getTrack()->getNameEn();
+            if ($name !== null) {
+                $trkXml->addChild('name', $name);
+            }
 
             $trkSegXSml = $trkXml->addChild('trkseg');
 
