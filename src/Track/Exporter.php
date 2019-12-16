@@ -34,7 +34,7 @@ class Exporter
             $trkXml = $xml->addChild('trk');
 
             $name = $version->getTrack()->getNameEn();
-            if ($name) {
+            if ($name !== null) {
                 $trkXml->addChild('name', $name);
             }
 
