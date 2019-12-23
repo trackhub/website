@@ -22,6 +22,9 @@ class Place implements CreatedAtInterface
 
     public const TYPE_GENERIC = 0;
     public const TYPE_DRINKING_FOUNTAIN = 1;
+    public const TYPE_DRINKING_RESTAURANT = 2;
+    public const TYPE_DRINKING_HOTEL = 3;
+    public const TYPE_BIKE_SHOP = 4;
 
     /**
      * @ORM\Id
