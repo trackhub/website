@@ -28,6 +28,12 @@ class PlaceTypeFilter extends AbstractExtension
                 return "Generic";
             case Place::TYPE_DRINKING_FOUNTAIN:
                 return "Drinking fountain";
+            case Place::TYPE_DRINKING_RESTAURANT:
+                return "Restaurant";
+            case Place::TYPE_DRINKING_HOTEL:
+                return "Hotel";
+            case Place::TYPE_BIKE_SHOP:
+                return "Bike shop";
             default:
                 return null;
         }
