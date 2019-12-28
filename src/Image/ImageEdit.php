@@ -6,38 +6,55 @@ use Symfony\Component\Filesystem\Filesystem;
 
 class ImageEdit
 {
-    public function resize(string $input, string $output, int $maxW, int $maxH)
+    private $input;
+    private $image;
+
+    public function __construct(string $input)
     {
-        $image = new \Imagick($input);
-        $image->setImageOrientation($image->getImageOrientation());
+        $this->input = $input;
+        $this->image = new \Imagick($input);
 
-        $resizedW = min($image->getImageWidth(), $maxW);
-        $resizedH = min($image->getImageHeight(), $maxH);
-
-        $image->adaptiveResizeImage($resizedW, $resizedH, true);
-
-        $rotateAngle = $this->getRotateAngle($input);
+        $this->image->setImageOrientation($this->image->getImageOrientation());
+        $rotateAngle = $this->getRotateAngle();
         if ($rotateAngle !== 0) {
-            $image->rotateImage('#FFFFFF', $rotateAngle);
+            $this->image->rotateImage('#FFFFFF', $rotateAngle);
         }
 
-        $profiles = $image->getImageProfiles("icc", true);
+        $profiles = $this->image->getImageProfiles("icc", true);
 
         // clear personal data stored in meta information
-        $image->stripImage();
+        $this->image->stripImage();
 
         // restore icc color profile
         if (isset($profiles['icc'])) {
-            $image->profileImage("icc", $profiles['icc']);
+            $this->image->profileImage("icc", $profiles['icc']);
         }
-
-        $fs = new Filesystem();
-        $fs->dumpFile($output, $image);
     }
 
-    public function getRotateAngle($imagePath): int
+    public function resize(int $maxW, int $maxH)
     {
-        $exifData = exif_read_data($imagePath);
+        $resizedW = min($this->image->getImageWidth(), $maxW);
+        $resizedH = min($this->image->getImageHeight(), $maxH);
+
+        $this->image->adaptiveResizeImage($resizedW, $resizedH, true);
+    }
+
+    public function watermark(string $text)
+    {
+        $draw = new \ImagickDraw();
+        $draw->setFillColor('gray');
+        $fontSize = $this->image->getImageWidth() / 100 * 3;
+        $draw->setFontSize($fontSize);
+
+        $y = $this->image->getImageHeight() - $fontSize / 1.7;
+        $x = $this->image->getImageWidth() - strlen($text) * $fontSize / 1.7;
+
+        $this->image->annotateImage($draw, $x, $y, 0, $text);
+    }
+
+    public function getRotateAngle(): int
+    {
+        $exifData = exif_read_data($this->input);
 
         if (isset($exifData['Orientation'])) {
             switch ($exifData['Orientation']) {
@@ -49,5 +66,11 @@ class ImageEdit
         }
 
         return 0;
+    }
+
+    public function save(string $path)
+    {
+        $fs = new Filesystem();
+        $fs->dumpFile($path, $this->image);
     }
 }
