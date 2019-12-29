@@ -8,7 +8,7 @@ use App\EntityTraits\SendByTrait;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass="App\Repository\Track\ImageRepository")
+ * @ORM\Entity(repositoryClass="App\Repository\Place\ImageRepository")
  * @ORM\Table(name="place_image")
  */
 class Image
@@ -54,5 +54,10 @@ class Image
     public function getFilepath(): string
     {
         return $this->filepath;
+    }
+
+    public function getPlace(): Place
+    {
+        return $this->place;
     }
 }
