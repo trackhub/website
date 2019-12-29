@@ -55,8 +55,10 @@ class Image extends AbstractController
         $thumbnailPathDir .= DIRECTORY_SEPARATOR . $year . DIRECTORY_SEPARATOR . $trackId;
         $thumbnailPath = $thumbnailPathDir . DIRECTORY_SEPARATOR . $imagePath;
 
-        $resizer = new ImageEdit();
-        $resizer->resize($originalImagePath, $thumbnailPath, $maxWidth, $maxHeight);
+        $resizer = new ImageEdit($originalImagePath);
+        $resizer->resize($maxWidth, $maxHeight);
+        $resizer->watermark('track-hub.com');
+        $resizer->save($thumbnailPath);
 
         return new Response(
             null,
