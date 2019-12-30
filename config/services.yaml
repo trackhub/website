@@ -82,6 +82,11 @@ services:
         arguments:
             - App\Entity\Place
 
+    App\Repository\Place\ImageRepository:
+        factory: ['@doctrine.orm.default_entity_manager', getRepository]
+        arguments:
+            - App\Entity\Place\Image
+
     App\Twig\TrackImageExtension:
         class: App\Twig\TrackImageExtension
         arguments:
