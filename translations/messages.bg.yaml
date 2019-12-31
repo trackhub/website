@@ -53,11 +53,11 @@ Visibility : Видимост
 by bike : с колело
 by foot : пешеходно
 cycling : колоездене
+form.place.type.bike_shop : Веломагазин
 form.place.type.drinking_fountain : Чешма
 form.place.type.generic : Общ тип
-form.place.type.restaurant : Ресторант
 form.place.type.hotel : Хотел
-form.place.type.bike_shop : Веломагазин
+form.place.type.restaurant : Ресторант
 hiking : пешеходен туризъм
 logout : изход
 public : публичен
