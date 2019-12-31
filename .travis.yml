@@ -16,7 +16,7 @@ jobs:
           php -v &&
           composer install --prefer-dist &&
           ./bin/console doctrine:schema:validate --skip-sync &&
-          ./vendor/bin/phpunit -c tests/phpunit/phpunit.xml --no-coverage
+          ./vendor/bin/phpunit -c tests/phpunit/phpunit.xml --no-coverage &&
           yarn install &&
           yarn encore dev &&
           yarn encore production
