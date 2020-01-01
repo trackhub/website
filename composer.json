@@ -7,7 +7,7 @@
         "ext-iconv": "*",
         "friendsofsymfony/user-bundle": "^2.1",
         "hwi/oauth-bundle": "^0.6.3",
-        "knplabs/knp-paginator-bundle": "^4.1",
+        "knplabs/knp-paginator-bundle": "^5.0",
         "php-http/guzzle6-adapter": "^1.1",
         "php-http/httplug-bundle": "^1.13",
         "sonata-project/doctrine-orm-admin-bundle": "^3.11",

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "df1dbdb3c3641cc9fb4bb0d3e7de04f5",
+    "content-hash": "49ebd56ba89e4a3e68b7c13d6fa75450",
     "packages": [
         {
             "name": "clue/stream-filter",
@@ -1937,38 +1937,39 @@
         },
         {
             "name": "knplabs/knp-paginator-bundle",
-            "version": "v4.1.1",
+            "version": "v5.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/KnpLabs/KnpPaginatorBundle.git",
-                "reference": "ea6ac65818a734a9afaa05270e162506e726c184"
+                "reference": "dcbd60ebf494cc10cedcd65237edc8d632cf675b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/KnpLabs/KnpPaginatorBundle/zipball/ea6ac65818a734a9afaa05270e162506e726c184",
-                "reference": "ea6ac65818a734a9afaa05270e162506e726c184",
+                "url": "https://api.github.com/repos/KnpLabs/KnpPaginatorBundle/zipball/dcbd60ebf494cc10cedcd65237edc8d632cf675b",
+                "reference": "dcbd60ebf494cc10cedcd65237edc8d632cf675b",
                 "shasum": ""
             },
             "require": {
-                "knplabs/knp-components": "^1.3 || ^2.0",
-                "php": "^7.1",
-                "symfony/framework-bundle": "^3.4 || ^4.0",
-                "symfony/translation": "^3.4 || ^4.0",
-                "twig/twig": "^2.0"
+                "knplabs/knp-components": "^2.0",
+                "php": "^7.2",
+                "symfony/framework-bundle": "^4.3 || ^5.0",
+                "symfony/translation": "^4.3 || ^5.0",
+                "twig/twig": "^2.0 || ^3.0"
             },
             "require-dev": {
-                "phpunit/phpunit": "^6.4 || ^8.0",
-                "symfony/expression-language": "^3.4 || ^4.0"
+                "phpunit/phpunit": "^7.5 || ^8.4",
+                "symfony/expression-language": "^4.3 || ^5.0",
+                "symfony/templating": "^3.4 || ^4.0"
             },
             "type": "symfony-bundle",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "4.1.x-dev"
+                    "dev-master": "5.0.x-dev"
                 }
             },
             "autoload": {
                 "psr-4": {
-                    "Knp\\Bundle\\PaginatorBundle\\": ""
+                    "Knp\\Bundle\\PaginatorBundle\\": "src"
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -1996,7 +1997,7 @@
                 "paginator",
                 "symfony"
             ],
-            "time": "2019-11-30T12:18:02+00:00"
+            "time": "2019-11-27T08:58:44+00:00"
         },
         {
             "name": "monolog/monolog",
