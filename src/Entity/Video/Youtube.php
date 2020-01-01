@@ -19,7 +19,7 @@ class Youtube
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Track")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Track", inversedBy="videosYoutube")
      */
     private $track;
 
