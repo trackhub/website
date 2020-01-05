@@ -2,6 +2,17 @@ label[for=file_input] {
     cursor: pointer;
 }
 
+.uploaded_images {
+    max-height: 300px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    white-space:nowrap;
+}
+
+.uploaded_images:hover {
+    overflow-x: auto;
+}
+
 @media all and (max-width: 950px) {
     .uploaded_images_all {
         max-height: unset;
@@ -25,7 +36,6 @@ label[for=file_input] {
 
 .uploaded_images img {
     margin-right: 3px;
-    margin-top: 3px;
     max-width: 300px;
     max-height: 300px;
 }
