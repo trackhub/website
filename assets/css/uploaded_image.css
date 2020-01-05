@@ -4,7 +4,7 @@ label[for=file_input] {
 
 .uploaded_images {
     max-height: 300px;
-    overflow-x: hidden;
+    overflow-x: auto;
     overflow-y: hidden;
     white-space:nowrap;
 }
