@@ -25,9 +25,9 @@ class Processor
         $this->twoPointsCheckers[] = $checker;
     }
 
-    public function addElevationNoiseReducer(ElevationNoiseReducerInterface $reductor)
+    public function addElevationNoiseReducer(ElevationNoiseReducerInterface $reducer)
     {
-        $this->elevationNoceReducer[] = $reductor;
+        $this->elevationNoceReducer[] = $reducer;
     }
 
     private function isPointReal(Point $pointA, Point $pointB): bool
