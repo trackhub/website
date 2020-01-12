@@ -6,6 +6,7 @@ use App\Entity\Track;
 use App\Entity\Track\Point;
 use App\Entity\Track\OptimizedPoint;
 use App\Entity\Track\Version;
+use App\Track\ElevationNoiseReduction\ElevationNoiseReducerInterface;
 
 class Processor
 {
@@ -14,9 +15,19 @@ class Processor
      */
     private $twoPointsCheckers = [];
 
+    /**
+     * @var ElevationNoiseReducerInterface[]
+     */
+    private $elevationNoceReducer = [];
+
     public function addTwoPointsChecker(TwoPointsChecker\PointCheckerInterface $checker)
     {
         $this->twoPointsCheckers[] = $checker;
+    }
+
+    public function addElevationNoiseReducer(ElevationNoiseReducerInterface $reductor)
+    {
+        $this->elevationNoceReducer[] = $reductor;
     }
 
     private function isPointReal(Point $pointA, Point $pointB): bool
@@ -51,7 +62,9 @@ class Processor
 
         foreach ($xml->trk as $track) {
             foreach ($track->trkseg as $trackSegment) {
-                $previousElevation = null;
+                /** @var Point */
+                $previousElevationPoint = null;
+                /** @var Point */
                 $previousRealPoint = null;
                 foreach ($trackSegment->trkpt as $trackPoint) {
                     $attributes = $trackPoint->attributes();
@@ -93,23 +106,22 @@ class Processor
                         $point->setElevation(floatval($trackPoint->ele));
                     }
 
+                    $elevationChange = 0;
                     if ($previousPoint) {
                         $distance = $point->distance($previousPoint);
                         $point->setDistance($distance + $previousPoint->getDistance());
 
-                        if ($previousElevation && $point->getElevation()) {
-                            if ($point->getElevation() > $previousElevation) {
-                                $elevationChange = $point->getElevation() - $previousElevation;
+                        if ($previousElevationPoint && $point->getElevation()) {
+                            if ($point->getElevation() > $previousElevationPoint->getElevation()) {
+                                $elevationChange = $point->getElevation() - $previousElevationPoint->getElevation();
                                 if ($previousRealPoint === null || $this->isPointReal($previousRealPoint, $point)) {
-                                    $positiveElevation += $elevationChange;
                                     $previousRealPoint = $point;
                                 } else {
                                     $point->setElevation();
                                 }
                             } else {
-                                $elevationChange = $previousElevation - $point->getElevation();
+                                $elevationChange = $previousElevationPoint->getElevation() - $point->getElevation();
                                 if ($previousRealPoint === null || $this->isPointReal($previousRealPoint, $point)) {
-                                    $negativeElevation += $elevationChange;
                                     $previousRealPoint = $point;
                                 } else {
                                     $point->setElevation();
@@ -122,10 +134,31 @@ class Processor
 
                     $order++;
 
-                    $previousPoint = $point;
                     if ($point->getElevation()) {
-                        $previousElevation = $point->getElevation();
+                        if ($previousElevationPoint === null) {
+                            $previousElevationPoint = $point;
+                        } elseif ($elevationChange !== 0) {
+                            $addElevation = true;
+                            foreach ($this->elevationNoceReducer as $noiseReducer) {
+                                if (!$noiseReducer->shouldCount($previousElevationPoint, $point)) {
+                                    $addElevation = false;
+                                    break;
+                                }
+                            }
+
+                            if ($addElevation) {
+                                if ($point->getElevation() > $previousElevationPoint->getElevation()) {
+                                    $positiveElevation += $elevationChange;
+                                } else {
+                                    $negativeElevation += $elevationChange;
+                                }
+
+                                $previousElevationPoint = $point;
+                            }
+                        }
                     }
+
+                    $previousPoint = $point;
                 }
             }
         }
