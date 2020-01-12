@@ -56,8 +56,8 @@ class ReprocessGpsData extends Command
             $processor->postProcess($track);
 
             $this->em->flush();
-
-            return 0;
         }
+
+        return 0;
     }
 }
