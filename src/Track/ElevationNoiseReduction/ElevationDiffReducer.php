@@ -4,6 +4,9 @@ namespace App\Track\ElevationNoiseReduction;
 
 use App\Entity\Track\Point;
 
+/**
+ * See https://www.gpsvisualizer.com/tutorials/elevation_gain.html
+ */
 class ElevationDiffReducer implements ElevationNoiseReducerInterface
 {
     /**
