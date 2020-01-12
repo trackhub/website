@@ -10,6 +10,7 @@ use App\Entity\Video\Youtube;
 use App\Form\Type\TrackVersion;
 use App\Repository\Track\SlugRepository;
 use App\Repository\TrackRepository;
+use App\Track\ElevationDataGenerator;
 use App\Track\Exporter;
 use App\Track\Processor;
 use Psr\Log\LoggerInterface;
@@ -359,7 +360,7 @@ class Track extends AbstractController
         ]);
     }
 
-    public function view($id, TrackRepository $repo, Request $request, Processor $processor)
+    public function view($id, TrackRepository $repo, Request $request, Processor $processor, ElevationDataGenerator $elevationGenerator)
     {
         $gps = $repo->findByIdOrSlug($id);
 
@@ -389,9 +390,9 @@ class Track extends AbstractController
             $pointsCollection[] = $item->getPoints()->toArray();
         }
 
-        $labels = $processor->generateElevationLables($pointsCollection, 150);
+        $labels = $elevationGenerator->generateElevationLables($pointsCollection, 150);
 
-        $values = $processor->generateElevationData($pointsCollection, $labels);
+        $values = $elevationGenerator->generateElevationData($pointsCollection, $labels);
 
         foreach ($labels as &$label) {
             $label = number_format($label, 0, '', ' ') . ' m';
