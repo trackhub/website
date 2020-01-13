@@ -24,7 +24,7 @@ class ReprocessGpsData extends Command
         parent::__construct();
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $processor = $this->processor;
         // @TODO use query and fetch tracks 1 by 1
@@ -57,5 +57,7 @@ class ReprocessGpsData extends Command
 
             $this->em->flush();
         }
+
+        return 0;
     }
 }

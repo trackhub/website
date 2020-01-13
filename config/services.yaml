@@ -105,8 +105,15 @@ services:
         arguments:
             - 40
 
+    App\Track\ElevationNoiseReduction\ElevationDiffReducer:
+        arguments:
+            - 10
+
     App\Track\Processor:
         calls:
             - method: addTwoPointsChecker
               arguments:
                   - '@App\Track\TwoPointsChecker\ElevationChecker'
+            - method: addElevationNoiseReducer
+              arguments:
+                  - '@App\Track\ElevationNoiseReduction\ElevationDiffReducer'

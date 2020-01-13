@@ -6,6 +6,7 @@ use App\Entity\Track;
 use App\Entity\Track\Point;
 use App\Entity\Track\OptimizedPoint;
 use App\Entity\Track\Version;
+use App\Track\ElevationNoiseReduction\ElevationNoiseReducerInterface;
 
 class Processor
 {
@@ -14,9 +15,19 @@ class Processor
      */
     private $twoPointsCheckers = [];
 
+    /**
+     * @var ElevationNoiseReducerInterface[]
+     */
+    private $elevationNoceReducer = [];
+
     public function addTwoPointsChecker(TwoPointsChecker\PointCheckerInterface $checker)
     {
         $this->twoPointsCheckers[] = $checker;
+    }
+
+    public function addElevationNoiseReducer(ElevationNoiseReducerInterface $reducer)
+    {
+        $this->elevationNoceReducer[] = $reducer;
     }
 
     private function isPointReal(Point $pointA, Point $pointB): bool
@@ -51,7 +62,9 @@ class Processor
 
         foreach ($xml->trk as $track) {
             foreach ($track->trkseg as $trackSegment) {
-                $previousElevation = null;
+                /** @var Point */
+                $previousElevationPoint = null;
+                /** @var Point */
                 $previousRealPoint = null;
                 foreach ($trackSegment->trkpt as $trackPoint) {
                     $attributes = $trackPoint->attributes();
@@ -93,23 +106,22 @@ class Processor
                         $point->setElevation(floatval($trackPoint->ele));
                     }
 
+                    $elevationChange = 0;
                     if ($previousPoint) {
                         $distance = $point->distance($previousPoint);
                         $point->setDistance($distance + $previousPoint->getDistance());
 
-                        if ($previousElevation && $point->getElevation()) {
-                            if ($point->getElevation() > $previousElevation) {
-                                $elevationChange = $point->getElevation() - $previousElevation;
+                        if ($previousElevationPoint && $point->getElevation()) {
+                            if ($point->getElevation() > $previousElevationPoint->getElevation()) {
+                                $elevationChange = $point->getElevation() - $previousElevationPoint->getElevation();
                                 if ($previousRealPoint === null || $this->isPointReal($previousRealPoint, $point)) {
-                                    $positiveElevation += $elevationChange;
                                     $previousRealPoint = $point;
                                 } else {
                                     $point->setElevation();
                                 }
                             } else {
-                                $elevationChange = $previousElevation - $point->getElevation();
+                                $elevationChange = $previousElevationPoint->getElevation() - $point->getElevation();
                                 if ($previousRealPoint === null || $this->isPointReal($previousRealPoint, $point)) {
-                                    $negativeElevation += $elevationChange;
                                     $previousRealPoint = $point;
                                 } else {
                                     $point->setElevation();
@@ -122,10 +134,31 @@ class Processor
 
                     $order++;
 
-                    $previousPoint = $point;
                     if ($point->getElevation()) {
-                        $previousElevation = $point->getElevation();
+                        if ($previousElevationPoint === null) {
+                            $previousElevationPoint = $point;
+                        } elseif ($elevationChange !== 0) {
+                            $addElevation = true;
+                            foreach ($this->elevationNoceReducer as $noiseReducer) {
+                                if (!$noiseReducer->shouldCount($previousElevationPoint, $point)) {
+                                    $addElevation = false;
+                                    break;
+                                }
+                            }
+
+                            if ($addElevation) {
+                                if ($point->getElevation() > $previousElevationPoint->getElevation()) {
+                                    $positiveElevation += $elevationChange;
+                                } else {
+                                    $negativeElevation += $elevationChange;
+                                }
+
+                                $previousElevationPoint = $point;
+                            }
+                        }
                     }
+
+                    $previousPoint = $point;
                 }
             }
         }
@@ -187,120 +220,5 @@ class Processor
     public function postProcess(Track $track)
     {
         $track->recalculateEdgesCache();
-    }
-
-    public function generateElevationLables(iterable $pointCollection, int $pointsCount)
-    {
-        $longestDistance = 0;
-        $labels = [];
-
-        foreach ($pointCollection as $points) {
-            $lastPoint = end($points);
-            if ($lastPoint->getDistance() > $longestDistance) {
-                $longestDistance = $lastPoint->getDistance();
-            }
-        }
-
-        $labelDistance = $longestDistance / $pointsCount;
-        for ($q = 0; $q < $pointsCount; $q++) {
-            $labels[] = $labelDistance * $q;
-        }
-
-        return $labels;
-    }
-
-    /**
-     * @param Point[][] $pointCollection
-     * @param iterable $labels
-     *
-     * @return array
-     */
-    public function generateElevationData(iterable $pointCollection, iterable $labels): array
-    {
-        $return = [];
-
-        foreach ($pointCollection as $item) {
-            reset($item);
-            $return[] = [];
-        }
-
-        $collectionsCount = count($pointCollection);
-
-        foreach ($labels as $labelIndex => $labelDistance) {
-            $lastKnownElevation = null;
-            for ($q = 0; $q < $collectionsCount; $q++) {
-                $currentPoint = current($pointCollection[$q]);
-
-                if ($currentPoint === false) {
-                    continue;
-                }
-
-                if ($currentPoint->getElevation()) {
-                    $lastKnownElevation = $currentPoint->getElevation();
-                }
-
-                // case: skip point
-                while ($currentPoint && $currentPoint->getDistance() < $labelDistance) {
-                    $currentPoint = next($pointCollection[$q]);
-                    if ($currentPoint === false) {
-                        break;
-                    }
-
-                    if ($currentPoint->getElevation()) {
-                        $lastKnownElevation = $currentPoint->getElevation();
-                    }
-                }
-
-                if ($currentPoint === false) {
-                    continue;
-                }
-
-                // case: skip label
-                if (isset($labels[$labelIndex + 1])) {
-                    $nextLabelDistance = $labels[$labelIndex + 1];
-                    if ($nextLabelDistance < $currentPoint->getDistance()) {
-                        $return[$q][] = $lastKnownElevation;
-                        continue;
-                    }
-                }
-
-
-                $return[$q][] = $this->getPointElevation($currentPoint, $pointCollection[$q], $lastKnownElevation);
-                next($pointCollection[$q]);
-            }
-        }
-
-        return $return;
-    }
-
-    /**
-     * Return point elevation.
-     * If there is no elevation data then use siblings to generate the elevation
-     */
-    public function getPointElevation(Point $point, iterable $pointCollection, $defaultElevation = 0): ?float
-    {
-        if ($point->getElevation()) {
-            return $point->getElevation();
-        }
-
-        reset($pointCollection);
-        while ($point !== current($pointCollection)) {
-            next($pointCollection);
-        }
-        next($pointCollection);
-
-        while ($previousPoint = prev($pointCollection)) {
-            if ($previousPoint->getElevation()) {
-                return $previousPoint->getElevation();
-            }
-        }
-
-        while ($nextPoint = next($pointCollection)) {
-            if ($nextPoint->getElevation()) {
-                return $nextPoint->getElevation();
-            }
-        }
-
-        return $defaultElevation;
     }
 }
