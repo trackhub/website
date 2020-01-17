@@ -1,0 +1,6 @@
+Places:
+  type: object
+  config:
+    fields:
+      places:
+        type: "[Place]"

@@ -1,0 +1,18 @@
+Query:
+  type: object
+  config:
+    fields:
+      place:
+        type: "Place"
+        args:
+          id:
+            type: "String"
+        resolve: "@=resolver('Place', [args])"
+      places:
+        type: "Places"
+        args:
+          limit:
+            type: "Int"
+        resolve: "@=resolver('Places', [args])"
+
+

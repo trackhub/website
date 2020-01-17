@@ -1,0 +1,6 @@
+Place:
+  type: object
+  config:
+    fields:
+      nameEn:
+        type: "String"
