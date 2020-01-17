@@ -8,6 +8,7 @@
         "friendsofsymfony/user-bundle": "^2.1",
         "hwi/oauth-bundle": "^0.6.3",
         "knplabs/knp-paginator-bundle": "^5.0",
+        "overblog/graphql-bundle": "^0.13.1",
         "php-http/guzzle6-adapter": "^1.1",
         "php-http/httplug-bundle": "^1.13",
         "sonata-project/doctrine-orm-admin-bundle": "^3.11",
@@ -28,6 +29,7 @@
         "tekstove/url-video-parser": "^1.0"
     },
     "require-dev": {
+        "overblog/graphiql-bundle": "^0.2.0",
         "phpunit/phpunit": "^8.1",
         "symfony/debug-bundle": "*",
         "symfony/maker-bundle": "^1.12",
