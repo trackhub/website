@@ -37,7 +37,8 @@ services:
     app.oauth.provider:
         class: App\Security\Core\OAuthUserProvider
         arguments:
-            - '@fos_user.user_manager'
+            - '@doctrine'
+            - App\Entity\User
             - facebook: facebookId
 
     app.user.force.terms:
