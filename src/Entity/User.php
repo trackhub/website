@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use App\Entity\Track\VersionRating;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
 
@@ -36,6 +38,38 @@ class User implements UserInterface
      */
     private $facebookId;
 
+    /**
+     * @ORM\Column(type="string", length=180, nullable=false)
+     */
+    private $email;
+
+    /**
+     * @ORM\Column(type="string", length=180, nullable=false)
+     */
+    private $nickname;
+
+    /**
+     * @ORM\Column(type="integer", length=1)
+     */
+    private $enabled;
+
+    /**
+     * @ORM\OneToMany(
+     *     targetEntity="App\Entity\Track\VersionRating",
+     *     mappedBy="user",
+     *     cascade={"persist", "remove"},
+     *     orphanRemoval=true
+     * )
+     */
+    private $ratings;
+
+    public function __construct()
+    {
+        parent::__construct();
+
+        $this->ratings = new ArrayCollection();
+    }
+
     public function getId(): ?string
     {
         return $this->id;
@@ -61,6 +95,46 @@ class User implements UserInterface
         $this->facebookId = $facebookId;
     }
 
+    /**
+     * Get user e-mail
+     *
+     * @return string|null
+     */
+    public function getEmail(): ?string
+    {
+        return $this->email;
+    }
+
+    /**
+     * Set user e-mail
+     *
+     * @param $email
+     */
+    public function setEmail(string $email): void
+    {
+        $this->email = $email;
+    }
+
+    /**
+     * Get user nickname
+     *
+     * @return string
+     */
+    public function getNickname(): string
+    {
+        return $this->nickname;
+    }
+
+    /**
+     * Set user nickname
+     *
+     * @param string $nickname
+     */
+    public function setNickname(string $nickname): void
+    {
+        $this->nickname = $nickname;
+    }
+
     public function isAcceptedTerms()
     {
         if ($this->termsAccepted === null) {
@@ -83,6 +157,26 @@ class User implements UserInterface
     public function getUsername(): string
     {
         return (string) $this->id;
+    }
+
+    /**
+     * Check if user is enabled
+     *
+     * @return bool
+     */
+    public function getEnabled(): bool
+    {
+        return $this->enabled;
+    }
+
+    /**
+     * Enable/Disable user
+     *
+     * @param bool $enabled
+     */
+    public function setEnabled(bool $enabled): void
+    {
+        $this->enabled = $enabled;
     }
 
     /**
@@ -127,5 +221,13 @@ class User implements UserInterface
     {
         // If you store any temporary, sensitive data on the user, clear it here
         // $this->plainPassword = null;
+    }
+
+    /**
+     * @return ArrayCollection|VersionRating[]
+     */
+    public function getRatings()
+    {
+        return $this->ratings;
     }
 }

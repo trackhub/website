@@ -59,6 +59,12 @@ services:
         tags:
             - { name: sonata.admin, manager_type: orm, group: user, label: 'User' }
 
+    App\Repository\UserRepository:
+        class: App\Repository\UserRepository
+        factory: ['@doctrine.orm.default_entity_manager', getRepository]
+        arguments:
+            - App\Entity\User
+
     App\Repository\TrackRepository:
         class: App\Repository\TrackRepository
         factory: ['@doctrine.orm.default_entity_manager', getRepository]

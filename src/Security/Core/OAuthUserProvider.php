@@ -2,6 +2,7 @@
 
 namespace App\Security\Core;
 
+use App\Entity\User;
 use HWI\Bundle\OAuthBundle\OAuth\Response\UserResponseInterface;
 use HWI\Bundle\OAuthBundle\Security\Core\User\EntityUserProvider;
 use HWI\Bundle\OAuthBundle\Security\Core\Exception\AccountNotLinkedException;
@@ -14,8 +15,19 @@ class OAuthUserProvider extends EntityUserProvider
      */
     public function loadUserByOAuthUserResponse(UserResponseInterface $response)
     {
-        $resourceOwnerName = $response->getResourceOwner()->getName();
+        dump($this->em->getRepository(User::class));
+        return null;
+        try {
+            parent::loadUserByUsername($response);
+        } catch (UsernameNotFoundException $e) {
+            var_dump("adasdasdasd");
+            die();
+        }
 
+
+
+
+        $resourceOwnerName = $response->getResourceOwner()->getName();
 
 
         if (!isset($this->properties[$resourceOwnerName])) {
@@ -23,39 +35,28 @@ class OAuthUserProvider extends EntityUserProvider
         }
 
         $id = $response->getUsername();
-        var_dump($id);
-//        $user = $this->findUser(array($this->properties[$resourceOwnerName] => $id));
+        $user = $this->findUser(array($this->properties[$resourceOwnerName] => $id));
+        dump($user);
+        die();
 
-//        var_dump($user);
-//        die();
-
-//        if ($user === null) {
-//            /**
-//             * @TODO: Try to fetch user from email
-//             */
-//            throw new UsernameNotFoundException(sprintf("User '%s' not found.", $id));
-//        }
-
-        /**
-         * If the user doesn't exist create a new one
-         */
-        $user = null;
-//        var_dump($user);
-//        die();
         if ($user === null) {
             $user = new \App\Entity\User();
-
+            $user->setNickname($response->getNickname());
+            $user->setEmail($response->getEmail());
             $user->setFacebookId($id);
             $user->acceptTerms();
             $user->setRoles(['ROLE_USER']);
-
-
-            $this->em->persist($user);
+            $user->setEnabled(true);
 
             var_dump($user);
             die();
 
-            $this->em->flush();
+//            $this->em->persist($user);
+
+//            var_dump($user);
+
+
+//            $this->em->flush();
 
 
 

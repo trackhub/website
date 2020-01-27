@@ -2,12 +2,12 @@
 
 namespace App\EntityTraits;
 
-use App\Entity\User\User;
+use App\Entity\User;
 
 trait SendByTrait
 {
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\User\User")
+     * @ORM\ManyToOne(targetEntity="App\Entity\User")
      */
     private $sendBy;
 

@@ -6,7 +6,6 @@ use App\Contract\CreatedAtInterface;
 use App\Entity\Track\Image;
 use App\Entity\Track\OptimizedPoint;
 use App\Entity\Track\Version;
-use App\Entity\User\User;
 use App\Entity\Video\Youtube;
 use App\EntityTraits\NameTrait;
 use App\EntityTraits\SendByTrait;
