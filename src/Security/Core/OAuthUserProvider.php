@@ -5,7 +5,6 @@ namespace App\Security\Core;
 use App\Entity\User\User;
 use HWI\Bundle\OAuthBundle\OAuth\Response\UserResponseInterface;
 use HWI\Bundle\OAuthBundle\Security\Core\User\EntityUserProvider;
-use HWI\Bundle\OAuthBundle\Security\Core\Exception\AccountNotLinkedException;
 use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
 
 class OAuthUserProvider extends EntityUserProvider
