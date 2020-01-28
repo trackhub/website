@@ -15,13 +15,22 @@ class OAuthUserProvider extends EntityUserProvider
      */
     public function loadUserByOAuthUserResponse(UserResponseInterface $response)
     {
-        dump($this->em->getRepository(User::class));
-        return null;
         try {
-            parent::loadUserByUsername($response);
+            return parent::loadUserByOAuthUserResponse($response);
         } catch (UsernameNotFoundException $e) {
-            var_dump("adasdasdasd");
-            die();
+            $user = new \App\Entity\User();
+            $user->setNickname($response->getNickname());
+            $user->setEmail($response->getEmail());
+            $user->setFacebookId($response->getUsername());
+            $user->acceptTerms();
+            $user->setRoles(['ROLE_USER']);
+            $user->setEnabled(true);
+
+            dump($user);
+            $this->em->persist($user);
+            $this->em->flush();
+
+            return $user;
         }
 
 

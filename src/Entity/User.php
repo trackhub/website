@@ -24,7 +24,7 @@ class User implements UserInterface
      */
 
     /**
-     * @ORM\Column(type="json")
+     * @ORM\Column(type="array")
      */
     private $roles = [];
 
@@ -65,8 +65,6 @@ class User implements UserInterface
 
     public function __construct()
     {
-        parent::__construct();
-
         $this->ratings = new ArrayCollection();
     }
 
@@ -156,7 +154,7 @@ class User implements UserInterface
      */
     public function getUsername(): string
     {
-        return (string) $this->id;
+        return $this->nickname;
     }
 
     /**

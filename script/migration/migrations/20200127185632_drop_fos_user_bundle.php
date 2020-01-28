@@ -23,6 +23,10 @@ class DropFosUserBundle extends AbstractMigration
                 DROP COLUMN salt;
             ALTER TABLE user
                 DROP COLUMN password_requested_at;
+            ALTER TABLE user
+                DROP COLUMN password;
+            ALTER TABLE user
+                DROP COLUMN confirmation_token;
         ");
 
         $this->query("
@@ -50,7 +54,10 @@ class DropFosUserBundle extends AbstractMigration
                 ADD salt VARCHAR(255) DEFAULT NULL;
             ALTER TABLE user
                 ADD password_requested_at DATETIME DEFAULT NULL;
-            
+            ALTER TABLE user
+                ADD password VARCHAR(255) NOT NULL;
+            ALTER TABLE user
+                ADD confirmation_token VARCHAR(180) DEFAULT NULL;
         ");
 
         $this->query("
