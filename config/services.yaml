@@ -38,7 +38,7 @@ services:
         class: App\Security\Core\OAuthUserProvider
         arguments:
             - '@doctrine'
-            - App\Entity\User
+            - App\Entity\User\User
             - facebook: facebookId
 
     app.user.force.terms:
@@ -55,7 +55,7 @@ services:
 
     app.admin.user:
         class: App\Admin\UserAdmin
-        arguments: [~, App\Entity\User, Sonata\AdminBundle\Controller\CRUDController]
+        arguments: [~, App\Entity\User\User, Sonata\AdminBundle\Controller\CRUDController]
         tags:
             - { name: sonata.admin, manager_type: orm, group: user, label: 'User' }
 
@@ -63,7 +63,7 @@ services:
         class: App\Repository\UserRepository
         factory: ['@doctrine.orm.default_entity_manager', getRepository]
         arguments:
-            - App\Entity\User
+            - App\Entity\User\User
 
     App\Repository\TrackRepository:
         class: App\Repository\TrackRepository

@@ -33,7 +33,7 @@ class VersionRating
 
     /**
      * @ORM\ManyToOne(
-     *     targetEntity="App\Entity\User",
+     *     targetEntity="App\Entity\User\User",
      *     inversedBy="ratings"
      * )
      * @ORM\JoinColumn(

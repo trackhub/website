@@ -7,7 +7,7 @@ use App\Entity\User;
 trait SendByTrait
 {
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\User")
+     * @ORM\ManyToOne(targetEntity="App\Entity\User\User")
      */
     private $sendBy;
 

@@ -2,7 +2,7 @@
 
 namespace App\Security\Core;
 
-use App\Entity\User;
+use App\Entity\User\User;
 use HWI\Bundle\OAuthBundle\OAuth\Response\UserResponseInterface;
 use HWI\Bundle\OAuthBundle\Security\Core\User\EntityUserProvider;
 use HWI\Bundle\OAuthBundle\Security\Core\Exception\AccountNotLinkedException;
@@ -18,7 +18,7 @@ class OAuthUserProvider extends EntityUserProvider
         try {
             return parent::loadUserByOAuthUserResponse($response);
         } catch (UsernameNotFoundException $e) {
-            $user = new \App\Entity\User();
+            $user = new User();
             $user->setNickname($response->getNickname());
             $user->setEmail($response->getEmail());
             $user->setFacebookId($response->getUsername());
