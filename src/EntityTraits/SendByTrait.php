@@ -2,7 +2,7 @@
 
 namespace App\EntityTraits;
 
-use App\Entity\User;
+use App\Entity\User\User;
 
 trait SendByTrait
 {

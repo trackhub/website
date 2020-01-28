@@ -9,6 +9,7 @@ use App\Entity\Track\Version;
 use App\Entity\Video\Youtube;
 use App\EntityTraits\NameTrait;
 use App\EntityTraits\SendByTrait;
+use App\Entity\User\User;
 use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
