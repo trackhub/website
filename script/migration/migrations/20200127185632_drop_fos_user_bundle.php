@@ -33,7 +33,6 @@ class DropFosUserBundle extends AbstractMigration
             ALTER TABLE user
                 CHANGE COLUMN username nickname VARCHAR(180) NOT NULL
         ");
-
     }
 
     public function down()
@@ -65,7 +64,5 @@ class DropFosUserBundle extends AbstractMigration
             CREATE UNIQUE INDEX UNIQ_8D93D649A0D96FBF ON user(email_canonical);
             CREATE UNIQUE INDEX UNIQ_8D93D649C05FB297 ON user(confirmation_token);
         ");
-
     }
-
 }
