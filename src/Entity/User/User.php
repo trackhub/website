@@ -68,18 +68,21 @@ class User implements UserInterface
         $this->ratings = new ArrayCollection();
     }
 
+    /**
+     * Get user id
+     *
+     * @return string|null
+     */
     public function getId(): ?string
     {
         return $this->id;
     }
 
-    public function setId(string $id): self
-    {
-        $this->id = $id;
-
-        return $this;
-    }
-
+    /**
+     * Get user facebook id
+     *
+     * @return string|null
+     */
     public function getFacebookId(): ?string
     {
         return $this->facebookId;
