@@ -49,7 +49,7 @@ class User implements UserInterface
     private $nickname;
 
     /**
-     * @ORM\Column(type="integer", length=1)
+     * @ORM\Column(type="boolean")
      */
     private $enabled;
 
