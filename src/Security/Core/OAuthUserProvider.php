@@ -30,7 +30,6 @@ class OAuthUserProvider extends EntityUserProvider
                 $user->setNickname($response->getNickname());
                 $user->setEmail($response->getEmail());
                 $user->setFacebookId($response->getUsername());
-                $user->acceptTerms();
                 $user->setRoles(['ROLE_USER']);
                 $user->setEnabled(true);
             }
