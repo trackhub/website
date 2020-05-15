@@ -117,3 +117,6 @@ services:
             - method: addElevationNoiseReducer
               arguments:
                   - '@App\Track\ElevationNoiseReduction\ElevationDiffReducer'
+
+    Potaka\BbcodeBundle\BbCode\TextToHtml:
+        alias: potaka.bbcode.full

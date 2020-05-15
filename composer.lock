@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "5b32b5d932020711b76969810b582eb8",
+    "content-hash": "5fd16b74883438ffbdc6eaa552968d19",
     "packages": [
         {
             "name": "clue/stream-filter",
@@ -3012,6 +3012,75 @@
                 "stopwatch"
             ],
             "time": "2019-11-18T08:10:48+00:00"
+        },
+        {
+            "name": "potaka/bbcode",
+            "version": "0.2.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/angelk/bbCode.git",
+                "reference": "526bfe8211fb917da20f377d407531437de60a93"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/angelk/bbCode/zipball/526bfe8211fb917da20f377d407531437de60a93",
+                "reference": "526bfe8211fb917da20f377d407531437de60a93",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.0",
+                "tekstove/url-video-parser": "^1.0.1"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "5.6.*"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "Potaka": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "php parser for bb code",
+            "time": "2017-02-24T19:18:34+00:00"
+        },
+        {
+            "name": "potaka/bbcode-bundle",
+            "version": "0.2.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/angelk/bbCodeBundle.git",
+                "reference": "bd5512d2bcddb1bd841469a66ff9af60b3f85f34"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/angelk/bbCodeBundle/zipball/bd5512d2bcddb1bd841469a66ff9af60b3f85f34",
+                "reference": "bd5512d2bcddb1bd841469a66ff9af60b3f85f34",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.1",
+                "potaka/bbcode": "~0.1",
+                "psr/cache": "^1.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "7.*"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "Potaka": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "bundle for php parser for bb code",
+            "time": "2018-03-11T16:08:49+00:00"
         },
         {
             "name": "psr/cache",

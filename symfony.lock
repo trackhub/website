@@ -203,6 +203,12 @@
             "ref": "f6f9ee3a511e9d9ad6a53d92fbaa1a709ed8c1ca"
         }
     },
+    "potaka/bbcode": {
+        "version": "0.2.1"
+    },
+    "potaka/bbcode-bundle": {
+        "version": "0.2.0"
+    },
     "psr/cache": {
         "version": "1.0.1"
     },

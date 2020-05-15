@@ -13,6 +13,7 @@ use App\Repository\TrackRepository;
 use App\Track\ElevationDataGenerator;
 use App\Track\Exporter;
 use App\Track\Processor;
+use Potaka\BbcodeBundle\BbCode\TextToHtml;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -360,7 +361,7 @@ class Track extends AbstractController
         ]);
     }
 
-    public function view($id, TrackRepository $repo, Request $request, Processor $processor, ElevationDataGenerator $elevationGenerator)
+    public function view($id, TrackRepository $repo, Request $request, Processor $processor, ElevationDataGenerator $elevationGenerator, TextToHtml $bbcode)
     {
         $gps = $repo->findByIdOrSlug($id);
 
@@ -455,10 +456,16 @@ class Track extends AbstractController
                 $appTitle .= ' mountain bike trail';
         }
 
+        $description = $gps->getDescription($request->getLocale());
+        if ($description) {
+            $description = $bbcode->getHtml($description);
+        }
+
         return $this->render(
             'gps/view.html.twig',
             [
                 'track' => $gps,
+                'trackDescriptionHtml' => $description,
                 'elevationData' => $dataSets,
                 'elevationLabels' => $labels,
                 'app_canonical_url' => $canonicalUrl,
