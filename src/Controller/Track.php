@@ -61,7 +61,14 @@ class Track extends AbstractController
             $track->addOptimizedPoints($optimizedPoints);
             $track->addVersion($trackVersion);
             $track->setType($form->get('type')->getData());
-            $track->setNameEn($form->get('nameEn')->getData());
+
+            $purifier = new \HTMLPurifier();
+
+            $track->setNameEn(
+//                $purifier->purify(
+                    $form->get('nameEn')->getData()
+//                )
+            );
             $track->setNameBg($form->get('nameBg')->getData());
             $track->setVisibility($form->get('visibility')->getData());
             $track->setDescriptionBg($form->get('descriptionBg')->getData());
@@ -455,10 +462,24 @@ class Track extends AbstractController
                 $appTitle .= ' mountain bike trail';
         }
 
+
+        $description = $gps->getDescription($request->getLocale());
+
+        if ($description) {
+
+
+            $c = \HTMLPurifier_Config::createDefault();
+            $c->set('HTML.AllowedElements', ['strong', 'br', 'p']);
+            $purifier = new \HTMLPurifier($c);
+
+            $description = $purifier->purify($description);
+        }
+
         return $this->render(
             'gps/view.html.twig',
             [
                 'track' => $gps,
+                'trackDescription' => $description,
                 'elevationData' => $dataSets,
                 'elevationLabels' => $labels,
                 'app_canonical_url' => $canonicalUrl,

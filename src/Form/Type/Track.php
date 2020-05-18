@@ -126,6 +126,9 @@ class Track extends AbstractType
             [
                 'required' => false,
                 'label' => 'Description in English',
+                'attr' => [
+                    'data-html' => 'wysiwyg',
+                ]
             ]
         );
     }

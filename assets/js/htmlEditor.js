@@ -3,23 +3,15 @@ tinymceScript.type = 'text/javascript';
 tinymceScript.async = false;
 tinymceScript.referrerpolicy = 'origin';
 
-/*
-
-FIX ME
-
-DYNAMIC API KEY!
-
-
-
- */
-
+// API KEY should be dynamic,
+// but I don't think there is an easy way to make it dynamic
 tinymceScript.src = 'https://cdn.tiny.cloud/1/5j7e43rripdv3l4i30u28602hqqohvnvoaspxn29rroulhm0/tinymce/5/tinymce.min.js';
 
 document.head.appendChild(tinymceScript);
 
 tinymceScript.onload = function() {
     tinyMCE.init({
-        selector: '#track_descriptionEn', /* FIXME */
+        selector: '[data-html="wysiwyg"]',
         toolbar: 'undo redo bold italic',
         statusbar: true,
         menubar: false
