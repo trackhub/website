@@ -12,7 +12,8 @@ document.head.appendChild(tinymceScript);
 tinymceScript.onload = function() {
     tinyMCE.init({
         selector: '[data-html="wysiwyg"]',
-        toolbar: 'undo redo bold italic',
+        toolbar: 'undo redo bold italic link numlist bullist',
+        plugins: 'lists link',
         statusbar: true,
         menubar: false
     });

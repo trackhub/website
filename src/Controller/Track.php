@@ -466,12 +466,25 @@ class Track extends AbstractController
         $description = $gps->getDescription($request->getLocale());
 
         if ($description) {
-
-
             $c = \HTMLPurifier_Config::createDefault();
-            $c->set('HTML.AllowedElements', ['strong', 'br', 'p']);
+
+            $c->set(
+                'HTML.AllowedElements',
+                [
+                    'a',
+                    'em',
+                    'strong',
+                    'br',
+                    'p',
+                    'span',
+                    'ul',
+                    'li',
+                    'ol',
+                ]
+            );
             $purifier = new \HTMLPurifier($c);
 
+            dump($description); // @FIXME
             $description = $purifier->purify($description);
         }
 
