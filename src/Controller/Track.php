@@ -8,6 +8,7 @@ use App\Entity\Track\VersionRating;
 use App\Entity\Track\Version;
 use App\Entity\Video\Youtube;
 use App\Form\Type\TrackVersion;
+use App\Html\Purifier;
 use App\Repository\Track\SlugRepository;
 use App\Repository\TrackRepository;
 use App\Track\ElevationDataGenerator;
@@ -29,7 +30,7 @@ use Tekstove\UrlVideoParser\Youtube\YoutubeParser;
 
 class Track extends AbstractController
 {
-    public function new(Request $request, LoggerInterface $logger, SlugRepository $slugRepo, Processor $processor)
+    public function new(Request $request, LoggerInterface $logger, SlugRepository $slugRepo, Processor $processor, Purifier $htmlPurifier)
     {
         $form = $this->createForm(\App\Form\Type\Track::class);
         $form->add('submit', SubmitType::class);
@@ -62,13 +63,7 @@ class Track extends AbstractController
             $track->addVersion($trackVersion);
             $track->setType($form->get('type')->getData());
 
-            $purifier = new \HTMLPurifier();
-
-            $track->setNameEn(
-//                $purifier->purify(
-                    $form->get('nameEn')->getData()
-//                )
-            );
+            $track->setNameEn($form->get('nameEn')->getData());
             $track->setNameBg($form->get('nameBg')->getData());
             $track->setVisibility($form->get('visibility')->getData());
             $track->setDescriptionBg($form->get('descriptionBg')->getData());
@@ -367,7 +362,7 @@ class Track extends AbstractController
         ]);
     }
 
-    public function view($id, TrackRepository $repo, Request $request, Processor $processor, ElevationDataGenerator $elevationGenerator)
+    public function view($id, TrackRepository $repo, Request $request, Processor $processor, ElevationDataGenerator $elevationGenerator, Purifier $purifier)
     {
         $gps = $repo->findByIdOrSlug($id);
 
@@ -466,25 +461,6 @@ class Track extends AbstractController
         $description = $gps->getDescription($request->getLocale());
 
         if ($description) {
-            $c = \HTMLPurifier_Config::createDefault();
-
-            $c->set(
-                'HTML.AllowedElements',
-                [
-                    'a',
-                    'em',
-                    'strong',
-                    'br',
-                    'p',
-                    'span',
-                    'ul',
-                    'li',
-                    'ol',
-                ]
-            );
-            $purifier = new \HTMLPurifier($c);
-
-            dump($description); // @FIXME
             $description = $purifier->purify($description);
         }
 

@@ -117,3 +117,15 @@ services:
             - method: addElevationNoiseReducer
               arguments:
                   - '@App\Track\ElevationNoiseReduction\ElevationDiffReducer'
+
+    HTMLPurifier_Config:
+        class: HTMLPurifier_Config
+        factory: ['HTMLPurifier_Config', createDefault]
+        calls:
+            - [set, [HTML.AllowedElements, ['a','em','strong','br','p','span','ul','li','ol']]]
+            - [set, [HTML.AllowedAttributes, ['*.style', 'a.title', 'a.href']]]
+
+    HTMLPurifier:
+        class: HTMLPurifier
+        arguments:
+            - '@HTMLPurifier_Config'
