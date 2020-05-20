@@ -30,7 +30,7 @@ use Tekstove\UrlVideoParser\Youtube\YoutubeParser;
 
 class Track extends AbstractController
 {
-    public function new(Request $request, LoggerInterface $logger, SlugRepository $slugRepo, Processor $processor, Purifier $htmlPurifier)
+    public function new(Request $request, LoggerInterface $logger, SlugRepository $slugRepo, Processor $processor)
     {
         $form = $this->createForm(\App\Form\Type\Track::class);
         $form->add('submit', SubmitType::class);
