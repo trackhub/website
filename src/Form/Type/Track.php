@@ -117,6 +117,10 @@ class Track extends AbstractType
             [
                 'required' => false,
                 'label' => 'Description in Bulgarian',
+                'attr' => [
+                    'data-html' => 'wysiwyg',
+                    'style' => 'min-height: 300px',
+                ]
             ]
         );
 
@@ -128,6 +132,7 @@ class Track extends AbstractType
                 'label' => 'Description in English',
                 'attr' => [
                     'data-html' => 'wysiwyg',
+                    'style' => 'min-height: 300px',
                 ]
             ]
         );
