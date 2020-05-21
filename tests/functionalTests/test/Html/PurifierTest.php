@@ -33,4 +33,21 @@ class PurifierTest extends KernelTestCase
         $filtered = $this->purifier->purify($html);
         $this->assertStringNotContainsString($xss, $filtered);
     }
+
+    public function validHtml()
+    {
+        return [
+            ['<a href="//track-hub.com">test</a>'],
+            ['<em><strong>iiiiii</strong></em>'],
+        ];
+    }
+
+    /**
+     * @dataProvider validHtml
+     */
+    public function testValidHtml($html)
+    {
+        $filtered = $this->purifier->purify($html);
+        $this->assertSame($html, $filtered);
+    }
 }
