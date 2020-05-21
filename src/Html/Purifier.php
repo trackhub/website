@@ -13,7 +13,8 @@ class Purifier
         $this->htmlPurifier = $htmlPurifier;
     }
 
-    public function purify(string $html) : string {
+    public function purify(string $html) : string
+    {
         return $this->htmlPurifier->purify($html);
     }
 }
