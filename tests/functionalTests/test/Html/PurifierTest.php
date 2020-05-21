@@ -7,7 +7,7 @@ use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 class PurifierTest extends KernelTestCase
 {
-    private $purifier;
+    private Purifier $purifier;
 
     public function setUp(): void
     {
@@ -28,7 +28,7 @@ class PurifierTest extends KernelTestCase
     /**
      * @dataProvider xssCases
      */
-    public function testXss($html, $xss)
+    public function testXss(string $html, string $xss)
     {
         $filtered = $this->purifier->purify($html);
         $this->assertStringNotContainsString($xss, $filtered);
