@@ -458,17 +458,10 @@ class Track extends AbstractController
         }
 
 
-        $description = $gps->getDescription($request->getLocale());
-
-        if ($description) {
-            $description = $purifier->purify($description);
-        }
-
         return $this->render(
             'gps/view.html.twig',
             [
                 'track' => $gps,
-                'trackDescription' => $description,
                 'elevationData' => $dataSets,
                 'elevationLabels' => $labels,
                 'app_canonical_url' => $canonicalUrl,

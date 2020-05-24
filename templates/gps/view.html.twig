@@ -18,9 +18,9 @@
         <a href="{{ path('hwi_oauth_connect') }}" class="btn btn-success">{{ 'Add pictures'|trans }}</a>
     {% endif %}
 
-    {% if trackDescription %}
+    {% if track.description(app.request.locale) %}
         <hr>
-        {{ trackDescription|raw }}
+        {{ track.description(app.request.locale)|raw }}
     {% endif %}
 
     <hr>
