@@ -15,8 +15,8 @@ class TrackDescriptionHtmlEscape extends AbstractMigration
             $this->query('
                 UPDATE track
                 SET description_en = "' . $en . '", description_bg = "' . $bg . '"
-                WHERE id = "' . $trackData['id'] . '"'
-            );
+                WHERE id = "' . $trackData['id'] . '"
+            ');
         }
     }
 }
