@@ -8,7 +8,6 @@ use App\Entity\Track\VersionRating;
 use App\Entity\Track\Version;
 use App\Entity\Video\Youtube;
 use App\Form\Type\TrackVersion;
-use App\Html\Purifier;
 use App\Repository\Track\SlugRepository;
 use App\Repository\TrackRepository;
 use App\Track\ElevationDataGenerator;
@@ -362,7 +361,7 @@ class Track extends AbstractController
         ]);
     }
 
-    public function view($id, TrackRepository $repo, Request $request, Processor $processor, ElevationDataGenerator $elevationGenerator, Purifier $purifier)
+    public function view($id, TrackRepository $repo, Request $request, Processor $processor, ElevationDataGenerator $elevationGenerator)
     {
         $gps = $repo->findByIdOrSlug($id);
 
