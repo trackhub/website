@@ -20,7 +20,8 @@
 
     <hr>
 
-    {{ 'Type'|trans }}: {{ place.type|app_place_type|trans }}
+    {{ 'Type'|trans }}: {{ place.type|app_place_type|trans }},
+    {{ 'Latitude'|trans }}: {{ place.lat }}, {{ 'Longitude'|trans }}: {{ place.lng }}
     <br>
 
     <!--- Initialize map --->
