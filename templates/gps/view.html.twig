@@ -20,7 +20,7 @@
 
     {% if track.description(app.request.locale) %}
         <hr>
-        {{ track.description(app.request.locale)|nl2br }}
+        {{ track.description(app.request.locale)|raw }}
     {% endif %}
 
     <hr>

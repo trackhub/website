@@ -61,6 +61,7 @@ class Track extends AbstractController
             $track->addOptimizedPoints($optimizedPoints);
             $track->addVersion($trackVersion);
             $track->setType($form->get('type')->getData());
+
             $track->setNameEn($form->get('nameEn')->getData());
             $track->setNameBg($form->get('nameBg')->getData());
             $track->setVisibility($form->get('visibility')->getData());
@@ -454,6 +455,7 @@ class Track extends AbstractController
             case \App\Entity\Track::TYPE_CYCLING:
                 $appTitle .= ' mountain bike trail';
         }
+
 
         return $this->render(
             'gps/view.html.twig',
