@@ -3,7 +3,6 @@ Add pictures: Добави снимки
 Add place : Добави място
 Add track : Добави следа
 Added : Добавена на
-Bike shop : Веломагазин
 Climb : Изкачване
 Descent : Спускане
 Description in Bulgarian: Описание на български
@@ -11,13 +10,11 @@ Description in English: Описание на английски
 Difficulty : Трудност
 Download main track : Свали главната следа
 Download selected versions : Свали избраните версии
-Drinking fountain : Чешма
 Edit : Промени
 File : Файл
 GPS tracks by track-hub.com : GPS следи от track-hub.com
 Generic : Общ тип
 Home : Начало
-Hotel : Хотел
 Image format is not allowed : Форматът на картинката не е позволен
 Include in export : Включи в експорта
 Latest pictures : Най-нови снимки
@@ -35,7 +32,6 @@ Picture from : Снимка от
 Places : Места
 Privacy Policy : Поверителност
 Rating : Рейтинг
-Restaurant : Ресторант
 Send by : Изпратена от
 Short link : Кратък линк
 Submit : Изпрати
@@ -53,12 +49,12 @@ Visibility : Видимост
 by bike : с колело
 by foot : пешеходно
 cycling : колоездене
-form.place.type.bike_shop : Веломагазин
-form.place.type.drinking_fountain : Чешма
-form.place.type.generic : Общ тип
-form.place.type.hotel : Хотел
-form.place.type.restaurant : Ресторант
 hiking : пешеходен туризъм
 logout : изход
+place.type.bike_shop : Веломагазин
+place.type.drinking_fountain : Чешма
+place.type.generic : Общ тип
+place.type.hotel : Хотел
+place.type.restaurant : Ресторант
 public : публичен
 unlisted : скрит
