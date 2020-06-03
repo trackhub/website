@@ -28,6 +28,7 @@ class Exporter
     {
         $xml = new \SimpleXMLElement('<gpx/>');
         $xml->addAttribute('version', '1.1');
+        $xml->addAttribute('xmlns', 'http://www.topografix.com/GPX/1/1');
         $xml->addAttribute('creator', 'track-hub.com: http://track-hub.com/');
 
         foreach ($versionCollection as $version) {
