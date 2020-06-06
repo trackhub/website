@@ -107,7 +107,7 @@ services:
 
     App\Track\ElevationNoiseReduction\ElevationDiffReducer:
         arguments:
-            - 10
+            - 40
 
     App\Track\Processor:
         calls:
