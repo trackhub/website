@@ -56,3 +56,12 @@ Example config in `/etc/hosts`
 ```
 
 If you use your own facebook application, then you have to fill credentials in `.env` file.
+
+# GPS info
+
+# GPS elevation accuracy
+Our ElevationDiffReducer have "buffer" of 40 metres.
+Elevation accuracy  
+* 121m - according to [Garmin](https://support.garmin.com/en-GB/?faq=QPc5x3ZFUv1QyoxITW2vZ6)
+* 31m - according to [Singletrack](https://www.singletracks.com/gps/gps-elevation-accuracy-test-smartphone-apps-vs-dedicated-gps/)
+* 10m - according to [gpsinformation.net](http://gpsinformation.net/main/altitude.htm)
