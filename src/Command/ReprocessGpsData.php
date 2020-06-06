@@ -29,7 +29,7 @@ class ReprocessGpsData extends Command
         $processor = $this->processor;
         // @TODO use query and fetch tracks 1 by 1
         $repo = $this->em->getRepository(Track::class);
-        $trackCollection = $repo->findBy(['id' => '118c3b3c-a826-11ea-adda-0242ac130002']);
+        $trackCollection = $repo->findAll();
         foreach ($trackCollection as $track) {
             /* @var $track Track */
             $output->writeln("Processing track {$track->getId()}", OutputInterface::VERBOSITY_VERBOSE);
