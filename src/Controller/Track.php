@@ -484,12 +484,37 @@ class Track extends AbstractController
         );
     }
 
-    public function download($id, TrackRepository $repo)
+    public function download($id, TrackRepository $repo, PlaceRepository $placeRepo)
     {
         $track = $repo->findOneBy(['id' => $id]);
 
-        $exporter = new Exporter();
-        $exported = $exporter->export($track->getVersions(), Exporter::FORMAT_GPX);
+        $exporter = new Exporter($track->getVersions());
+
+
+
+
+
+        $placesQueryBuilder = $placeRepo->createQueryBuilder('p');
+        $placeRepo->andWhereInCoordinates(
+            $placesQueryBuilder,
+            [],
+            $track->getPointNorthEastLat(),
+            $track->getPointSouthWestLat(),
+            $track->getPointNorthEastLng(),
+            $track->getPointSouthWestLng(),
+        );
+
+        $places = $placesQueryBuilder->getQuery()->getResult();
+
+
+
+
+
+
+
+
+        $exporter->addPlaces($places);
+        $exported = $exporter->export(Exporter::FORMAT_GPX);
 
         $response = new \Symfony\Component\HttpFoundation\Response(
             $exported,
@@ -508,8 +533,8 @@ class Track extends AbstractController
         $versionRepo = $this->getDoctrine()->getRepository(Version::class);
         $versionsCollection = $versionRepo->findBy(['id' => $versions]);
 
-        $exporter = new Exporter();
-        $exported = $exporter->export($versionsCollection, Exporter::FORMAT_GPX);
+        $exporter = new Exporter($versionsCollection);
+        $exported = $exporter->export(Exporter::FORMAT_GPX);
 
         $response = new \Symfony\Component\HttpFoundation\Response(
             $exported,
