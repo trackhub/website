@@ -124,5 +124,17 @@
                     alwaysShowClose: true
                 });
             });
+
+            {% for place in places %}
+                (function() {
+                    const place = new AppPlace(
+                        map,
+                        {{ place.lat }},
+                        {{ place.lng }}
+                    );
+                    place.show();
+                })();
+            {% endfor %}
+
         </script>
 {% endblock %}
