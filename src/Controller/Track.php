@@ -482,6 +482,7 @@ class Track extends AbstractController
             200,
             [
                 'Content-Disposition' => ResponseHeaderBag::DISPOSITION_ATTACHMENT . '; filename="track.gpx";',
+                'Content-Type' => 'application/octet-stream',
             ]
         );
 
@@ -502,6 +503,7 @@ class Track extends AbstractController
             200,
             [
                 'Content-Disposition' => ResponseHeaderBag::DISPOSITION_ATTACHMENT . '; filename="track.gpx";',
+                'Content-Type' => 'application/octet-stream',
             ]
         );
 
