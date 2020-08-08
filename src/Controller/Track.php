@@ -8,6 +8,7 @@ use App\Entity\Track\VersionRating;
 use App\Entity\Track\Version;
 use App\Entity\Video\Youtube;
 use App\Form\Type\TrackVersion;
+use App\Repository\PlaceRepository;
 use App\Repository\Track\SlugRepository;
 use App\Repository\TrackRepository;
 use App\Track\ElevationDataGenerator;
@@ -361,33 +362,45 @@ class Track extends AbstractController
         ]);
     }
 
-    public function view($id, TrackRepository $repo, Request $request, Processor $processor, ElevationDataGenerator $elevationGenerator)
+    public function view($id, Request $request, TrackRepository $repo, PlaceRepository $placeRepo, ElevationDataGenerator $elevationGenerator)
     {
-        $gps = $repo->findByIdOrSlug($id);
+        $track = $repo->findByIdOrSlug($id);
 
-        if (!$gps) {
+        if (!$track) {
             throw new NotFoundHttpException("Track not found");
         }
 
         $canonicalUrl = null;
-        if ($gps->getSlug()) {
+        if ($track->getSlug()) {
             $canonicalUrl = $this->generateUrl(
                 'gps-view',
-                ['id' => $gps->getSlug()],
+                ['id' => $track->getSlug()],
             );
         }
 
+        $placesQueryBuilder = $placeRepo->createQueryBuilder('p');
+        $placeRepo->andWhereInCoordinates(
+            $placesQueryBuilder,
+            [],
+            $track->getPointNorthEastLat(),
+            $track->getPointSouthWestLat(),
+            $track->getPointNorthEastLng(),
+            $track->getPointSouthWestLng(),
+        );
+
+        $places = $placesQueryBuilder->getQuery()->getResult();
+
         $pointsCollection = [];
 
-        foreach ($gps->getVersions() as $loopIndex => $version) {
+        foreach ($track->getVersions() as $loopIndex => $version) {
             $pointsCollection[] = $version->getPoints()->toArray();
         }
 
-        foreach ($gps->getDownhillVersions() as $loopIndex => $item) {
+        foreach ($track->getDownhillVersions() as $loopIndex => $item) {
             $pointsCollection[] = $item->getPoints()->toArray();
         }
 
-        foreach ($gps->getUphillVersions() as $loopIndex => $item) {
+        foreach ($track->getUphillVersions() as $loopIndex => $item) {
             $pointsCollection[] = $item->getPoints()->toArray();
         }
 
@@ -402,7 +415,7 @@ class Track extends AbstractController
 
         $dataSets = [];
         reset($values);
-        for ($q = 0; $q < $gps->getVersions()->count(); $q++) {
+        for ($q = 0; $q < $track->getVersions()->count(); $q++) {
             $currentValues = current($values);
             foreach ($currentValues as &$value) {
                 $value = (int) $value;
@@ -418,7 +431,7 @@ class Track extends AbstractController
             next($values);
         }
 
-        for ($q = 0; $q < count($gps->getDownhillVersions()); $q++) {
+        for ($q = 0; $q < count($track->getDownhillVersions()); $q++) {
             $currentValues = current($values);
             foreach ($currentValues as &$value) {
                 $value = (int) $value;
@@ -434,7 +447,7 @@ class Track extends AbstractController
             next($values);
         }
 
-        for ($q = 0; $q < count($gps->getUphillVersions()); $q++) {
+        for ($q = 0; $q < count($track->getUphillVersions()); $q++) {
             $currentValues = current($values);
             foreach ($currentValues as &$value) {
                 $value = (int) $value;
@@ -450,8 +463,8 @@ class Track extends AbstractController
             next($values);
         }
 
-        $appTitle = $gps->getName($request->getLocale());
-        switch ($gps->getType()) {
+        $appTitle = $track->getName($request->getLocale());
+        switch ($track->getType()) {
             case \App\Entity\Track::TYPE_CYCLING:
                 $appTitle .= ' mountain bike trail';
         }
@@ -460,22 +473,37 @@ class Track extends AbstractController
         return $this->render(
             'gps/view.html.twig',
             [
-                'track' => $gps,
+                'track' => $track,
                 'elevationData' => $dataSets,
                 'elevationLabels' => $labels,
+                'places' => $places,
                 'app_canonical_url' => $canonicalUrl,
                 'app_title' => $appTitle,
-                'canEdit' => $this->isGranted('edit', $gps),
+                'canEdit' => $this->isGranted('edit', $track),
             ]
         );
     }
 
-    public function download($id, TrackRepository $repo)
+    public function download($id, TrackRepository $repo, PlaceRepository $placeRepo)
     {
         $track = $repo->findOneBy(['id' => $id]);
 
-        $exporter = new Exporter();
-        $exported = $exporter->export($track->getVersions(), Exporter::FORMAT_GPX);
+        $exporter = new Exporter($track->getVersions());
+
+        $placesQueryBuilder = $placeRepo->createQueryBuilder('p');
+        $placeRepo->andWhereInCoordinates(
+            $placesQueryBuilder,
+            [],
+            $track->getPointNorthEastLat(),
+            $track->getPointSouthWestLat(),
+            $track->getPointNorthEastLng(),
+            $track->getPointSouthWestLng(),
+        );
+
+        $places = $placesQueryBuilder->getQuery()->getResult();
+
+        $exporter->addPlaces($places);
+        $exported = $exporter->export(Exporter::FORMAT_GPX);
 
         $response = new \Symfony\Component\HttpFoundation\Response(
             $exported,
@@ -489,14 +517,32 @@ class Track extends AbstractController
         return $response;
     }
 
-    public function downloadBatch(Request $request)
+    public function downloadBatch(Request $request, PlaceRepository $placeRepo)
     {
         $versions = $request->request->get('versions');
         $versionRepo = $this->getDoctrine()->getRepository(Version::class);
         $versionsCollection = $versionRepo->findBy(['id' => $versions]);
 
-        $exporter = new Exporter();
-        $exported = $exporter->export($versionsCollection, Exporter::FORMAT_GPX);
+        $exporter = new Exporter($versionsCollection);
+
+        if (!empty($versionsCollection)) {
+            $track = $versionsCollection[0]->getTrack();
+            $placesQueryBuilder = $placeRepo->createQueryBuilder('p');
+            $placeRepo->andWhereInCoordinates(
+                $placesQueryBuilder,
+                [],
+                $track->getPointNorthEastLat(),
+                $track->getPointSouthWestLat(),
+                $track->getPointNorthEastLng(),
+                $track->getPointSouthWestLng(),
+            );
+
+            $places = $placesQueryBuilder->getQuery()->getResult();
+
+            $exporter->addPlaces($places);
+        }
+
+        $exported = $exporter->export(Exporter::FORMAT_GPX);
 
         $response = new \Symfony\Component\HttpFoundation\Response(
             $exported,

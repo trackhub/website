@@ -19,6 +19,7 @@ window.chartJs = require('chart.js');
 window.lighBox = require('ekko-lightbox/dist/ekko-lightbox.js');
 
 window.AppTrack = require('./components/appTrack.js');
+window.AppPlace = require('./map/appPoint.js');
 window.StarRating = require('./components/starRating');
 
 window.MapControlFullScreen =  require('./map/control/fullScreen')

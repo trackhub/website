@@ -2,17 +2,43 @@
 
 namespace App\Track;
 
+use App\Entity\Place;
 use App\Entity\Track\Version;
 
 class Exporter
 {
     public const FORMAT_GPX = 'gpx';
 
-    public function export(iterable $versions, string $format): string
+    private iterable $versions;
+
+    /**
+     * @var []Place
+     */
+    private array $places;
+
+    public function __construct(iterable $versions)
+    {
+        $this->versions = $versions;
+        $this->places = [];
+    }
+
+    public function addPlace(Place $place)
+    {
+        $this->places[] = $place;
+    }
+
+    public function addPlaces(iterable $places)
+    {
+        foreach ($places as $place) {
+            $this->addPlace($place);
+        }
+    }
+
+    public function export(string $format): string
     {
         switch ($format) {
             case self::FORMAT_GPX:
-                $result = $this->exportGpx($versions);
+                $result = $this->exportGpx($this->versions);
                 break;
             default:
                 throw new \RuntimeException('Unknown format');
@@ -54,8 +80,22 @@ class Exporter
                 $wayPointXml = $xml->addChild('wpt');
                 $wayPointXml->addAttribute('lat', $wayPoint->getLat());
                 $wayPointXml->addAttribute('lon', $wayPoint->getLng());
-                $wayPointXml->addChild('name', $wayPointXml->getName());
+                $wayPointXml->addChild(
+                    'name',
+                    $wayPoint->getName() ?? 'waypoint'
+                );
             }
+        }
+
+        foreach ($this->places as $place) {
+            /* @var $place Place */
+            $wayPointXml = $xml->addChild('wpt');
+            $wayPointXml->addAttribute('lat', $place->getLat());
+            $wayPointXml->addAttribute('lon', $place->getLng());
+            $wayPointXml->addChild(
+                'name',
+                $place->getNameEn() ?? 'waypoint'
+            );
         }
 
         $stringResult = $xml->asXML();
