@@ -138,7 +138,7 @@
                     ahrefPop.innerText = 'View details';
 
                     {% if place.name(app.request.locale) %}
-                        ahrefPop.innerText = place.name(app.request.locale);
+                        ahrefPop.innerText = {{ place.name(app.request.locale)|json_encode|raw }};
                     {% endif %}
 
                     const popup = L.popup()
