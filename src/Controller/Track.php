@@ -490,10 +490,6 @@ class Track extends AbstractController
 
         $exporter = new Exporter($track->getVersions());
 
-
-
-
-
         $placesQueryBuilder = $placeRepo->createQueryBuilder('p');
         $placeRepo->andWhereInCoordinates(
             $placesQueryBuilder,
@@ -505,13 +501,6 @@ class Track extends AbstractController
         );
 
         $places = $placesQueryBuilder->getQuery()->getResult();
-
-
-
-
-
-
-
 
         $exporter->addPlaces($places);
         $exported = $exporter->export(Exporter::FORMAT_GPX);
@@ -528,13 +517,31 @@ class Track extends AbstractController
         return $response;
     }
 
-    public function downloadBatch(Request $request)
+    public function downloadBatch(Request $request, PlaceRepository $placeRepo)
     {
         $versions = $request->request->get('versions');
         $versionRepo = $this->getDoctrine()->getRepository(Version::class);
         $versionsCollection = $versionRepo->findBy(['id' => $versions]);
 
         $exporter = new Exporter($versionsCollection);
+
+        if (!empty($versionsCollection)) {
+            $track = $versionsCollection[0]->getTrack();
+            $placesQueryBuilder = $placeRepo->createQueryBuilder('p');
+            $placeRepo->andWhereInCoordinates(
+                $placesQueryBuilder,
+                [],
+                $track->getPointNorthEastLat(),
+                $track->getPointSouthWestLat(),
+                $track->getPointNorthEastLng(),
+                $track->getPointSouthWestLng(),
+            );
+
+            $places = $placesQueryBuilder->getQuery()->getResult();
+
+            $exporter->addPlaces($places);
+        }
+
         $exported = $exporter->export(Exporter::FORMAT_GPX);
 
         $response = new \Symfony\Component\HttpFoundation\Response(
