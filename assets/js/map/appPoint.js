@@ -9,6 +9,10 @@ class AppPoint {
     show() {
         this.marker.addTo(this.map);
     }
+
+    bindPopup(pop) {
+        this.marker.bindPopup(pop);
+    }
 }
 
 module.exports = AppPoint;

@@ -132,9 +132,22 @@
                         {{ place.lat }},
                         {{ place.lng }}
                     );
+
+                    const ahrefPop = document.createElement('a');
+                    ahrefPop.href = '/{{ app.request.locale }}/place/view/' + '{{ place.id }}';
+                    ahrefPop.innerText = 'View details';
+
+                    {% if place.name(app.request.locale) %}
+                        ahrefPop.innerText = place.name(app.request.locale);
+                    {% endif %}
+
+                    const popup = L.popup()
+                        .setLatLng([place.lat, place.lng])
+                        .setContent(ahrefPop.outerHTML);
+                    place.bindPopup(popup);
+
                     place.show();
                 })();
             {% endfor %}
-
         </script>
 {% endblock %}
