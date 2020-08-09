@@ -2,11 +2,24 @@
 
 namespace App\Repository;
 
+use App\Entity\Track;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\QueryBuilder;
 
 class PlaceRepository extends EntityRepository
 {
+    public function nearTrack(QueryBuilder $qb, Track $track, float $allowedTolerance = 0)
+    {
+        $this->andWhereInCoordinates(
+            $qb,
+            [],
+            $track->getPointNorthEastLat() + $allowedTolerance,
+            $track->getPointSouthWestLat() - $allowedTolerance,
+            $track->getPointNorthEastLng() + $allowedTolerance,
+            $track->getPointSouthWestLng() - $allowedTolerance,
+        );
+    }
+
     /**
      * Filter points by coordinates
      */

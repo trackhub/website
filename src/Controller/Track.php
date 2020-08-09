@@ -30,6 +30,14 @@ use Tekstove\UrlVideoParser\Youtube\YoutubeParser;
 
 class Track extends AbstractController
 {
+    /**
+     * 1 degree is ~111km
+     * 0.005 ~ 0.5km
+     * 0.01 ~ 1km
+     * 0.02 ~ 2km
+     */
+    protected const ALLOWED_PLACE_NEAR_TRACK_TOLERANCE = 0.02;
+
     public function new(Request $request, LoggerInterface $logger, SlugRepository $slugRepo, Processor $processor)
     {
         $form = $this->createForm(\App\Form\Type\Track::class);
@@ -379,14 +387,7 @@ class Track extends AbstractController
         }
 
         $placesQueryBuilder = $placeRepo->createQueryBuilder('p');
-        $placeRepo->andWhereInCoordinates(
-            $placesQueryBuilder,
-            [],
-            $track->getPointNorthEastLat(),
-            $track->getPointSouthWestLat(),
-            $track->getPointNorthEastLng(),
-            $track->getPointSouthWestLng(),
-        );
+        $placeRepo->nearTrack($placesQueryBuilder, $track, self::ALLOWED_PLACE_NEAR_TRACK_TOLERANCE);
 
         $places = $placesQueryBuilder->getQuery()->getResult();
 
@@ -491,14 +492,7 @@ class Track extends AbstractController
         $exporter = new Exporter($track->getVersions());
 
         $placesQueryBuilder = $placeRepo->createQueryBuilder('p');
-        $placeRepo->andWhereInCoordinates(
-            $placesQueryBuilder,
-            [],
-            $track->getPointNorthEastLat(),
-            $track->getPointSouthWestLat(),
-            $track->getPointNorthEastLng(),
-            $track->getPointSouthWestLng(),
-        );
+        $placeRepo->nearTrack($placesQueryBuilder, $track, self::ALLOWED_PLACE_NEAR_TRACK_TOLERANCE);
 
         $places = $placesQueryBuilder->getQuery()->getResult();
 
@@ -528,14 +522,7 @@ class Track extends AbstractController
         if (!empty($versionsCollection)) {
             $track = $versionsCollection[0]->getTrack();
             $placesQueryBuilder = $placeRepo->createQueryBuilder('p');
-            $placeRepo->andWhereInCoordinates(
-                $placesQueryBuilder,
-                [],
-                $track->getPointNorthEastLat(),
-                $track->getPointSouthWestLat(),
-                $track->getPointNorthEastLng(),
-                $track->getPointSouthWestLng(),
-            );
+            $placeRepo->nearTrack($placesQueryBuilder, $track, self::ALLOWED_PLACE_NEAR_TRACK_TOLERANCE);
 
             $places = $placesQueryBuilder->getQuery()->getResult();
 
