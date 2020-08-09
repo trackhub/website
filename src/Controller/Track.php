@@ -36,7 +36,7 @@ class Track extends AbstractController
      * 0.01 ~ 1km
      * 0.02 ~ 2km
      */
-    const ALLOWED_PLACE_NEAR_TRACK_TOLERANCE = 0.02;
+    protected const ALLOWED_PLACE_NEAR_TRACK_TOLERANCE = 0.02;
 
     public function new(Request $request, LoggerInterface $logger, SlugRepository $slugRepo, Processor $processor)
     {
