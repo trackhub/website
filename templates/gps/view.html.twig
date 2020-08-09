@@ -97,6 +97,27 @@
             {% endfor %}
         </div>
     {% endif %}
+
+    {% for place in places %}
+        {% if place.images is not empty %}
+            {{ 'Pictures from'|trans }}
+            <a href="{{ path('app_place_view', {id: place.id}) }}">
+                {{ place.name(app.request.locale) }}
+            </a>
+            <div class="uploaded_images" >
+                {% for image in place.images %}
+                    <a href="{{ app_place_image(image, 1280, 720) }}"
+                       data-toggle="lightbox"
+                       data-gallery="place-images"
+                       data-footer="&lt;a target=&quot;_blank&quot; href=&quot;{{ app_place_image(image, 3840, 2160) }}#&quot;&gt;{{ 'View full size'|trans() }}&lt;/a&gt;"
+                    >
+                        <img src="{{ app_place_image(image, 300, 300) }}">
+                    </a>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endfor %}
+
     {% include "include/ratingModal.html.twig" %}
 
 {% endblock %}
