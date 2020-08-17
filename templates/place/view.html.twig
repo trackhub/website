@@ -6,7 +6,11 @@
     </h1>
 
     {% if app.user %}
-        <label for="file_input" class="btn btn-success mb-0">{{ 'Add pictures'|trans }}</label>
+        <label for="file_input" id="file_input_label" class="btn btn-success mb-0"
+            title="You can drag and drop files here"
+        >
+            {{ 'Add pictures'|trans }}
+        </label>
         {% if canEdit %}
             <a href="{{ path('app_place_edit', {id: place.id}) }}" class="btn btn-info">{{ 'Edit'|trans }}</a>
         {% endif %}
@@ -78,7 +82,8 @@
                 {{ path('app_place_new_image', {id: place.id})|json_encode|raw }},
             {
                 'uploaded': {{ 'Uploaded'|json_encode|raw }}
-            }
+            },
+            document.getElementById('file_input_label')
         );
         {% endif %}
 
