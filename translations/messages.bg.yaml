@@ -57,5 +57,7 @@ place.type.drinking_fountain : Чешма
 place.type.generic : Общ тип
 place.type.hotel : Хотел
 place.type.restaurant : Ресторант
+place.type.view : Гледка
+place.type.waterfall : Водопад
 public : публичен
 unlisted : скрит

@@ -12,6 +12,8 @@ class Translations
             \App\Entity\Place::TYPE_DRINKING_RESTAURANT => 'place.type.restaurant',
             \App\Entity\Place::TYPE_DRINKING_HOTEL =>  'place.type.hotel',
             \App\Entity\Place::TYPE_BIKE_SHOP => 'place.type.bike_shop',
+            \App\Entity\Place::TYPE_WATERFALL => 'place.type.waterfall',
+            \App\Entity\Place::TYPE_VIEW => 'place.type.view',
         ];
     }
 
