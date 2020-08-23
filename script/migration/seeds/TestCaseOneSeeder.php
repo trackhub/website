@@ -38,7 +38,7 @@ class TestCaseOneSeeder extends AbstractSeed
             'send_by_id' => $user['id'],
         ])->saveData();
 
-        $versionId = uniqid();
+        $versionId = uniqid('t1_v1');
         $versionData = [
             'id' => $versionId,
             'track_id' => 'track-one',
@@ -51,7 +51,7 @@ class TestCaseOneSeeder extends AbstractSeed
         $version->insert($versionData)->saveData();
 
         $versionFileData = [
-            'id' => uniqid(),
+            'id' => uniqid('f_t1_v1'),
             'version_id' => $versionId,
             'created_at' => '2019-01-01 01:01:01',
             'file_content' => $gpxGenerator->generate(42, 24),
@@ -75,7 +75,7 @@ class TestCaseOneSeeder extends AbstractSeed
             'send_by_id' => $user['id'],
         ])->saveData();
 
-        $versionId = uniqid();
+        $versionId = uniqid('t2_v1');
 
         $versionData = [
             'id' => $versionId,
@@ -89,7 +89,7 @@ class TestCaseOneSeeder extends AbstractSeed
         $version->insert($versionData)->saveData();
 
         $versionFileData = [
-            'id' => uniqid(),
+            'id' => uniqid('t2_v2'),
             'version_id' => $versionId,
             'created_at' => '2019-01-01 01:01:01',
             'file_content' => $gpxGenerator->generate(43, 24),
@@ -114,7 +114,7 @@ class TestCaseOneSeeder extends AbstractSeed
             'send_by_id' => $user['id'],
         ])->saveData();
 
-        $versionId = uniqid();
+        $versionId = uniqid('t3_v1');
         $versionData = [
             'id' => $versionId,
             'track_id' => 'track-three',
@@ -127,7 +127,7 @@ class TestCaseOneSeeder extends AbstractSeed
         $version->insert($versionData)->saveData();
 
         $versionFileData = [
-            'id' => uniqid(),
+            'id' => uniqid('f_t3_v1'),
             'version_id' => $versionId,
             'created_at' => '2019-01-01 01:01:01',
             'file_content' => $gpxGenerator->generate(42, 24),

@@ -101,6 +101,10 @@ services:
         tags:
             - { name: twig.extension}
 
+    App\Twig\AlternateExtension:
+        tags:
+            - { name: twig.extension }
+
     App\Track\TwoPointsChecker\ElevationChecker:
         arguments:
             - 40
