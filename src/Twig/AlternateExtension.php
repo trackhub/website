@@ -13,12 +13,14 @@ use Twig\TwigFunction;
  */
 class AlternateExtension extends AbstractExtension
 {
-    private Request $request;
+    private ?Request $request;
     private UrlGeneratorInterface $router;
 
-    public function __construct(RequestStack $requestStack, UrlGeneratorInterface $router)
+    public function __construct(UrlGeneratorInterface $router, RequestStack $requestStack = null)
     {
-        $this->request = $requestStack->getCurrentRequest();
+        if ($requestStack) {
+            $this->request = $requestStack->getCurrentRequest();
+        }
         $this->router = $router;
     }
 
@@ -31,6 +33,10 @@ class AlternateExtension extends AbstractExtension
 
     public function alternate(): string
     {
+        if ($this->request === null) {
+            return '';
+        }
+
         $currentUri = $this->request->getRequestUri();
 
         // do not add alternates for non-translatable urls
@@ -49,7 +55,6 @@ class AlternateExtension extends AbstractExtension
             $escapedUrl = htmlspecialchars($alternateLocaleUrl, ENT_QUOTES);
             $return .= '<link rel="alternate" href="'. $escapedUrl .'" hreflang="' . $locale . '">' . PHP_EOL;
         }
-
 
         return $return;
     }
