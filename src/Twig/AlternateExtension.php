@@ -53,7 +53,7 @@ class AlternateExtension extends AbstractExtension
 
             $alternateLocaleUrl = preg_replace('#^/[a-z]{2}#', "/$locale", $currentUri);
             $escapedUrl = htmlspecialchars($alternateLocaleUrl, ENT_QUOTES);
-            $return .= '<link rel="alternate" href="'. $escapedUrl .'" hreflang="' . $locale . '">' . PHP_EOL;
+            $return .= '<link rel="alternate" href="' . $escapedUrl . '" hreflang="' . $locale . '">' . PHP_EOL;
         }
 
         return $return;
