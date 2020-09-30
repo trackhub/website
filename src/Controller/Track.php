@@ -465,11 +465,6 @@ class Track extends AbstractController
         }
 
         $appTitle = $track->getName($request->getLocale());
-        switch ($track->getType()) {
-            case \App\Entity\Track::TYPE_CYCLING:
-                $appTitle .= ' mountain bike trail';
-        }
-
 
         return $this->render(
             'gps/view.html.twig',
