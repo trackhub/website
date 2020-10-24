@@ -25,7 +25,7 @@ class PlaceSeeder extends AbstractSeed
     /**
      * Check environment for default value
      */
-    protected function init()
+    public function init()
     {
         $this->placeCount = env('PLACE_SEEDER_PLACE_COUNT', self::DEFAULT_PLACE_COUNT);
     }
