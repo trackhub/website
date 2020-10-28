@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Contract\CreatedAtInterface;
+use App\Contract\Entity\DescribableInterface;
 use App\Entity\Track\Image;
 use App\Entity\Track\OptimizedPoint;
 use App\Entity\Track\Version;
@@ -18,7 +19,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * @ORM\Entity(repositoryClass="App\Repository\TrackRepository")
  */
-class Track implements CreatedAtInterface
+class Track implements CreatedAtInterface, DescribableInterface
 {
     use NameTrait;
     use SendByTrait;

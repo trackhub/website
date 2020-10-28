@@ -10,7 +10,6 @@ use Symfony\Component\HttpFoundation\Request;
 
 class Place extends AbstractController
 {
-
     public function index(Request $request, PaginatorInterface $paginator)
     {
         $repo = $this->getDoctrine()->getRepository(\App\Entity\Place::class);
@@ -50,6 +49,9 @@ class Place extends AbstractController
 
             $place->setType($form->get('type')->getData());
 
+            $place->setDescriptionBg($form->get('descriptionBg')->getData());
+            $place->setDescriptionEn($form->get('descriptionEn')->getData());
+
             $this->getDoctrine()->getManager()->persist($place);
             $this->getDoctrine()->getManager()->flush();
 
@@ -79,6 +81,8 @@ class Place extends AbstractController
         $form->get('nameEn')->setData($place->getNameEn());
         $form->get('nameBg')->setData($place->getNameBg());
         $form->get('type')->setData($place->getType());
+        $form->get('descriptionEn')->setData($place->getDescriptionEn());
+        $form->get('descriptionBg')->setData($place->getDescriptionBg());
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
@@ -87,6 +91,8 @@ class Place extends AbstractController
             $place->setNameEn($form->get('nameEn')->getData());
             $place->setNameBg($form->get('nameBg')->getData());
             $place->setType($form->get('type')->getData());
+            $place->setDescriptionBg($form->get('descriptionBg')->getData());
+            $place->setDescriptionEn($form->get('descriptionEn')->getData());
 
             $this->getDoctrine()->getManager()->flush();
 

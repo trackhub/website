@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Contract\CreatedAtInterface;
+use App\Contract\Entity\DescribableInterface;
 use App\Entity\Point\PointTrait;
 use App\Entity\Place\Image;
 use App\Entity\User\User;
@@ -15,7 +16,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Entity(repositoryClass="App\Repository\PlaceRepository")
  * @ORM\Table(name="place")
  */
-class Place implements CreatedAtInterface
+class Place implements CreatedAtInterface, DescribableInterface
 {
     use PointTrait;
     use NameTrait;
