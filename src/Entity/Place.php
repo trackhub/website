@@ -6,6 +6,7 @@ use App\Contract\CreatedAtInterface;
 use App\Entity\Point\PointTrait;
 use App\Entity\Place\Image;
 use App\Entity\User\User;
+use App\EntityTraits\DescriptionTrait;
 use App\EntityTraits\NameTrait;
 use App\EntityTraits\SendByTrait;
 use Doctrine\ORM\Mapping as ORM;
@@ -19,6 +20,7 @@ class Place implements CreatedAtInterface
     use PointTrait;
     use NameTrait;
     use SendByTrait;
+    use DescriptionTrait;
 
     public const TYPE_GENERIC = 0;
     public const TYPE_DRINKING_FOUNTAIN = 1;
