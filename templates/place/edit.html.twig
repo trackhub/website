@@ -3,10 +3,21 @@
 {% block content %}
 
     {{ form_start(form) }}
-    {{ form_end(form) }}
+
+    {{ form_row(form.nameEn) }}
+    {{ form_row(form.nameBg) }}
+    {{ form_row(form.type) }}
+    {{ form_row(form.lat) }}
+    {{ form_row(form.lng) }}
 
     <!--- Initialize map --->
     <div style="height: 50vh; min-height: 300px; width: 100%;" id="map"></div>
+
+    {{ form_row(form.descriptionEn) }}
+    {{ form_row(form.descriptionBg) }}
+
+    {{ form_end(form) }}
+
     <script>
         (function() {
             const map = L.map('map', {
@@ -91,4 +102,9 @@
             new syncInputAndMap(popup, document.getElementById('place_lat'), document.getElementById('place_lng'));
         })();
     </script>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('htmlEditor') }}
 {% endblock %}

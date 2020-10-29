@@ -2,7 +2,7 @@
 
 namespace App\Event\Listener;
 
-use App\Entity\Track;
+use App\Contract\Entity\DescribableInterface;
 use App\Html\Purifier;
 use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\ORM\Event\PreUpdateEventArgs;
@@ -30,8 +30,8 @@ class HtmlPurifySubscriber implements EventSubscriber
     {
         $entity = $eventArgs->getEntity();
 
-        if ($entity instanceof Track) {
-            $this->purifyTrack($entity);
+        if ($entity instanceof DescribableInterface) {
+            $this->purifyEntity($entity);
         }
     }
 
@@ -39,22 +39,22 @@ class HtmlPurifySubscriber implements EventSubscriber
     {
         $entity = $eventArgs->getEntity();
 
-        if ($entity instanceof Track) {
-            $this->purifyTrack($entity);
+        if ($entity instanceof DescribableInterface) {
+            $this->purifyEntity($entity);
         }
     }
 
-    public function purifyTrack(Track $track)
+    public function purifyEntity(DescribableInterface $entity)
     {
-        if ($track->getDescriptionBg()) {
-            $track->setDescriptionBg(
-                $this->purifier->purify($track->getDescriptionBg())
+        if ($entity->getDescriptionBg()) {
+            $entity->setDescriptionBg(
+                $this->purifier->purify($entity->getDescriptionBg())
             );
         }
 
-        if ($track->getDescriptionEn()) {
-            $track->setDescriptionEn(
-                $this->purifier->purify($track->getDescriptionEn())
+        if ($entity->getDescriptionEn()) {
+            $entity->setDescriptionEn(
+                $this->purifier->purify($entity->getDescriptionEn())
             );
         }
     }

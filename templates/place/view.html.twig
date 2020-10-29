@@ -28,6 +28,11 @@
     {{ 'Latitude'|trans }}: {{ place.lat }}, {{ 'Longitude'|trans }}: {{ place.lng }}
     <br>
 
+    {% if place.description(app.request.locale) %}
+        <hr>
+        {{ place.description(app.request.locale)|raw }}
+    {% endif %}
+
     <!--- Initialize map --->
     <div style="height: 50vh; min-height: 300px; width: 100%;" id="map"></div>
 

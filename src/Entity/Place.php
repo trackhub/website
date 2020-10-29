@@ -3,9 +3,11 @@
 namespace App\Entity;
 
 use App\Contract\CreatedAtInterface;
+use App\Contract\Entity\DescribableInterface;
 use App\Entity\Point\PointTrait;
 use App\Entity\Place\Image;
 use App\Entity\User\User;
+use App\EntityTraits\DescriptionTrait;
 use App\EntityTraits\NameTrait;
 use App\EntityTraits\SendByTrait;
 use Doctrine\ORM\Mapping as ORM;
@@ -14,11 +16,12 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Entity(repositoryClass="App\Repository\PlaceRepository")
  * @ORM\Table(name="place")
  */
-class Place implements CreatedAtInterface
+class Place implements CreatedAtInterface, DescribableInterface
 {
     use PointTrait;
     use NameTrait;
     use SendByTrait;
+    use DescriptionTrait;
 
     public const TYPE_GENERIC = 0;
     public const TYPE_DRINKING_FOUNTAIN = 1;
