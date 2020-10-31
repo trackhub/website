@@ -9,7 +9,7 @@ services:
 jobs:
   include:
     - stage: tests
-      name: Tests inside docker
+      name: Production env test
       script: >-
         docker build --tag=trackhub-web ./docker/web/ &&
         docker run -v `pwd`:/var/www -t trackhub-web /bin/bash -c "
