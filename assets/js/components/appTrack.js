@@ -13,7 +13,7 @@ class AppTrack {
         let startMarker = L.marker([firstPoint.lat, firstPoint.lng]);
 
         let finishIcon = L.icon({
-            iconUrl: '/images/flaticoncom/Smashicons/racing-flag-32.png',
+            iconUrl: '/images/trackhub/flag/fllag_32.png',
             iconSize: [32, 32],
             iconAnchor: [0, 32],
             popupAnchor: [9, -32]
