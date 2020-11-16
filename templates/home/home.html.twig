@@ -213,20 +213,12 @@
                             continue;
                         }
 
-                        const marker = L.marker([placesData[i].lat, placesData[i].lng]);
-
-                        const ahrefPop = document.createElement('a');
-                        ahrefPop.href = '/{{ app.request.locale }}/place/view/' + placesData[i].id;
-                        ahrefPop.innerText = 'View details';
-                        if (placesData[i].name) {
-                            ahrefPop.innerText = placesData[i].name;
+                        const place = new AppPlace(map, placesData[i].lat, placesData[i].lng);
+                        place.setLink('/{{ app.request.locale }}/place/view/' + placesData[i].id);
+                        if (placesData[i].icon) {
+                            place.setIcon(placesData[i].icon);
                         }
-
-                        const popup = L.popup()
-                            .setLatLng([placesData[i].lat, placesData[i].lng])
-                            .setContent(ahrefPop.outerHTML);
-                        marker.bindPopup(popup);
-                        placesMarkers.addLayer(marker);
+                        placesMarkers.addLayer(place.exportAsMarker());
                         loadedPlaces[id] = placesData[i];
                     }
                     map.addLayer(placesMarkers);
@@ -300,4 +292,9 @@
         });
 
     </script>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('app') }}
 {% endblock %}
