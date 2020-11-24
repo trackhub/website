@@ -58,7 +58,7 @@ Example config in `/etc/hosts`
 172.20.0.3 gps.test
 ```
 
-If you use your own facebook application, then you have to fill credentials in `.env` file.
+If you use your own facebook application, then you need to fill your credentials in `.env` file.
 
 # GPS info
 
