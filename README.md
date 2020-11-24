@@ -49,7 +49,7 @@ WHERE @some_condition@
 ```
 
 # Facebook login
-1. In order to use *our development application*, we need to manually add you as facebook app developer, please create an issue and..
+1. In order to use *our development application*, we need to manually add you as facebook app developer, please create an issue.
 2. Make sure you are using the facebook token from `.env.dist`
 3. You have to manually set [hostname](https://linux.die.net/man/1/hostname) `gps.test` to match your container ip. Then you must access the project via https://gps.test instead of the container IP. if you need different hostname - please create an issue/PR.
 
