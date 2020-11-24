@@ -103,17 +103,4 @@ class Place implements CreatedAtInterface, DescribableInterface
     {
         return $this->images;
     }
-
-    /**
-     * This is not good, sry, but we need this functionality fast
-     */
-    public function getIcon(): ?string
-    {
-        switch ($this->getType()) {
-            case self::TYPE_DRINKING_FOUNTAIN:
-                return '/images/trackhub/water/icon.png';
-        }
-
-        return null;
-    }
 }
