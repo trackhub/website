@@ -48,6 +48,9 @@ class Place extends AbstractController
             }
 
             $place->setType($form->get('type')->getData());
+            if ($form->get('isAttraction')) {
+                $place->makeAttraction();
+            }
 
             $place->setDescriptionBg($form->get('descriptionBg')->getData());
             $place->setDescriptionEn($form->get('descriptionEn')->getData());
@@ -83,6 +86,7 @@ class Place extends AbstractController
         $form->get('type')->setData($place->getType());
         $form->get('descriptionEn')->setData($place->getDescriptionEn());
         $form->get('descriptionBg')->setData($place->getDescriptionBg());
+        $form->get('isAttraction')->setData($place->isAttraction());
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
@@ -93,6 +97,11 @@ class Place extends AbstractController
             $place->setType($form->get('type')->getData());
             $place->setDescriptionBg($form->get('descriptionBg')->getData());
             $place->setDescriptionEn($form->get('descriptionEn')->getData());
+            if ($form->get('isAttraction')->getData()) {
+                $place->makeAttraction();
+            } else {
+                $place->makeRegular();
+            }
 
             $this->getDoctrine()->getManager()->flush();
 

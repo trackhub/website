@@ -53,6 +53,11 @@ class Place implements CreatedAtInterface, DescribableInterface
      */
     private $createdAt;
 
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private bool $isAttraction = false;
+
     public function __construct(float $lat, float $lng, User $sendBy)
     {
         $this->lat = $lat;
@@ -102,5 +107,20 @@ class Place implements CreatedAtInterface, DescribableInterface
     public function getImages(): iterable
     {
         return $this->images;
+    }
+
+    public function isAttraction(): bool
+    {
+        return $this->isAttraction;
+    }
+
+    public function makeAttraction()
+    {
+        $this->isAttraction = true;
+    }
+
+    public function makeRegular()
+    {
+        $this->isAttraction = false;
     }
 }

@@ -25,7 +25,13 @@
     <hr>
 
     {{ 'Type'|trans }}: {{ place.type|app_place_type|trans }},
-    {{ 'Latitude'|trans }}: {{ place.lat }}, {{ 'Longitude'|trans }}: {{ place.lng }}
+    {{ 'Latitude'|trans }}: {{ place.lat }}, {{ 'Longitude'|trans }}: {{ place.lng }},
+    {{ 'Attraction'|trans }}:
+    {% if place.attraction %}
+        {{ 'yes'|trans }}
+    {% else %}
+        {{ 'no'|trans }}
+    {% endif %}
     <br>
 
     {% if place.description(app.request.locale) %}

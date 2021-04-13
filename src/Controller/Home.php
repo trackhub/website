@@ -167,6 +167,7 @@ class Home extends AbstractController
             $gpsArrayData['lng'] = $gps->getLng();
             $gpsArrayData['name'] = $gps->getName($locale);
             $gpsArrayData['icon'] = $imageDetector->getImage($gps->getType());
+            $gpsArrayData['attraction'] = $gps->isAttraction();
 
             $responseData[] = $gpsArrayData;
         }
