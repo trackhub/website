@@ -53,6 +53,8 @@ by foot : пешеходно
 cycling : колоездене
 hiking : пешеходен туризъм
 logout : изход
+no : не
+only attractions : само атракции
 place.type.bike_shop : Веломагазин
 place.type.drinking_fountain : Чешма
 place.type.generic : Общ тип
@@ -61,7 +63,5 @@ place.type.restaurant : Ресторант
 place.type.view : Гледка
 place.type.waterfall : Водопад
 public : публичен
-no : не
-only attractions : само атракции
 unlisted : скрит
 yes : Да
