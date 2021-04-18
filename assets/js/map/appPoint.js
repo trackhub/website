@@ -4,6 +4,15 @@ class AppPoint {
         this.lat = lat;
         this.lng = lng;
         this.marker = L.marker([lat, lng]);
+        this.attraction = false;
+    }
+
+    makeAttraction() {
+        this.attraction = true;
+    }
+
+    isAttraction() {
+        return this.attraction;
     }
 
     setLink(link) {
@@ -16,6 +25,10 @@ class AppPoint {
 
     show() {
         this.marker.addTo(this.map);
+    }
+
+    hide() {
+        this.map.removeLayer(this.marker);
     }
 
     bindPopup(pop) {

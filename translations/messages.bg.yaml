@@ -3,6 +3,7 @@ Add pictures: Добави снимки
 Add place : Добави място
 Add track : Добави следа
 Added : Добавена на
+Attraction : Атракция
 Climb : Изкачване
 Descent : Спускане
 Description in Bulgarian: Описание на български
@@ -52,6 +53,8 @@ by foot : пешеходно
 cycling : колоездене
 hiking : пешеходен туризъм
 logout : изход
+no : не
+only attractions : само атракции
 place.type.bike_shop : Веломагазин
 place.type.drinking_fountain : Чешма
 place.type.generic : Общ тип
@@ -61,3 +64,4 @@ place.type.view : Гледка
 place.type.waterfall : Водопад
 public : публичен
 unlisted : скрит
+yes : Да

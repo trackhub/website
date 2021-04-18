@@ -6,6 +6,8 @@
         <input type="checkbox" id="map_show_mtb" checked /><label for="map_show_mtb">{{ 'by bike'|trans }}</label>
         |
         <input type="checkbox" id="map_show_foot" checked /><label for="map_show_foot">{{ 'by foot'|trans }}</label>
+        |
+        <input type="checkbox" id="map_show_place_attraction_only" checked /><label for="map_show_place_attraction_only">{{ 'only attractions'|trans }}</label>
     </div>
 
     <hr>
@@ -90,7 +92,8 @@
     <script>
         var mapOptions = {
             showByBike: true,
-            showByFoot: true
+            showByFoot: true,
+            showRegularPlaces: !document.getElementById('map_show_place_attraction_only').checked,
         };
 
         var gpsColors = [
@@ -213,13 +216,22 @@
                             continue;
                         }
 
-                        const place = new AppPlace(map, placesData[i].lat, placesData[i].lng);
+                        const place = new AppPlace(placesMarkers, placesData[i].lat, placesData[i].lng);
                         place.setLink('/{{ app.request.locale }}/place/view/' + placesData[i].id);
                         if (placesData[i].icon) {
                             place.setIcon(placesData[i].icon);
                         }
-                        placesMarkers.addLayer(place.exportAsMarker());
-                        loadedPlaces[id] = placesData[i];
+
+                        if (placesData[i].attraction) {
+                            place.makeAttraction();
+                        }
+
+                        if (mapOptions.showRegularPlaces || place.isAttraction()) {
+                            console.log(mapOptions, place)
+                            place.show();
+                        }
+
+                        loadedPlaces[id] = place;
                     }
                     map.addLayer(placesMarkers);
                     placesMarkers.refreshClusters();
@@ -279,13 +291,27 @@
 
         document.getElementById('map_show_foot').addEventListener('click', function() {
             mapOptions.showByFoot = this.checked;
-            for(let trackId in loadedTracks) {
+            for (let trackId in loadedTracks) {
                 let track = loadedTracks[trackId];
                 if (track.getType() === 2) {
                     if (this.checked) {
                         track.show();
                     } else {
                         track.hide();
+                    }
+                }
+            }
+        });
+
+        document.getElementById('map_show_place_attraction_only').addEventListener('click', function () {
+            mapOptions.showRegularPlaces = !this.checked;
+            for (let placeId in loadedPlaces) {
+                let place = loadedPlaces[placeId];
+                if (mapOptions.showRegularPlaces) {
+                    place.show();
+                } else {
+                    if (!place.isAttraction()) {
+                        place.hide();
                     }
                 }
             }
