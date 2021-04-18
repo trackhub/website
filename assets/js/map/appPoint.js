@@ -24,6 +24,31 @@ class AppPoint {
     }
 
     show() {
+        let contentElement;
+        if (this.link) {
+            contentElement = document.createElement('a');
+            contentElement.href = this.link;
+            contentElement.innerText = 'View details';
+        }
+
+        if (this.icon) {
+            let customIcon = L.icon({
+                iconUrl: this.icon,
+                iconSize: [21, 32],
+                iconAnchor: [0, 32],
+                popupAnchor: [10, -32]
+            });
+
+            this.marker.setIcon(customIcon)
+        }
+
+        if (contentElement) {
+            const popup = L.popup()
+                .setLatLng([this.lat, this.lng])
+                .setContent(contentElement.outerHTML);
+
+            this.marker.bindPopup(popup);
+        }
         this.marker.addTo(this.map);
     }
 
@@ -33,44 +58,6 @@ class AppPoint {
 
     bindPopup(pop) {
         this.marker.bindPopup(pop);
-    }
-
-    exportAsMarker() {
-        var contentElement;
-
-        if (this.link) {
-            contentElement = document.createElement('a');
-            contentElement.href = this.link;
-            contentElement.innerText = 'View details';
-        } else {
-            contentElement = document.createElement('span');
-            contentElement.innerText = 'View details';
-        }
-
-        var markerOptions = {};
-
-        if (this.icon) {
-            let finishIcon = L.icon({
-                iconUrl: this.icon,
-                iconSize: [21, 32],
-                iconAnchor: [0, 32],
-                popupAnchor: [10, -32]
-            });
-
-            markerOptions = {
-                icon: finishIcon
-            };
-        }
-
-        const marker = L.marker([this.lat, this.lng], markerOptions);
-
-        const popup = L.popup()
-            .setLatLng([this.lat, this.lng])
-            .setContent(contentElement.outerHTML);
-
-        marker.bindPopup(popup);
-
-        return marker;
     }
 }
 
