@@ -7,7 +7,7 @@
         |
         <input type="checkbox" id="map_show_foot" checked /><label for="map_show_foot">{{ 'by foot'|trans }}</label>
         |
-        <input type="checkbox" id="map_show_place_regular" checked /><label for="map_show_place_regular">{{ 'only attractions'|trans }}</label>
+        <input type="checkbox" id="map_show_place_attraction_only" checked /><label for="map_show_place_attraction_only">{{ 'only attractions'|trans }}</label>
     </div>
 
     <hr>
@@ -93,7 +93,7 @@
         var mapOptions = {
             showByBike: true,
             showByFoot: true,
-            showRegularPlaces: true,
+            showRegularPlaces: !document.getElementById('map_show_place_attraction_only').checked,
         };
 
         var gpsColors = [
@@ -226,8 +226,11 @@
                             place.makeAttraction();
                         }
 
-                        //placesMarkers.addLayer(place.exportAsMarker());
-                        place.show();
+                        if (mapOptions.showRegularPlaces || place.isAttraction()) {
+                            console.log(mapOptions, place)
+                            place.show();
+                        }
+
                         loadedPlaces[id] = place;
                     }
                     map.addLayer(placesMarkers);
@@ -300,8 +303,8 @@
             }
         });
 
-        document.getElementById('map_show_place_regular').addEventListener('click', function () {
-            mapOptions.showRegularPlaces = this.checked;
+        document.getElementById('map_show_place_attraction_only').addEventListener('click', function () {
+            mapOptions.showRegularPlaces = !this.checked;
             for (let placeId in loadedPlaces) {
                 let place = loadedPlaces[placeId];
                 if (mapOptions.showRegularPlaces) {
