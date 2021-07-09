@@ -2,10 +2,13 @@
 
 namespace App\Controller;
 
+use App\Entity\Track\Slug;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\QueryBuilder;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
 
 class Place extends AbstractController
@@ -69,9 +72,10 @@ class Place extends AbstractController
         );
     }
 
-    public function edit(string $id, Request $request)
+    public function edit(string $id, Request $request, EntityManagerInterface $em)
     {
         $placeRepo = $this->getDoctrine()->getRepository(\App\Entity\Place::class);
+        $slugRepo = $em->getRepository(\App\Entity\Place\Slug::class);
         $place = $placeRepo->findOneBy(['id' => $id]);
 
         $this->denyAccessUnlessGranted('edit', $place);
@@ -103,9 +107,38 @@ class Place extends AbstractController
                 $place->makeRegular();
             }
 
-            $this->getDoctrine()->getManager()->flush();
+            $formIsValid = true;
+            if (!$form->get('slug')->isEmpty()) {
+                $slug = $form->get('slug')->getData();
 
-            return $this->redirectToRoute('app_place_view', ['id' => $place->getId()]);
+                $addNewSlug = false;
+                if ($place->getSlug() !== $slug) {
+                    $place->setSlug($slug);
+                    $existingSlug = $slugRepo->findOneBy(['slug' => $slug]);
+                    if ($existingSlug) {
+                        if ($existingSlug->getPlace() !== $place) {
+                            $formIsValid = false;
+                            $form->get('slug')->addError(
+                                new FormError('Slug is already taken')
+                            );
+                        }
+                    } else {
+                        $addNewSlug = true;
+                    }
+                }
+
+                if ($addNewSlug) {
+                    $slugEntity = new Slug($place, $slug);
+                    $this->getDoctrine()->getManager()
+                        ->persist($slugEntity);
+                }
+            }
+
+            if ($formIsValid) {
+                $this->getDoctrine()->getManager()->flush();
+
+                return $this->redirectToRoute('app_place_view', ['id' => $place->getId()]);
+            }
         }
 
         return $this->render(
