@@ -11,6 +11,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Validator\Constraints\Range;
+use Symfony\Component\Validator\Constraints\Regex;
 
 class Place extends AbstractType
 {
@@ -100,6 +101,19 @@ class Place extends AbstractType
                     'data-html' => 'wysiwyg',
                     'style' => 'min-height: 300px',
                 ]
+            ]
+        );
+
+        $builder->add(
+            'slug',
+            TextType::class,
+            [
+                'required' => false,
+                'label' => 'Short link',
+                'constraints' => new Regex([
+                    'pattern' => '/^[a-zA-Z0-9_\-]+$/',
+                    'message' => 'Should contains only letters, numbers, dash and underscore',
+                ]),
             ]
         );
     }

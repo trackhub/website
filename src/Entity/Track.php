@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Contract\CreatedAtInterface;
 use App\Contract\Entity\DescribableInterface;
+use App\Entity\EntitiyTrait\SluggableTrait;
 use App\Entity\Track\Image;
 use App\Entity\Track\OptimizedPoint;
 use App\Entity\Track\Version;
@@ -24,6 +25,7 @@ class Track implements CreatedAtInterface, DescribableInterface
     use NameTrait;
     use SendByTrait;
     use DescriptionTrait;
+    use SluggableTrait;
 
     public const TYPE_CYCLING = 1;
     public const TYPE_HIKING = 2;
@@ -42,11 +44,6 @@ class Track implements CreatedAtInterface, DescribableInterface
      * @ORM\Column(name="id", type="guid")
      */
     private $id;
-
-    /**
-     * @ORM\Column(type="string", nullable=true)
-     */
-    private $slug;
 
     /**
      * @ORM\Column(type="boolean", nullable=false)
@@ -193,16 +190,6 @@ class Track implements CreatedAtInterface, DescribableInterface
     public function setType(int $type): void
     {
         $this->type = $type;
-    }
-
-    public function getSlug(): ?string
-    {
-        return $this->slug;
-    }
-
-    public function setSlug(?string $slug): void
-    {
-        $this->slug = $slug;
     }
 
     public function prepareForRecalculation()

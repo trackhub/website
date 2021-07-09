@@ -2,7 +2,7 @@
 
 namespace App\Controller;
 
-use App\Entity\Track\Slug;
+use App\Entity\Place\Slug;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\QueryBuilder;
 use Knp\Component\Pager\PaginatorInterface;
@@ -29,8 +29,10 @@ class Place extends AbstractController
         );
     }
 
-    public function new(Request $request)
+    public function new(Request $request, EntityManagerInterface $em)
     {
+        $slugRepo = $em->getRepository(Slug::class);
+
         $form = $this->createForm(\App\Form\Type\Place::class);
         $form->add('submit', SubmitType::class);
 
@@ -58,10 +60,32 @@ class Place extends AbstractController
             $place->setDescriptionBg($form->get('descriptionBg')->getData());
             $place->setDescriptionEn($form->get('descriptionEn')->getData());
 
-            $this->getDoctrine()->getManager()->persist($place);
-            $this->getDoctrine()->getManager()->flush();
+            $formIsValid = true;
+            if (!$form->get('slug')->isEmpty()) {
+                $slug = $form->get('slug')->getData();
 
-            return $this->redirectToRoute('app_place_view', ['id' => $place->getId()]);
+                if ($place->getSlug() !== $slug) {
+                    $place->setSlug($slug);
+                    $existingSlug = $slugRepo->findOneBy(['slug' => $slug]);
+                    if ($existingSlug) {
+                        $formIsValid = false;
+                        $form->get('slug')->addError(
+                            new FormError('Slug is already taken')
+                        );
+                    } else {
+                        $slugEntity = new Slug($place, $slug);
+                        $this->getDoctrine()->getManager()
+                            ->persist($slugEntity);
+                    }
+                }
+            }
+
+            if ($formIsValid) {
+                $em->persist($place);
+                $em->flush();
+
+                return $this->redirectToRoute('app_place_view', ['id' => $place->getId()]);
+            }
         }
 
         return $this->render(
@@ -91,6 +115,7 @@ class Place extends AbstractController
         $form->get('descriptionEn')->setData($place->getDescriptionEn());
         $form->get('descriptionBg')->setData($place->getDescriptionBg());
         $form->get('isAttraction')->setData($place->isAttraction());
+        $form->get('slug')->setData($place->getSlug());
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
@@ -111,7 +136,6 @@ class Place extends AbstractController
             if (!$form->get('slug')->isEmpty()) {
                 $slug = $form->get('slug')->getData();
 
-                $addNewSlug = false;
                 if ($place->getSlug() !== $slug) {
                     $place->setSlug($slug);
                     $existingSlug = $slugRepo->findOneBy(['slug' => $slug]);
@@ -123,14 +147,10 @@ class Place extends AbstractController
                             );
                         }
                     } else {
-                        $addNewSlug = true;
+                        $slugEntity = new Slug($place, $slug);
+                        $this->getDoctrine()->getManager()
+                            ->persist($slugEntity);
                     }
-                }
-
-                if ($addNewSlug) {
-                    $slugEntity = new Slug($place, $slug);
-                    $this->getDoctrine()->getManager()
-                        ->persist($slugEntity);
                 }
             }
 
@@ -154,13 +174,29 @@ class Place extends AbstractController
     {
         $placeRepo = $this->getDoctrine()->getRepository(\App\Entity\Place::class);
         $place = $placeRepo->findOneBy(['id' => $id]);
+        if (!$place) {
+            $slug = $this->getDoctrine()->getRepository(Slug::class)->findOneBy(['slug' => $id]);
+            if (!$slug) {
+                throw $this->createNotFoundException();
+            }
+            $place = $slug->getPlace();
+        }
+
+        $canonicalUrl = null;
+        if ($place->getSlug()) {
+            $canonicalUrl = $this->generateUrl(
+                'app_place_view',
+                ['id' => $place->getSlug()],
+            );
+        }
 
         return $this->render(
             'place/view.html.twig',
             [
                 'place' => $place,
-                'app_title' => $place->getName($request->getLocale()),
                 'canEdit' => $this->isGranted('edit', $place),
+                'app_title' => $place->getName($request->getLocale()),
+                'app_canonical_url' => $canonicalUrl,
             ]
         );
     }

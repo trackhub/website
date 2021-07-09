@@ -5,7 +5,12 @@ declare(strict_types=1);
 namespace App\Entity\Place;
 
 use App\Entity\Place;
+use Doctrine\ORM\Mapping as ORM;
 
+/**
+ * @ORM\Entity()
+ * @ORM\Table(name="place_slug")
+ */
 class Slug
 {
     /**

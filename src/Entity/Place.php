@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Contract\CreatedAtInterface;
 use App\Contract\Entity\DescribableInterface;
+use App\Entity\EntitiyTrait\SluggableTrait;
 use App\Entity\Point\PointTrait;
 use App\Entity\Place\Image;
 use App\Entity\User\User;
@@ -22,6 +23,7 @@ class Place implements CreatedAtInterface, DescribableInterface
     use NameTrait;
     use SendByTrait;
     use DescriptionTrait;
+    use SluggableTrait;
 
     public const TYPE_GENERIC = 0;
     public const TYPE_DRINKING_FOUNTAIN = 1;
@@ -69,6 +71,15 @@ class Place implements CreatedAtInterface, DescribableInterface
     public function getId(): string
     {
         return $this->id;
+    }
+
+    public function getSlugOrId(): string
+    {
+        if ($this->getSlug()) {
+            return $this->getSlug();
+        }
+
+        return $this->getId();
     }
 
     public function setLat(float $lat)
