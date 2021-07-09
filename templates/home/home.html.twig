@@ -217,7 +217,7 @@
                         }
 
                         const place = new AppPlace(placesMarkers, placesData[i].lat, placesData[i].lng);
-                        place.setLink('/{{ app.request.locale }}/place/view/' + placesData[i].id);
+                        place.setLink('/{{ app.request.locale }}/place/view/' + placesData[i].slugOrId);
                         if (placesData[i].icon) {
                             place.setIcon(placesData[i].icon);
                         }
