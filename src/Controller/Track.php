@@ -532,7 +532,7 @@ class Track extends AbstractController
 
         $exported = $exporter->export(Exporter::FORMAT_GPX);
 
-        $response = new \Symfony\Component\HttpFoundation\Response(
+        return new \Symfony\Component\HttpFoundation\Response(
             $exported,
             200,
             [
@@ -540,7 +540,5 @@ class Track extends AbstractController
                 'Content-Type' => 'application/octet-stream',
             ]
         );
-
-        return $response;
     }
 }
