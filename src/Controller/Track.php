@@ -14,6 +14,7 @@ use App\Repository\TrackRepository;
 use App\Track\ElevationDataGenerator;
 use App\Track\Exporter;
 use App\Track\Processor;
+use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -139,9 +140,15 @@ class Track extends AbstractController
         );
     }
 
-    public function edit(Request $request, $id, LoggerInterface $logger, SlugRepository $slugRepo)
-    {
-        $track = $this->getDoctrine()->getRepository(\App\Entity\Track::class)->findOneBy(['id' => $id]);
+    public function edit(
+        $id,
+        Request $request,
+        LoggerInterface $logger,
+        SlugRepository $slugRepo,
+        TrackRepository $trackRepo,
+        EntityManagerInterface $em
+    ) {
+        $track = $trackRepo->findOneBy(['id' => $id]);
         $this->denyAccessUnlessGranted('edit', $track);
 
         $form = $this->createForm(\App\Form\Type\Track::class);
@@ -222,8 +229,7 @@ class Track extends AbstractController
             }
 
             if ($formIsValid) {
-                $this->getDoctrine()->getManager()
-                    ->flush();
+                $em->flush();
 
                 return $this->redirectToRoute('gps-view', ['id' => $track->getSlugOrId()]);
             }
@@ -526,7 +532,7 @@ class Track extends AbstractController
 
         $exported = $exporter->export(Exporter::FORMAT_GPX);
 
-        $response = new \Symfony\Component\HttpFoundation\Response(
+        return new \Symfony\Component\HttpFoundation\Response(
             $exported,
             200,
             [
@@ -534,7 +540,5 @@ class Track extends AbstractController
                 'Content-Type' => 'application/octet-stream',
             ]
         );
-
-        return $response;
     }
 }

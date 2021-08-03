@@ -72,7 +72,7 @@
             {{ 'Latest place pictures'|trans }}:
             <div class="uploaded_images uploaded_images_all">
                 {% for image in latestPlaceImages %}
-                    <a href="{{ path('app_place_view', { id: image.place.id }) }}"
+                    <a href="{{ path('app_place_view', { id: image.place.slugOrId }) }}"
                        title="{{- 'View place details'|trans -}}
                             {%- if image.place.name(app.request.locale) is not empty -%}
                                 {{ ' &quot;' }} {{- image.place.name(app.request.locale) -}}{{- '&quot;' -}}
@@ -217,7 +217,7 @@
                         }
 
                         const place = new AppPlace(placesMarkers, placesData[i].lat, placesData[i].lng);
-                        place.setLink('/{{ app.request.locale }}/place/view/' + placesData[i].id);
+                        place.setLink('/{{ app.request.locale }}/place/view/' + placesData[i].slugOrId);
                         if (placesData[i].icon) {
                             place.setIcon(placesData[i].icon);
                         }

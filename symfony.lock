@@ -401,9 +401,6 @@
     "symfony/http-kernel": {
         "version": "v4.1.6"
     },
-    "symfony/inflector": {
-        "version": "v4.1.6"
-    },
     "symfony/intl": {
         "version": "v4.1.6"
     },
@@ -469,6 +466,9 @@
     },
     "symfony/property-access": {
         "version": "v4.1.6"
+    },
+    "symfony/property-info": {
+        "version": "v5.2.8"
     },
     "symfony/routing": {
         "version": "4.0",
