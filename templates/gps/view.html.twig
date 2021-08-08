@@ -104,7 +104,7 @@
     {% endif %}
 
     {% for place in places %}
-        {% if place.images is not empty %}
+        {% if place.isAttraction and place.images is not empty %}
             {{ 'Pictures from'|trans }}
             <a href="{{ path('app_place_view', {id: place.id}) }}">
                 {{ place.name(app.request.locale) }}
