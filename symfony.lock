@@ -23,6 +23,9 @@
     "doctrine/dbal": {
         "version": "v2.8.0"
     },
+    "doctrine/deprecations": {
+        "version": "v0.5.3"
+    },
     "doctrine/doctrine-bundle": {
         "version": "1.6",
         "recipe": {
@@ -110,9 +113,6 @@
     "knplabs/knp-paginator-bundle": {
         "version": "v4.0.0"
     },
-    "laminas/laminas-zendframework-bridge": {
-        "version": "1.0.1"
-    },
     "monolog/monolog": {
         "version": "1.24.0"
     },
@@ -184,6 +184,9 @@
     },
     "phpspec/prophecy": {
         "version": "1.8.0"
+    },
+    "phpstan/phpdoc-parser": {
+        "version": "0.5.5"
     },
     "phpunit/php-code-coverage": {
         "version": "7.0.3"
@@ -458,6 +461,9 @@
     "symfony/polyfill-php80": {
         "version": "v1.18.1"
     },
+    "symfony/polyfill-php81": {
+        "version": "v1.23.0"
+    },
     "symfony/process": {
         "version": "v4.3.5"
     },
@@ -586,9 +592,6 @@
     },
     "twig/twig": {
         "version": "v2.5.0"
-    },
-    "webimpress/safe-writer": {
-        "version": "2.0.0"
     },
     "webmozart/assert": {
         "version": "1.4.0"
