@@ -36,11 +36,11 @@ RUN update-alternatives --set php /usr/bin/php${PHP_V}
 COPY php.ini /etc/php/${PHP_V}/apache2/php.ini
 # end php
 
-RUN wget https://getcomposer.org/download/1.9.0/composer.phar -O /usr/local/bin/composer && \
+RUN wget https://getcomposer.org/download/1.10.16/composer.phar -O /usr/local/bin/composer && \
     chmod +x /usr/local/bin/composer
 
 # js stuff
-RUN curl -sL https://deb.nodesource.com/setup_11.x | bash -
+RUN curl -sL https://deb.nodesource.com/setup_12.x | bash -
 RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
 
 RUN echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list

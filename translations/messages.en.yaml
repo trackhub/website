@@ -1,5 +1,7 @@
-form.place.type.bike_shop : Bike shop
-form.place.type.drinking_fountain : Drinking fountain
-form.place.type.generic : Generic
-form.place.type.hotel : Hotel
-form.place.type.restaurant : Restaurant
+place.type.bike_shop : Bike shop
+place.type.drinking_fountain : Drinking fountain
+place.type.generic : Generic
+place.type.hotel : Hotel
+place.type.restaurant : Restaurant
+place.type.view : View
+place.type.waterfall : Waterfall

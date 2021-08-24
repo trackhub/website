@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Contract\Http\ApiResponseInterface;
 use App\Entity\Track\OptimizedPoint;
+use App\Place\ImageDetector;
 use App\Repository\Track\ImageRepository;
 use App\Repository\Place\ImageRepository as PlaceImageRepo;
 use App\Repository\TrackRepository;
@@ -40,7 +41,7 @@ class Home extends AbstractController
         );
     }
 
-    public function find($neLat, $neLon, $swLat, $swLon, Request $request, TrackRepository $repo)
+    public function find($neLat, $neLon, $swLat, $swLon, Request $request, TrackRepository $repo, ImageDetector $imageDetector)
     {
         $skipTracks = $request->request->get('skipTracks', '');
         $skipTracksAsArray = explode(',', $skipTracks);
@@ -49,7 +50,7 @@ class Home extends AbstractController
 
         $skipTracks = $request->request->get('skipPlaces', '');
         $skipPlacesAsArray = explode(',', $skipTracks);
-        $places = $this->findPlaces($neLat, $neLon, $swLat, $swLon, $skipPlacesAsArray, $request->getLocale());
+        $places = $this->findPlaces($neLat, $neLon, $swLat, $swLon, $skipPlacesAsArray, $request->getLocale(), $imageDetector);
 
         return new Response(
             json_encode([
@@ -126,7 +127,7 @@ class Home extends AbstractController
         ];
     }
 
-    private function findPlaces($neLat, $neLon, $swLat, $swLon, $skipTracks, $locale)
+    private function findPlaces($neLat, $neLon, $swLat, $swLon, $skipTracks, $locale, ImageDetector $imageDetector)
     {
         $repo = $this->getDoctrine()->getRepository(\App\Entity\Place::class);
 
@@ -162,9 +163,12 @@ class Home extends AbstractController
         foreach ($qResult as $gps) {
             $gpsArrayData = [];
             $gpsArrayData['id'] = $gps->getId();
+            $gpsArrayData['slugOrId'] = $gps->getSlugOrId();
             $gpsArrayData['lat'] = $gps->getLat();
             $gpsArrayData['lng'] = $gps->getLng();
             $gpsArrayData['name'] = $gps->getName($locale);
+            $gpsArrayData['icon'] = $imageDetector->getImage($gps->getType());
+            $gpsArrayData['attraction'] = $gps->isAttraction();
 
             $responseData[] = $gpsArrayData;
         }

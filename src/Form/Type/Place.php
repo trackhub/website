@@ -2,12 +2,16 @@
 
 namespace App\Form\Type;
 
+use App\Translations;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Validator\Constraints\Range;
+use Symfony\Component\Validator\Constraints\Regex;
 
 class Place extends AbstractType
 {
@@ -35,14 +39,16 @@ class Place extends AbstractType
             'type',
             ChoiceType::class,
             [
-                'choices' => [
-                    'form.place.type.generic' => \App\Entity\Place::TYPE_GENERIC,
-                    'form.place.type.drinking_fountain' => \App\Entity\Place::TYPE_DRINKING_FOUNTAIN,
-                    'form.place.type.restaurant' => \App\Entity\Place::TYPE_DRINKING_RESTAURANT,
-                    'form.place.type.hotel' => \App\Entity\Place::TYPE_DRINKING_HOTEL,
-                    'form.place.type.bike_shop' => \App\Entity\Place::TYPE_BIKE_SHOP,
-                ],
+                'choices' => Translations::placeTypeValueTypes(),
             ],
+        );
+
+        $builder->add(
+            'isAttraction',
+            CheckboxType::class,
+            [
+                'required' => false,
+            ]
         );
 
         $coordinatesConstraints = [
@@ -69,6 +75,45 @@ class Place extends AbstractType
                 'scale' => 8,
                 'label' => 'Longitude',
                 'constraints' => $coordinatesConstraints,
+            ]
+        );
+
+        $builder->add(
+            'descriptionBg',
+            TextareaType::class,
+            [
+                'required' => false,
+                'label' => 'Description in Bulgarian',
+                'attr' => [
+                    'data-html' => 'wysiwyg',
+                    'style' => 'min-height: 300px',
+                ]
+            ]
+        );
+
+        $builder->add(
+            'descriptionEn',
+            TextareaType::class,
+            [
+                'required' => false,
+                'label' => 'Description in English',
+                'attr' => [
+                    'data-html' => 'wysiwyg',
+                    'style' => 'min-height: 300px',
+                ]
+            ]
+        );
+
+        $builder->add(
+            'slug',
+            TextType::class,
+            [
+                'required' => false,
+                'label' => 'Short link',
+                'constraints' => new Regex([
+                    'pattern' => '/^[a-zA-Z0-9_\-]+$/',
+                    'message' => 'Should contains only letters, numbers, dash and underscore',
+                ]),
             ]
         );
     }

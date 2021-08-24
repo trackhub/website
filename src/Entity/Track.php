@@ -3,10 +3,13 @@
 namespace App\Entity;
 
 use App\Contract\CreatedAtInterface;
+use App\Contract\Entity\DescribableInterface;
+use App\Entity\EntitiyTrait\SluggableTrait;
 use App\Entity\Track\Image;
 use App\Entity\Track\OptimizedPoint;
 use App\Entity\Track\Version;
 use App\Entity\Video\Youtube;
+use App\EntityTraits\DescriptionTrait;
 use App\EntityTraits\NameTrait;
 use App\EntityTraits\SendByTrait;
 use App\Entity\User\User;
@@ -17,10 +20,12 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * @ORM\Entity(repositoryClass="App\Repository\TrackRepository")
  */
-class Track implements CreatedAtInterface
+class Track implements CreatedAtInterface, DescribableInterface
 {
     use NameTrait;
     use SendByTrait;
+    use DescriptionTrait;
+    use SluggableTrait;
 
     public const TYPE_CYCLING = 1;
     public const TYPE_HIKING = 2;
@@ -39,11 +44,6 @@ class Track implements CreatedAtInterface
      * @ORM\Column(name="id", type="guid")
      */
     private $id;
-
-    /**
-     * @ORM\Column(type="string", nullable=true)
-     */
-    private $slug;
 
     /**
      * @ORM\Column(type="boolean", nullable=false)
@@ -91,16 +91,6 @@ class Track implements CreatedAtInterface
      * @ORM\Column(type="datetime")
      */
     private $createdAt;
-
-    /**
-     * @ORM\Column(type="string", nullable=true)
-     */
-    private $descriptionEn;
-
-    /**
-     * @ORM\Column(type="string", nullable=true)
-     */
-    private $descriptionBg;
 
     /**
      * @ORM\Column(type="integer")
@@ -200,16 +190,6 @@ class Track implements CreatedAtInterface
     public function setType(int $type): void
     {
         $this->type = $type;
-    }
-
-    public function getSlug(): ?string
-    {
-        return $this->slug;
-    }
-
-    public function setSlug(?string $slug): void
-    {
-        $this->slug = $slug;
     }
 
     public function prepareForRecalculation()
@@ -398,43 +378,6 @@ class Track implements CreatedAtInterface
     public function getCreatedAt(): DateTime
     {
         return $this->createdAt;
-    }
-
-    public function getDescriptionEn(): ?string
-    {
-        return $this->descriptionEn;
-    }
-
-    public function setDescriptionEn(string $text = null): void
-    {
-        $this->descriptionEn = $text;
-    }
-
-    public function getDescriptionBg(): ?string
-    {
-        return $this->descriptionBg;
-    }
-
-    public function setDescriptionBg(string $text = null): void
-    {
-        $this->descriptionBg = $text;
-    }
-
-    /**
-     * Get localized name.
-     * If localized name doesn't exists - fallback to EN
-     */
-    public function getDescription(string $locale): ?string
-    {
-        if ($locale === 'bg' && $this->descriptionBg !== null) {
-            return $this->descriptionBg;
-        }
-
-        if ($this->descriptionEn === null) {
-            return $this->descriptionBg;
-        }
-
-        return $this->descriptionEn;
     }
 
     /**

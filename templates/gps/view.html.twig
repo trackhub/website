@@ -9,7 +9,12 @@
     {% endif %}
 
     {% if app.user %}
-        <label for="file_input" class="btn btn-success mb-0">{{ 'Add pictures'|trans }}</label>
+        <label for="file_input" id="file_input_label" class="btn btn-success mb-0"
+            title="You can drag and drop files here"
+            >
+            {{ 'Add pictures'|trans }}
+        </label>
+
         <input  id="file_input" style="visibility: hidden;" type="file" name="files[]" multiple accept="image/jpeg, image/png">
         <div class="container">
             <div id="file_upload_progress" class="row"></div>
@@ -20,7 +25,7 @@
 
     {% if track.description(app.request.locale) %}
         <hr>
-        {{ track.description(app.request.locale)|nl2br }}
+        {{ track.description(app.request.locale)|raw }}
     {% endif %}
 
     <hr>
@@ -97,6 +102,27 @@
             {% endfor %}
         </div>
     {% endif %}
+
+    {% for place in places %}
+        {% if place.isAttraction and place.images is not empty %}
+            {{ 'Pictures from'|trans }}
+            <a href="{{ path('app_place_view', {id: place.id}) }}">
+                {{ place.name(app.request.locale) }}
+            </a>
+            <div class="uploaded_images" >
+                {% for image in place.images %}
+                    <a href="{{ app_place_image(image, 1280, 720) }}"
+                       data-toggle="lightbox"
+                       data-gallery="place-images"
+                       data-footer="&lt;a target=&quot;_blank&quot; href=&quot;{{ app_place_image(image, 3840, 2160) }}#&quot;&gt;{{ 'View full size'|trans() }}&lt;/a&gt;"
+                    >
+                        <img src="{{ app_place_image(image, 300, 300) }}">
+                    </a>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endfor %}
+
     {% include "include/ratingModal.html.twig" %}
 
 {% endblock %}
@@ -114,7 +140,8 @@
                     {{ path('track-new-image', {id: track.id})|json_encode|raw }},
                     {
                         'uploaded': {{ 'Uploaded'|json_encode|raw }}
-                    }
+                    },
+                    document.getElementById('file_input_label')
                 );
             {% endif %}
 
@@ -124,5 +151,30 @@
                     alwaysShowClose: true
                 });
             });
+
+            {% for place in places %}
+                (function() {
+                    const place = new AppPlace(
+                        map,
+                        {{ place.lat }},
+                        {{ place.lng }}
+                    );
+
+                    const ahrefPop = document.createElement('a');
+                    ahrefPop.href = '/{{ app.request.locale }}/place/view/' + '{{ place.id }}';
+                    ahrefPop.innerText = 'View details';
+
+                    {% if place.name(app.request.locale) %}
+                        ahrefPop.innerText = {{ place.name(app.request.locale)|json_encode|raw }};
+                    {% endif %}
+
+                    const popup = L.popup()
+                        .setLatLng([place.lat, place.lng])
+                        .setContent(ahrefPop.outerHTML);
+                    place.bindPopup(popup);
+
+                    place.show();
+                })();
+            {% endfor %}
         </script>
 {% endblock %}

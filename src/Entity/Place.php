@@ -3,9 +3,12 @@
 namespace App\Entity;
 
 use App\Contract\CreatedAtInterface;
+use App\Contract\Entity\DescribableInterface;
+use App\Entity\EntitiyTrait\SluggableTrait;
 use App\Entity\Point\PointTrait;
 use App\Entity\Place\Image;
 use App\Entity\User\User;
+use App\EntityTraits\DescriptionTrait;
 use App\EntityTraits\NameTrait;
 use App\EntityTraits\SendByTrait;
 use Doctrine\ORM\Mapping as ORM;
@@ -14,17 +17,21 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Entity(repositoryClass="App\Repository\PlaceRepository")
  * @ORM\Table(name="place")
  */
-class Place implements CreatedAtInterface
+class Place implements CreatedAtInterface, DescribableInterface
 {
     use PointTrait;
     use NameTrait;
     use SendByTrait;
+    use DescriptionTrait;
+    use SluggableTrait;
 
     public const TYPE_GENERIC = 0;
     public const TYPE_DRINKING_FOUNTAIN = 1;
     public const TYPE_DRINKING_RESTAURANT = 2;
     public const TYPE_DRINKING_HOTEL = 3;
     public const TYPE_BIKE_SHOP = 4;
+    public const TYPE_WATERFALL = 5;
+    public const TYPE_VIEW = 6;
 
     /**
      * @ORM\Id
@@ -48,6 +55,11 @@ class Place implements CreatedAtInterface
      */
     private $createdAt;
 
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private bool $isAttraction = false;
+
     public function __construct(float $lat, float $lng, User $sendBy)
     {
         $this->lat = $lat;
@@ -59,6 +71,15 @@ class Place implements CreatedAtInterface
     public function getId(): string
     {
         return $this->id;
+    }
+
+    public function getSlugOrId(): string
+    {
+        if ($this->getSlug()) {
+            return $this->getSlug();
+        }
+
+        return $this->getId();
     }
 
     public function setLat(float $lat)
@@ -97,5 +118,20 @@ class Place implements CreatedAtInterface
     public function getImages(): iterable
     {
         return $this->images;
+    }
+
+    public function isAttraction(): bool
+    {
+        return $this->isAttraction;
+    }
+
+    public function makeAttraction()
+    {
+        $this->isAttraction = true;
+    }
+
+    public function makeRegular()
+    {
+        $this->isAttraction = false;
     }
 }

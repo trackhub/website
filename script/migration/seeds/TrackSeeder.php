@@ -73,7 +73,7 @@ class TrackSeeder extends AbstractSeed
         return null;
     }
 
-    protected function init()
+    public function init()
     {
         $this->trackCount = env('TRACK_SEEDER_TRACK_COUNT', self::DEFAULT_TRACK_COUNT);
     }
