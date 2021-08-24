@@ -53,7 +53,7 @@ class Place extends AbstractController
             }
 
             $place->setType($form->get('type')->getData());
-            if ($form->get('isAttraction')) {
+            if ($form->get('isAttraction')->getData()) {
                 $place->makeAttraction();
             }
 
