@@ -19,4 +19,9 @@ class TrackDescriptionHtmlEscape extends AbstractMigration
             ');
         }
     }
+
+    public function down()
+    {
+
+    }
 }

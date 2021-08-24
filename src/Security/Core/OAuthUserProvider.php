@@ -17,6 +17,15 @@ class OAuthUserProvider extends EntityUserProvider
         try {
             return parent::loadUserByOAuthUserResponse($response);
         } catch (UsernameNotFoundException $e) {
+            /**
+             * @var string id in 3rd party system
+             * For facebook this is user id
+             */
+            $idFromThirdParty = $response->getUsername();
+
+            if (empty($idFromThirdParty)) {
+                throw new AccountNotLinkedException(sprintf("User '%s' not found.", $idFromThirdParty));
+            }
             $email = $response->getEmail();
             /**
              * @var $user User
@@ -24,14 +33,32 @@ class OAuthUserProvider extends EntityUserProvider
             $user = $this->findUser(['email' => $email]);
 
             if ($user) {
-                $user->setFacebookId($response->getUsername());
+                $user->setFacebookId($idFromThirdParty);
             } else {
                 $user = new User();
-                $user->setNickname($response->getNickname());
+                $nickname = $response->getNickname();
                 $user->setEmail($response->getEmail());
-                $user->setFacebookId($response->getUsername());
+                $user->setFacebookId($idFromThirdParty);
                 $user->setRoles(['ROLE_USER']);
-                $user->setEnabled(true);
+                $user->enable();
+
+                $usernameExists = true;
+                $counter = 0;
+                $nicknameTmp = $nickname;
+                while ($usernameExists) {
+                    if ($counter) {
+                        $nicknameTmp = $nickname . $counter;
+                    }
+
+                    $existingUser = $this->repository->findOneBy(['nickname' => $nicknameTmp]);
+                    if (!$existingUser) {
+                        $usernameExists = false;
+                    }
+
+                    $counter++;
+                }
+
+                $user->setNickname($nicknameTmp);
             }
 
             $this->em->persist($user);

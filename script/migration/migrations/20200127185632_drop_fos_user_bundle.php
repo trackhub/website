@@ -30,13 +30,23 @@ class DropFosUserBundle extends AbstractMigration
         ");
 
         $this->query("
-            ALTER TABLE user
+            ALTER TABLE `user`
                 CHANGE COLUMN username nickname VARCHAR(180) NOT NULL
+        ");
+
+        $this->query("
+            CREATE UNIQUE INDEX user_uniq_nickname ON user(nickname);
+            CREATE UNIQUE INDEX user_uniq_email ON user(email);
         ");
     }
 
     public function down()
     {
+        $this->query("
+            DROP INDEX user_uniq_nickname ON user;
+            DROP INDEX user_uniq_email ON user;
+        ");
+
         $this->query("
             ALTER TABLE user
                 CHANGE COLUMN nickname username VARCHAR(180) NOT NULL;
@@ -58,6 +68,9 @@ class DropFosUserBundle extends AbstractMigration
             ALTER TABLE user
                 ADD confirmation_token VARCHAR(180) DEFAULT NULL;
         ");
+
+        $this->query("UPDATE user SET username_canonical = username");
+        $this->query("UPDATE user SET email_canonical = email");
 
         $this->query("
             CREATE UNIQUE INDEX UNIQ_8D93D64992FC23A8 ON user(username_canonical);

@@ -162,22 +162,15 @@ class User implements UserInterface
 
     /**
      * Check if user is enabled
-     *
-     * @return bool
      */
-    public function getEnabled(): bool
+    public function isEnabled(): bool
     {
         return $this->enabled;
     }
 
-    /**
-     * Enable/Disable user
-     *
-     * @param bool $enabled
-     */
-    public function setEnabled(bool $enabled): void
+    public function enable(): void
     {
-        $this->enabled = $enabled;
+        $this->enabled = true;
     }
 
     /**
@@ -186,8 +179,6 @@ class User implements UserInterface
     public function getRoles(): array
     {
         $roles = $this->roles;
-        // guarantee every user at least has ROLE_USER
-        $roles[] = 'ROLE_USER';
 
         return array_unique($roles);
     }
