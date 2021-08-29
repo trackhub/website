@@ -31,7 +31,7 @@
                     <td class="d-none d-md-table-cell">{{ place.createdAt|date("d M Y") }}</td>
                     <td>{{ place.name(app.request.locale) }}</td>
                     <td class="d-none d-md-table-cell">{{ place.type|app_place_type|trans }}</td>
-                    <td class="d-none d-md-table-cell">{{ place.sendBy }}</td>
+                    <td class="d-none d-md-table-cell">{{ place.sendBy.nickname }}</td>
                     <th>
                         <span class="clickable-icon icon-view-on-map"
                               data-lat="{{ place.lat }}"

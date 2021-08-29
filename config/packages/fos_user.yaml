@@ -1,9 +1,0 @@
-fos_user:
-  db_driver: orm # other valid values are 'mongodb' and 'couchdb'
-  firewall_name: main
-  user_class: App\Entity\User\User
-  from_email:
-    address: "~"
-    sender_name: "~"
-  service:
-    mailer: 'fos_user.mailer.noop'
