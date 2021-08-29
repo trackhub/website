@@ -47,18 +47,6 @@ services:
         tags:
             - { name: kernel.event_listener, event: kernel.request }
 
-    app.admin.track:
-        class: App\Admin\TrackAdmin
-        arguments: [~, App\Entity\Track, Sonata\AdminBundle\Controller\CRUDController]
-        tags:
-            - { name: sonata.admin, manager_type: orm, group: track, label: 'Track' }
-
-    app.admin.user:
-        class: App\Admin\UserAdmin
-        arguments: [~, App\Entity\User\User, Sonata\AdminBundle\Controller\CRUDController]
-        tags:
-            - { name: sonata.admin, manager_type: orm, group: user, label: 'User' }
-
     App\Repository\UserRepository:
         class: App\Repository\UserRepository
         factory: ['@doctrine.orm.default_entity_manager', getRepository]
