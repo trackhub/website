@@ -90,9 +90,54 @@
     </div>
 
     <script>
+        class HashData {
+            constructor() {
+                let hash = window.location.hash.substr(1);
+                this.properties = new URLSearchParams(hash);
+            }
+
+            set(key, value) {
+                this.properties.set(key, value)
+                window.location.hash = this.properties.toString();
+            }
+
+            setBool(key, value) {
+                value = Boolean(value);
+                this.set(key, value ? "1" : "0");
+            }
+
+            get(key) {
+                return this.properties.get(key);
+            }
+
+            getBool(key) {
+                return this.get(key) == "1" ? true : false;
+            }
+
+            has (key) {
+                return this.properties.has(key)
+            }
+
+            toString() {
+                return this.properties.toString();
+            }
+        };
+
+        const hashData = new HashData();
+
+        ["mbike", "mfoot", "moa"].forEach(function(key) {
+            if (!hashData.has(key)) {
+                hashData.setBool(key, true);
+            }
+        });
+
+        document.getElementById('map_show_place_attraction_only').checked = hashData.getBool("moa");
+        document.getElementById('map_show_mtb').checked = hashData.getBool("mbike");
+        document.getElementById('map_show_foot').checked = hashData.getBool("mfoot");
+
         var mapOptions = {
-            showByBike: true,
-            showByFoot: true,
+            showByBike: document.getElementById('map_show_mtb').checked,
+            showByFoot: document.getElementById('map_show_foot').checked,
             showRegularPlaces: !document.getElementById('map_show_place_attraction_only').checked,
         };
 
@@ -276,6 +321,7 @@
         // filter for track by type
         document.getElementById('map_show_mtb').addEventListener('click', function() {
             mapOptions.showByBike = this.checked;
+            hashData.setBool("mbike", this.checked)
             for(let trackId in loadedTracks) {
                 let track = loadedTracks[trackId];
                 if (track.getType() === 1) {
@@ -290,6 +336,7 @@
 
         document.getElementById('map_show_foot').addEventListener('click', function() {
             mapOptions.showByFoot = this.checked;
+            hashData.setBool("mfoot", this.checked);
             for (let trackId in loadedTracks) {
                 let track = loadedTracks[trackId];
                 if (track.getType() === 2) {
@@ -304,6 +351,7 @@
 
         document.getElementById('map_show_place_attraction_only').addEventListener('click', function () {
             mapOptions.showRegularPlaces = !this.checked;
+            hashData.setBool("moa", this.checked);
             for (let placeId in loadedPlaces) {
                 let place = loadedPlaces[placeId];
                 if (mapOptions.showRegularPlaces) {

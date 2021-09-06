@@ -15,8 +15,8 @@ fullScreenControl = L.Control.extend({
         container.style['font-size'] = '31px';
         container.style['line-height'] = '31px';
 
-
         container.onclick = function(e) {
+            map.getContainer().scrollIntoView();
             let currentHeight = map.getContainer().style.height;
             if (currentHeight === "90vh") {
                 map.gestureHandling.addHooks();
