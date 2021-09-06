@@ -47,6 +47,7 @@ class Track extends AbstractType
                 'choices' => [
                     'cycling' => \App\Entity\Track::TYPE_CYCLING,
                     'hiking' => \App\Entity\Track::TYPE_HIKING,
+                    'motorcycle' => \App\Entity\Track::TYPE_MOTORCYCLE,
                 ],
             ]
         );

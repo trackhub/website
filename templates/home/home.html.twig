@@ -7,6 +7,8 @@
         |
         <input type="checkbox" id="map_show_foot" checked /><label for="map_show_foot">{{ 'by foot'|trans }}</label>
         |
+        <input type="checkbox" id="map_show_motor" /><label for="map_show_motor">{{ 'by motorcycle'|trans }}</label>
+        |
         <input type="checkbox" id="map_show_place_attraction_only" checked /><label for="map_show_place_attraction_only">{{ 'only attractions'|trans }}</label>
     </div>
 
@@ -140,13 +142,21 @@
             }
         });
 
+        ["mmotorcycle"].forEach(function(key) {
+            if (!hashData.has(key)) {
+                hashData.setBool(key, false);
+            }
+        });
+
         document.getElementById('map_show_place_attraction_only').checked = hashData.getBool("moa");
         document.getElementById('map_show_mtb').checked = hashData.getBool("mbike");
         document.getElementById('map_show_foot').checked = hashData.getBool("mfoot");
+        document.getElementById('map_show_motor').checked = hashData.getBool('mmotorcycle');
 
         var mapOptions = {
             showByBike: document.getElementById('map_show_mtb').checked,
             showByFoot: document.getElementById('map_show_foot').checked,
+            showByMotor: document.getElementById('map_show_motor').checked,
             showRegularPlaces: !document.getElementById('map_show_place_attraction_only').checked,
         };
 
@@ -254,6 +264,11 @@
                                 break;
                             case 2:
                                 if (mapOptions.showByFoot) {
+                                    track.show();
+                                }
+                                break;
+                            case 3:
+                                if (mapOptions.showByMotor) {
                                     track.show();
                                 }
                                 break;
@@ -367,6 +382,21 @@
             for (let trackId in loadedTracks) {
                 let track = loadedTracks[trackId];
                 if (track.getType() === 2) {
+                    if (this.checked) {
+                        track.show();
+                    } else {
+                        track.hide();
+                    }
+                }
+            }
+        });
+
+        document.getElementById('map_show_motor').addEventListener('click', function () {
+            mapOptions.showByMotor = this.checked;
+            hashData.setBool("mmotorcycle", this.checked);
+            for (let trackId in loadedTracks) {
+                let track = loadedTracks[trackId];
+                if (track.getType() === 3) {
                     if (this.checked) {
                         track.show();
                     } else {
