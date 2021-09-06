@@ -106,12 +106,21 @@
                 this.set(key, value ? "1" : "0");
             }
 
+            setFloat(key, value) {
+                value = parseFloat(value)
+                this.set(key, value)
+            }
+
             get(key) {
                 return this.properties.get(key);
             }
 
             getBool(key) {
                 return this.get(key) == "1" ? true : false;
+            }
+
+            getFloat(key) {
+                return parseFloat(this.get(key))
             }
 
             has (key) {
@@ -149,12 +158,27 @@
             'purple',
             'red',
         ];
-        var map = L.map(
+        const map = L.map(
             'map',
             {
                 gestureHandling: true
             }
-        ).setView([42.15, 24.75], 12);
+        );
+
+        (function (map) {
+            let lat = 42.15;
+            if (hashData.getFloat("mclat") > 0) {
+                lat = hashData.getFloat("mclat");
+            }
+
+            let lng = 24.75;
+            if (hashData.getFloat("mclng") > 0) {
+                lng = hashData.getFloat("mclng");
+            }
+
+            map.setView([lat, lng], 12);
+        })(map);
+
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         }).addTo(map);
@@ -170,6 +194,9 @@
         });
 
         var moveEndListener = function() {
+            hashData.setFloat("mclat", map.getCenter().lat);
+            hashData.setFloat("mclng", map.getCenter().lng);
+
             var ajax = new XMLHttpRequest();
             ajax.onreadystatechange = function() {
                 if (this.readyState != 4 || this.status != 200) {
@@ -310,8 +337,8 @@
         };
 
         map.on('moveend', moveEndListener);
+        moveEndListener(); // initial load for current map viewpoint
 
-        map.panTo(new L.LatLng(42.15, 24.75));
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(function(position) {
                 map.panTo(new L.LatLng(position.coords.latitude, position.coords.longitude));
