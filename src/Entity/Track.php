@@ -29,10 +29,12 @@ class Track implements CreatedAtInterface, DescribableInterface
 
     public const TYPE_CYCLING = 1;
     public const TYPE_HIKING = 2;
+    public const TYPE_MOTORCYCLE = 3;
 
     public const VALID_TYPES = [
         self::TYPE_CYCLING => self::TYPE_CYCLING,
         self::TYPE_HIKING => self::TYPE_HIKING,
+        self::TYPE_MOTORCYCLE => self::TYPE_MOTORCYCLE,
     ];
 
     public const VISIBILITY_PUBLIC = 0;
