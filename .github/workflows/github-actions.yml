@@ -18,6 +18,8 @@ jobs:
   symfony:
     runs-on: ubuntu-latest
     steps:
+    - name: Check out repository code
+      uses: actions/checkout@v2
     - name: Debug
       run: echo ${{ github.workspace }} && pwd
     - name: Install Composer dependencies
