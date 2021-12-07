@@ -17,5 +17,5 @@ jobs:
       - run: echo "This job's status is ${{ job.status }}."
   symfony:
     steps:
-      - name: Install Composer dependencies
-        run: composer install --no-progress --prefer-dist --optimize-autoloader
+    - name: Install Composer dependencies
+      run: composer install --no-progress --prefer-dist --optimize-autoloader
