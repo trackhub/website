@@ -22,8 +22,9 @@ jobs:
       uses: actions/checkout@v2
     - name: Debug
       run: echo ${{ github.workspace }} && pwd
+    - name: Setup PHP with specific version of PECL extension
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '7.4'
     - name: Install Composer dependencies
       run: composer install --no-progress --prefer-dist --optimize-autoloader
-      with:
-        php-version: 7.4
-
