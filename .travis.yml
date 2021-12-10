@@ -1,3 +1,6 @@
+# Deprecated, migrated to github actions
+# Use the ./.github/workflow
+
 dist: bionic
 language: php
 php:
