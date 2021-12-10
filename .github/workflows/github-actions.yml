@@ -33,3 +33,7 @@ jobs:
         cd ./tests/phpcs
         composer install
         ./vendor/bin/phpcs --standard=phpcs.xml
+    - name: "phpunit"
+      run: ./vendor/bin/phpunit -c tests/phpunit/phpunit.xml --no-coverage
+    - name: "doctrine schema validation"
+      run: ./bin/console doctrine:schema:validate --skip-sync
