@@ -1,23 +1,26 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Event\Listener\User;
 
 use App\Entity\User\User;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
-use Symfony\Component\HttpKernel\Event\GetResponseEvent;
+use Symfony\Component\HttpKernel\Event\RequestEvent;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 
 class Terms
 {
-    private $tokenStorage;
+    private TokenStorageInterface $tokenStorage;
 
     public function __construct(TokenStorageInterface $tokenStorage)
     {
         $this->tokenStorage = $tokenStorage;
     }
 
-    public function onKernelRequest(GetResponseEvent $event)
+    public function onKernelRequest(RequestEvent $event)
     {
-        if (!$event->isMasterRequest()) {
+        if (!$event->isMainRequest()) {
             return;
         }
 
@@ -52,7 +55,7 @@ class Terms
         }
 
         if ($urlAllowed === false) {
-            $response = new \Symfony\Component\HttpFoundation\RedirectResponse('/en/user/terms', 302);
+            $response = new RedirectResponse('/en/user/terms', 302);
             $event->setResponse($response);
             $event->stopPropagation();
         }
