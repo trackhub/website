@@ -1,7 +1,6 @@
 {
     "require": {
         "robmorgan/phinx": "^0.12.0",
-        "fzaninotto/faker": "^1.8",
         "symfony/yaml": "5.*"
     },
     "autoload": {

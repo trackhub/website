@@ -23,7 +23,7 @@ jobs:
     - name: Setup PHP with specific version of PECL extension
       uses: shivammathur/setup-php@v2
       with:
-        php-version: '7.4'
+        php-version: '8.1'
     - name: Install Composer dependencies
       run: composer install --no-progress --prefer-dist --optimize-autoloader
     - name: "phpcs"

@@ -17,12 +17,11 @@ class UserSeeder extends AbstractSeed
 
     public function run()
     {
-        $faker = Faker\Factory::create();
         $data = [];
 
         for ($i = 0; $i < self::USER_COUNT; $i++) {
-            $nickname = $faker->firstName . ' ' . $faker->lastName;
-            $email = $faker->email;
+            $nickname = uniqid('username ');
+            $email = uniqid('email@gmail.com');
             $this->getOutput()->writeln("Generating: {$nickname}", OutputInterface::VERBOSITY_VERY_VERBOSE);
             $data[] = [
                 'nickname' => $nickname,
