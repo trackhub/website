@@ -7,7 +7,6 @@ use Symfony\Component\Translation\Loader\YamlFileLoader;
 
 class TranslationsTest extends TestCase
 {
-
     private const FILES = [
         'messages.bg.yaml',
         'messages.en.yaml',
