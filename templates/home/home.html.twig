@@ -9,7 +9,12 @@
         |
         <input type="checkbox" id="map_show_motor" /><label for="map_show_motor">{{ 'by motorcycle'|trans }}</label>
         |
-        <input type="checkbox" id="map_show_place_attraction_only" checked /><label for="map_show_place_attraction_only">{{ 'only attractions'|trans }}</label>
+        <select id="map_show_place_attraction_only">
+            <option selected value="1">{{ "auto"|trans }}</option>
+            <option value="2">{{ "all"|trans }}</option>
+            <option value="3">{{ "only attractions"|trans }}</option>
+        </select>
+        <label for="map_show_place_attraction_only">{{ 'Places'|trans|lower }}</label>
     </div>
 
     <hr>
@@ -108,6 +113,11 @@
                 this.set(key, value ? "1" : "0");
             }
 
+            setInt(key, value) {
+                value = parseInt(value);
+                this.set(key, value);
+            }
+
             setFloat(key, value) {
                 value = parseFloat(value)
                 this.set(key, value)
@@ -119,6 +129,10 @@
 
             getBool(key) {
                 return this.get(key) == "1" ? true : false;
+            }
+
+            getInt(ket) {
+                return parseInt(this.get(ket))
             }
 
             getFloat(key) {
@@ -136,11 +150,15 @@
 
         const hashData = new HashData();
 
-        ["mbike", "mfoot", "moa"].forEach(function(key) {
+        ["mbike", "mfoot"].forEach(function(key) {
             if (!hashData.has(key)) {
                 hashData.setBool(key, true);
             }
         });
+
+        if (!hashData.has("mattr")) {
+            hashData.setInt("mattr", 1)
+        }
 
         ["mmotorcycle"].forEach(function(key) {
             if (!hashData.has(key)) {
@@ -148,19 +166,19 @@
             }
         });
 
-        document.getElementById('map_show_place_attraction_only').checked = hashData.getBool("moa");
+        document.getElementById('map_show_place_attraction_only').value = hashData.getInt("mattr");
         document.getElementById('map_show_mtb').checked = hashData.getBool("mbike");
         document.getElementById('map_show_foot').checked = hashData.getBool("mfoot");
         document.getElementById('map_show_motor').checked = hashData.getBool('mmotorcycle');
 
-        var mapOptions = {
+        let mapOptions = {
             showByBike: document.getElementById('map_show_mtb').checked,
             showByFoot: document.getElementById('map_show_foot').checked,
             showByMotor: document.getElementById('map_show_motor').checked,
-            showRegularPlaces: !document.getElementById('map_show_place_attraction_only').checked,
+            showAttractions: document.getElementById('map_show_place_attraction_only').value,
         };
 
-        var gpsColors = [
+        const gpsColors = [
             'blue',
             'black',
             'indigo',
@@ -174,6 +192,27 @@
                 gestureHandling: true
             }
         );
+        // I should stop doing this and create proper map class ;)
+        const autoPlacesAttraction = function (map) {
+            for (let placeId in loadedPlaces) {
+                let place = loadedPlaces[placeId];
+                // only regular places are hidden
+                if (place.isAttraction()) {
+                    continue;
+                }
+                if (mapOptions.showAttractions === 2) {
+                    place.show();
+                } else if(mapOptions.showAttractions === 3) {
+                    place.hide();
+                } else {
+                    if (map.getZoom() >= 13) {
+                        place.show();
+                    } else {
+                        place.hide();
+                    }
+                }
+            }
+        };
 
         (function (map) {
             let lat = 42.15;
@@ -195,19 +234,19 @@
 
         map.addControl(new MapControlFullScreen());
 
-        var loadedTracks = {};
-        var loadedPlaces = {};
+        let loadedTracks = {};
+        let loadedPlaces = {};
 
         let placesMarkers = L.markerClusterGroup({
             animateAddingMarkers: true,
             chunkedLoading: true
         });
 
-        var moveEndListener = function() {
+        const moveEndListener = function() {
             hashData.setFloat("mclat", map.getCenter().lat);
             hashData.setFloat("mclng", map.getCenter().lng);
 
-            var ajax = new XMLHttpRequest();
+            let ajax = new XMLHttpRequest();
             ajax.onreadystatechange = function() {
                 if (this.readyState != 4 || this.status != 200) {
                     return;
@@ -313,7 +352,8 @@
                             place.makeAttraction();
                         }
 
-                        if (mapOptions.showRegularPlaces || place.isAttraction()) {
+                        // regular places will be shown later in "autoPlacesAttraction"
+                        if (place.isAttraction()) {
                             place.show();
                         }
 
@@ -321,6 +361,8 @@
                     }
                     map.addLayer(placesMarkers);
                     placesMarkers.refreshClusters();
+
+                    autoPlacesAttraction(map);
 
                     if (responseStatus == 2) {
                         moveEndListener();
@@ -406,19 +448,10 @@
             }
         });
 
-        document.getElementById('map_show_place_attraction_only').addEventListener('click', function () {
-            mapOptions.showRegularPlaces = !this.checked;
-            hashData.setBool("moa", this.checked);
-            for (let placeId in loadedPlaces) {
-                let place = loadedPlaces[placeId];
-                if (mapOptions.showRegularPlaces) {
-                    place.show();
-                } else {
-                    if (!place.isAttraction()) {
-                        place.hide();
-                    }
-                }
-            }
+        document.getElementById('map_show_place_attraction_only').addEventListener('change', function () {
+            mapOptions.showAttractions = parseInt(this.value);
+            hashData.setInt("mattr", mapOptions.showAttractions);
+            autoPlacesAttraction(map);
         });
 
     </script>

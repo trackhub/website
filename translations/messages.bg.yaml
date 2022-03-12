@@ -48,6 +48,8 @@ View place details : Виж детаили за мястото
 View the trail : Виж следата
 Visibility : Видимост
 
+all: всички
+auto: автоматично
 by bike : с колело
 by foot : пешеходно
 cycling : колоездене
@@ -55,7 +57,7 @@ hiking : пешеходен туризъм
 logout : изход
 motorcycle : мотор
 no : не
-only attractions : само атракции
+only attractions: само атракции
 place.type.bike_shop : Веломагазин
 place.type.drinking_fountain : Чешма
 place.type.generic : Общ тип
