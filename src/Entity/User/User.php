@@ -54,6 +54,11 @@ class User implements UserInterface
     private $enabled;
 
     /**
+     * @ORM\Column(type="boolean")
+     */
+    private bool $deletion = false;
+
+    /**
      * @ORM\OneToMany(
      *     targetEntity="App\Entity\Track\VersionRating",
      *     mappedBy="user",
@@ -221,5 +226,10 @@ class User implements UserInterface
     public function getRatings()
     {
         return $this->ratings;
+    }
+
+    public function markForDeletion()
+    {
+        $this->deletion = true;
     }
 }
