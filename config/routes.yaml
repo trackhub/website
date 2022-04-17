@@ -65,6 +65,10 @@ app_tos:
   path: /{_locale}/terms-of-service
   controller: App\Controller\SimpleContent::termsOfService
 
+app_user_delete:
+  path: /{_locale}/user/delete
+  controller: App\Controller\User::deleteAccount
+
 app_contacts:
   path: /{_locale}/contacts
 
