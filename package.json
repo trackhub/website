@@ -17,6 +17,9 @@
         "chart.js": "^2.8.0",
         "ekko-lightbox": "^5.3.0",
         "jquery": "^3.5.0",
+        "leaflet": "~1.8.0",
+        "leaflet-gesture-handling": "^1.2.2",
+        "leaflet.markercluster": "^1.5.3",
         "node-sass": "^7.0",
         "popper.js": "^1.15.0",
         "sass-loader": "^12.0"
