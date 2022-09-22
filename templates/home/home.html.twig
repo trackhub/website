@@ -139,7 +139,7 @@
                 return parseFloat(this.get(key))
             }
 
-            has (key) {
+            has(key) {
                 return this.properties.has(key)
             }
 
@@ -150,7 +150,7 @@
 
         const hashData = new HashData();
 
-        ["mbike", "mfoot"].forEach(function(key) {
+        ["mbike", "mfoot"].forEach(function (key) {
             if (!hashData.has(key)) {
                 hashData.setBool(key, true);
             }
@@ -160,7 +160,7 @@
             hashData.setInt("mattr", 1)
         }
 
-        ["mmotorcycle"].forEach(function(key) {
+        ["mmotorcycle"].forEach(function (key) {
             if (!hashData.has(key)) {
                 hashData.setBool(key, false);
             }
@@ -202,7 +202,7 @@
                 }
                 if (mapOptions.showAttractions === 2) {
                     place.show();
-                } else if(mapOptions.showAttractions === 3) {
+                } else if (mapOptions.showAttractions === 3) {
                     place.hide();
                 } else {
                     if (map.getZoom() >= 13) {
@@ -242,12 +242,12 @@
             chunkedLoading: true
         });
 
-        const moveEndListener = function() {
+        const moveEndListener = function () {
             hashData.setFloat("mclat", map.getCenter().lat);
             hashData.setFloat("mclng", map.getCenter().lng);
 
             let ajax = new XMLHttpRequest();
-            ajax.onreadystatechange = function() {
+            ajax.onreadystatechange = function () {
                 if (this.readyState != 4 || this.status != 200) {
                     return;
                 }
@@ -286,7 +286,7 @@
                                 ]);
                             }
 
-                            let polylineColor = gpsColors[Math.floor(Math.random()*gpsColors.length)];
+                            let polylineColor = gpsColors[Math.floor(Math.random() * gpsColors.length)];
                             let polyline = L.polyline(pointsAsPolyline, {color: polylineColor});
                             polylineCollection.push(polyline);
                             polyline.bindPopup('<a href="/{{ app.request.locale }}/gps/view/' + encodeURIComponent(slugOrId) + '">{{ 'View details'|trans|e('js') }}</a>');
@@ -397,7 +397,7 @@
         moveEndListener(); // initial load for current map viewpoint
 
         if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(function(position) {
+            navigator.geolocation.getCurrentPosition(function (position) {
                 map.panTo(new L.LatLng(position.coords.latitude, position.coords.longitude));
             });
         }

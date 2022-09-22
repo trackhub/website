@@ -19,10 +19,8 @@ fullScreenControl = L.Control.extend({
             map.getContainer().scrollIntoView();
             let currentHeight = map.getContainer().style.height;
             if (currentHeight === "90vh") {
-                map.gestureHandling.addHooks();
                 map.getContainer().style.height='30vh';
             } else {
-                map.gestureHandling.removeHooks();
                 map.getContainer().style.height='90vh';
             }
 
