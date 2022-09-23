@@ -214,18 +214,25 @@
             }
         };
 
+        let centerMapBasedOnGeo = true;
         (function (map) {
             let lat = 42.15;
             if (hashData.getFloat("mclat") > 0) {
+                centerMapBasedOnGeo = false;
                 lat = hashData.getFloat("mclat");
             }
 
             let lng = 24.75;
             if (hashData.getFloat("mclng") > 0) {
+                centerMapBasedOnGeo = false;
                 lng = hashData.getFloat("mclng");
             }
 
-            map.setView([lat, lng], 12);
+            if (hashData.getInt("mz") <= 0 || isNaN(hashData.getInt("mz"))) {
+                hashData.setInt("mz", 12)
+            }
+
+            map.setView([lat, lng], hashData.getInt("mz"));
         })(map);
 
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -245,6 +252,7 @@
         const moveEndListener = function () {
             hashData.setFloat("mclat", map.getCenter().lat);
             hashData.setFloat("mclng", map.getCenter().lng);
+            hashData.setInt("mz", map.getZoom());
 
             let ajax = new XMLHttpRequest();
             ajax.onreadystatechange = function () {
@@ -398,7 +406,9 @@
 
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(function (position) {
-                map.panTo(new L.LatLng(position.coords.latitude, position.coords.longitude));
+                if (centerMapBasedOnGeo) {
+                    map.panTo(new L.LatLng(position.coords.latitude, position.coords.longitude));
+                }
             });
         }
 
