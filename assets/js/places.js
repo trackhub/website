@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', function() {
     const map = L.map('map', {
-            gestureHandling: true,
+            gestureHandling: false,
         }
     );
 
