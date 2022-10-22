@@ -1,6 +1,25 @@
 {% extends "base.html.twig" %}
 
 {% block content %}
+    <style>
+        #placeImageLocator {
+            padding: 1.3em;
+            border: 0.1em black dashed;
+        }
+
+        fieldset.app {
+            border-width: 1px;
+            border-style: solid;
+            border-color: black;
+            padding: 5px;
+            background: #d6d8db;
+        }
+
+        .app legend {
+            padding: 0.1em;
+            background: #adb5bd;
+        }
+    </style>
 
     {{ form_start(form) }}
 
@@ -8,8 +27,27 @@
     {{ form_row(form.nameBg) }}
     {{ form_row(form.type) }}
     {{ form_row(form.isAttraction) }}
-    {{ form_row(form.lat) }}
-    {{ form_row(form.lng) }}
+    <fieldset class="app">
+        <legend>Location</legend>
+        <div class="row">
+            <div class="col">
+                <div class="row">
+                    <div class="col">
+                        {{ form_row(form.lat) }}
+                    </div>
+                    <div class="col">
+                        {{ form_row(form.lng) }}
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div id="placeImageLocator">
+                    or drop image with geolocation here
+                    <div id="placeImageLocatorInfo"></div>
+                </div>
+            </div>
+        </div>
+    </fieldset>
 
     <!--- Initialize map --->
     <div style="height: 50vh; min-height: 300px; width: 100%;" id="map"></div>
@@ -98,9 +136,112 @@
                     ll.lng = newLng;
                     this.marker.setLatLng(ll);
                 }
+
+                setCoord (lat, lon) {
+                    this.lat.value = lat;
+                    this.lng.value = lon;
+
+                    let ll = this.marker.getLatLng();
+                    ll.lat = lat;
+                    ll.lng = lon;
+                    this.marker.setLatLng(ll);
+                }
             };
 
-            new syncInputAndMap(popup, document.getElementById('place_lat'), document.getElementById('place_lng'));
+            const mapInputSyncer = new syncInputAndMap(popup, document.getElementById('place_lat'), document.getElementById('place_lng'));
+
+            const coordLocator = document.getElementById('placeImageLocator');
+            coordLocator.addEventListener(
+                'dragover',
+                function(ev) {
+                    ev.preventDefault();
+                },
+                false
+            );
+
+            coordLocator.addEventListener(
+                'drop',
+                function (ev) {
+                    try {
+                        ev.preventDefault();
+                        document.getElementById('placeImageLocatorInfo').innerText = "";
+                        let files = ev.dataTransfer.files;
+                        var img;
+                        if (files.length > 0) {
+                            img = files[0];
+                        }
+                        EXIF.getData(img, function () {
+                            const errorMsg = "Unable to find the file location!";
+                            const getFloatValue = function (v) {
+                                if (v instanceof Array && v.length == 3) {
+                                    const vd = getFloatValue(v[0]);
+                                    const vm = getFloatValue(v[1]);
+                                    const vs = getFloatValue(v[2]);
+
+                                    if (vd === undefined || vm === undefined || vs === undefined) {
+                                        return undefined;
+                                    }
+
+                                    return vd + vm / 60 + vs / 3600;
+                                } else if (v instanceof Number) {
+                                    return v;
+                                } else if (typeof v === "number") {
+                                    if (isNaN(v)) {
+                                        return undefined;
+                                    }
+                                    return v;
+                                }
+
+                                return undefined
+                            }
+
+
+                            const lat = EXIF.getTag(this, "GPSLatitude");
+                            if (lat === undefined) {
+                                document.getElementById('placeImageLocatorInfo').innerText = errorMsg;
+                                return;
+                            }
+
+                            const latNumber = getFloatValue(lat);
+                            if (latNumber === undefined) {
+                                document.getElementById('placeImageLocatorInfo').innerText = errorMsg;
+                                return;
+                            }
+
+                            const lon = EXIF.getTag(this, "GPSLongitude");
+                            if (lon === undefined) {
+                                document.getElementById('placeImageLocatorInfo').innerText = errorMsg;
+                                return;
+                            }
+
+                            const lonNumber = getFloatValue(lon);
+                            if (lonNumber === undefined) {
+                                document.getElementById('placeImageLocatorInfo').innerText = errorMsg;
+                                return;
+                            }
+
+                            // @TODO fix direction
+                            // if (direction == "S" || direction == "W") dd = dd * -1;
+
+                            map.setView(
+                                [
+                                    latNumber,
+                                    lonNumber,
+                                ],
+                                16
+                            );
+                            mapInputSyncer.setCoord(latNumber, lonNumber);
+
+                            console.log(lat);
+                        });
+                    } catch (e) {
+                        // error is not so important,
+                        // the user will manually select the location
+                        console.log(e);
+                    }
+                },
+                false
+            );
         })();
     </script>
 {% endblock %}

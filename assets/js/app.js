@@ -37,3 +37,5 @@ window.StarRating = require('./components/starRating');
 
 window.jsUpload = require('./components/fileUpload');
 window.bsCustomFileInput = require('bs-custom-file-input');
+
+window.EXIF = require('exif-js')
