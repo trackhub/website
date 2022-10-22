@@ -84,5 +84,8 @@
             "allow-contrib": false,
             "require": "5.4.*"
         }
+    },
+    "allow-plugins": {
+        "symfony/flex": true
     }
 }
