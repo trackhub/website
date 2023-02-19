@@ -13,8 +13,8 @@
         "ezyang/htmlpurifier": "^4.12",
         "hwi/oauth-bundle": "^1.4.5",
         "knplabs/knp-paginator-bundle": "^5.0",
-        "php-http/guzzle6-adapter": "^2.0.0",
-        "php-http/httplug-bundle": "^1.13",
+        "php-http/guzzle6-adapter": "^2.0.2",
+        "php-http/httplug-bundle": "^1.27",
         "symfony/browser-kit": "*",
         "symfony/console": "*",
         "symfony/dotenv": "*",
@@ -32,9 +32,9 @@
         "twig/twig": "2.*"
     },
     "require-dev": {
-        "phpunit/phpunit": "^8.1",
+        "phpunit/phpunit": "^10.0",
         "symfony/debug-bundle": "*",
-        "symfony/maker-bundle": "^1.12",
+        "symfony/maker-bundle": "*",
         "symfony/process": "*",
         "symfony/stopwatch": "*",
         "symfony/var-dumper": "*",
