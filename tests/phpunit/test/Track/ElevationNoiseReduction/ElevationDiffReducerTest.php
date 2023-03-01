@@ -8,7 +8,7 @@ use PHPUnit\Framework\TestCase;
 
 class ElevationDiffReducerTest extends TestCase
 {
-    public function shouldCountDataProvider(): array
+    public static function shouldCountDataProvider(): array
     {
         return [
             [true, 3, 0, 4,],

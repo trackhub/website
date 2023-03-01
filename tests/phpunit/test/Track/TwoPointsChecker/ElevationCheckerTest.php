@@ -8,7 +8,7 @@ use PHPUnit\Framework\TestCase;
 
 class ElevationCheckerTest extends TestCase
 {
-    public function pointsDataProvider()
+    public static function pointsDataProvider()
     {
         return [
             [

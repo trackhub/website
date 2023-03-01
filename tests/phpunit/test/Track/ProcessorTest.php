@@ -37,7 +37,7 @@ class ProcessorTest extends TestCase
         $user = new User();
         $version = new Version($user);
 
-        $this->expectException(Warning::class);
+        $this->expectException(\Exception::class);
         $processor->process($xml, $version);
     }
 
@@ -198,7 +198,7 @@ class ProcessorTest extends TestCase
         $this->assertSame(24.4460737, $secondPoint->getLng());
     }
 
-    public function processorInvalidValueProvider()
+    public static function processorInvalidValueProvider()
     {
         return [
             [ '<gpx><trk><trkseg>
@@ -232,7 +232,7 @@ class ProcessorTest extends TestCase
         $processor->process($xml, $version);
     }
 
-    public function processorDistanceProvider()
+    public static function processorDistanceProvider()
     {
         return [
             [

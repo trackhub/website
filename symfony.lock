@@ -179,9 +179,6 @@
     "phpunit/php-timer": {
         "version": "2.1.1"
     },
-    "phpunit/php-token-stream": {
-        "version": "3.0.1"
-    },
     "phpunit/phpunit": {
         "version": "4.7",
         "recipe": {
@@ -241,9 +238,6 @@
     },
     "sebastian/recursion-context": {
         "version": "3.0.0"
-    },
-    "sebastian/resource-operations": {
-        "version": "2.0.1"
     },
     "sebastian/type": {
         "version": "1.1.1"
