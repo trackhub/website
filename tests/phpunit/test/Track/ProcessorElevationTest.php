@@ -9,7 +9,7 @@ use PHPUnit\Framework\TestCase;
 
 class ProcessorElevationTest extends TestCase
 {
-    public function elevationTestCases()
+    static public function elevationTestCases()
     {
         return [
             [

@@ -1,16 +1,19 @@
-<phpunit failOnWarning="true">
+<?xml version="1.0"?>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" colors="true" processIsolation="true"
+         xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/10.0/phpunit.xsd" failOnWarning="false"
+         cacheDirectory=".phpunit.cache">
+    <coverage>
+        <include>
+            <directory>../../src</directory>
+        </include>
+        <report>
+            <html outputDirectory="codeCoverageLog"/>
+        </report>
+    </coverage>
     <testsuites>
         <testsuite name="My Test Suite">
             <directory>./test</directory>
         </testsuite>
     </testsuites>
-
-    <filter>
-        <whitelist>
-            <directory>../../src</directory>
-        </whitelist>
-    </filter>
-    <logging>
-        <log type="coverage-html" target="codeCoverageLog" />
-    </logging>
+    <logging/>
 </phpunit>
