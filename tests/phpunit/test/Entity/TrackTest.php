@@ -38,7 +38,7 @@ class TrackTest extends TestCase
         }
     }
 
-    static public function downhillUphillMethodProvider()
+    public static function downhillUphillMethodProvider()
     {
         return [
             ['addDownhill', 'getDownhillVersions',],
@@ -128,7 +128,7 @@ class TrackTest extends TestCase
         $this->assertArraysAreIdentical($expectedVersions, $track->{$getVersionsMethod}());
     }
 
-    static public function getNameDataProvider()
+    public static function getNameDataProvider()
     {
         return [
             // only en with desired en
