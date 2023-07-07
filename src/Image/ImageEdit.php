@@ -58,9 +58,14 @@ class ImageEdit
 
         if (isset($exifData['Orientation'])) {
             switch ($exifData['Orientation']) {
-                case 6:
+                case 3:
+                case 4: // + mirrored
+                    return 180;
+                case 5:
+                case 6: // + mirrored
                     return 90;
-                case 8:
+                case 7:
+                case 8: // + mirrored
                     return 270;
             }
         }
