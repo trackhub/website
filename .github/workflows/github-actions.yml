@@ -1,31 +1,17 @@
-name: GitHub Actions Demo
-on: [push, pull_request]
+name: CI tests
+on: [pull_request]
 jobs:
-  info-job:
-    runs-on: ubuntu-latest
-    steps:
-      - run: echo "Triggered by a ${{ github.event_name }} event. Running on a ${{ runner.os }}"
-      - run: echo "The name of your branch is ${{ github.ref }} and your repository is ${{ github.repository }}."
-      - name: Check out repository code
-        uses: actions/checkout@v2
-      - run: echo "The ${{ github.repository }} repository has been cloned to the runner."
-      - name: List files in the repository
-        run: |
-          ls ${{ github.workspace }}
-      - run: echo "This job's status is ${{ job.status }}."
   fast-tests:
     runs-on: ubuntu-latest
     steps:
     - name: Check out repository code
       uses: actions/checkout@v2
-    - name: Debug
-      run: echo ${{ github.workspace }} && pwd
     - name: Setup PHP with specific version of PECL extension
       uses: shivammathur/setup-php@v2
       with:
         php-version: '8.2'
     - name: Install Composer dependencies
-      run: composer install --no-progress --prefer-dist --optimize-autoloader
+      run: composer install --no-progress --optimize-autoloader
     - name: "phpcs"
       run: |
         cd ./tests/phpcs
