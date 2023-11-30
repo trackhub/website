@@ -20,7 +20,7 @@ RUN a2enmod rewrite ssl expires
 RUN wget -O /etc/apt/trusted.gpg.d/php.gpg https://packages.sury.org/php/apt.gpg
 RUN echo "deb https://packages.sury.org/php/ $(lsb_release -sc) main" > /etc/apt/sources.list.d/php.list
 
-ENV PHP_V="8.2"
+ENV PHP_V="8.3"
 
 RUN apt-get update && \
     apt-get install -y php$PHP_V \
@@ -36,18 +36,20 @@ RUN update-alternatives --set php /usr/bin/php${PHP_V}
 COPY php.ini /etc/php/${PHP_V}/apache2/php.ini
 # end php
 
-RUN wget https://getcomposer.org/download/2.4.3/composer.phar -O /usr/local/bin/composer && \
+RUN wget https://getcomposer.org/download/2.6.5/composer.phar -O /usr/local/bin/composer && \
     chmod +x /usr/local/bin/composer
 
 # js stuff
-RUN curl -sL https://deb.nodesource.com/setup_16.x | bash -
-RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
+ENV NODE_MAJOR=21
+RUN mkdir /etc/apt/keyrings && \
+    curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg && \
+    echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_$NODE_MAJOR.x nodistro main" | tee /etc/apt/sources.list.d/nodesource.list
 
-RUN echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
-
+# build-essentials are needed by yarn
 RUN apt-get update && \
-    apt-get install -y nodejs && \
-    apt-get install -y --no-install-recommends yarn
+    apt-get install -y nodejs build-essential
+
+RUN npm install --global yarn
 # end js
 
 WORKDIR /var/www
