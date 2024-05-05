@@ -5,6 +5,7 @@ namespace App\Controller\Place;
 use App\Image\ImageEdit;
 use App\Repository\PlaceRepository;
 use App\Upload\ImageUploader;
+use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -45,7 +46,7 @@ class Image extends AbstractController
      * This method is called when thumbnails doesn't exists.
      * Thumbnail will be created and saved in the "public" directory.
      */
-    public function generateThumbnail(int $year, string $placeId, string $imagePath, int $maxWidth, int $maxHeight, Request $request)
+    public function generateThumbnail(int $year, string $placeId, string $imagePath, int $maxWidth, int $maxHeight, Request $request, LoggerInterface $logger)
     {
         $originalImagePath = $this->getParameter('place_images_directory') . DIRECTORY_SEPARATOR;
         $originalImagePath .= $year . DIRECTORY_SEPARATOR . $placeId . DIRECTORY_SEPARATOR . $imagePath;
@@ -55,9 +56,17 @@ class Image extends AbstractController
         $thumbnailPathDir .= DIRECTORY_SEPARATOR . $year . DIRECTORY_SEPARATOR . $placeId;
         $thumbnailPath = $thumbnailPathDir . DIRECTORY_SEPARATOR . $imagePath;
 
-        $resizer = new ImageEdit($originalImagePath);
+        $resizer = new ImageEdit($originalImagePath, $logger);
         $resizer->resize($maxWidth, $maxHeight);
         $resizer->watermark('track-hub.com');
+
+        if ($resizer->shouldBeConverted()) {
+            $resizer->convertToJpeg();
+            $thumbnailPathArray = explode('.', $thumbnailPath);
+            array_push($thumbnailPathArray, 'jpeg');
+            $thumbnailPath = implode(".", $thumbnailPathArray);
+        }
+
         $resizer->save($thumbnailPath);
 
         return new Response(
