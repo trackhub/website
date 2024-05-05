@@ -68,7 +68,7 @@ class ImageUploader
         $extension = $file->getClientOriginalExtension();
         $extension = mb_strtolower($extension);
 
-        if (!in_array($extension, ['jpeg', 'jpg', 'png', 'gif'])) {
+        if (!in_array($extension, ['jpeg', 'jpg', 'png', 'gif', 'heic'])) {
             return [
                 null,
                 new Response(
