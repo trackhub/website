@@ -3,19 +3,33 @@
 namespace App\Security\Core;
 
 use App\Entity\User\User;
+use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\Persistence\ManagerRegistry;
 use HWI\Bundle\OAuthBundle\OAuth\Response\UserResponseInterface;
-use HWI\Bundle\OAuthBundle\Security\Core\User\EntityUserProvider;
+use HWI\Bundle\OAuthBundle\Security\Core\User\OAuthAwareUserProviderInterface;
 use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
+use Symfony\Component\Security\Core\User\UserInterface;
+use HWI\Bundle\OAuthBundle\Security\Core\User\OAuthUserProvider as HwiOAuthUserProvider;
 
-class OAuthUserProvider extends EntityUserProvider
+class OAuthUserProvider implements OAuthAwareUserProviderInterface
 {
+    private EntityManagerInterface $em;
+
+    private HwiOAuthUserProvider $hwiOAuthUserProvider;
+
+    public function __construct(ManagerRegistry $registry, HwiOAuthUserProvider $authUserProvider)
+    {
+        $this->em = $registry->getManager();
+        $this->hwiOAuthUserProvider = $authUserProvider;
+     }
+
     /**
      * {@inheritdoc}
      */
-    public function loadUserByOAuthUserResponse(UserResponseInterface $response)
+    public function loadUserByOAuthUserResponse(UserResponseInterface $response): ?UserInterface
     {
         try {
-            return parent::loadUserByOAuthUserResponse($response);
+            return $this->hwiOAuthUserProvider->loadUserByOAuthUserResponse($response);
         } catch (UsernameNotFoundException $e) {
             /**
              * @var string id in 3rd party system
