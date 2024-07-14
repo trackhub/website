@@ -34,11 +34,12 @@ services:
         resource: '../src/Controller'
         tags: ['controller.service_arguments']
 
+    # @TODO args!
     app.oauth.provider:
         class: App\Security\Core\OAuthUserProvider
         arguments:
             - '@doctrine'
-            - App\Entity\User\User
+            - App\Entity\User\Userh
             - facebook: facebookId
 
     app.user.force.terms:

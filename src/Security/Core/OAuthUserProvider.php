@@ -7,7 +7,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use HWI\Bundle\OAuthBundle\OAuth\Response\UserResponseInterface;
 use HWI\Bundle\OAuthBundle\Security\Core\User\OAuthAwareUserProviderInterface;
-use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
+use Symfony\Component\Security\Core\Exception\UserNotFoundException;
 use Symfony\Component\Security\Core\User\UserInterface;
 use HWI\Bundle\OAuthBundle\Security\Core\User\OAuthUserProvider as HwiOAuthUserProvider;
 
@@ -30,7 +30,7 @@ class OAuthUserProvider implements OAuthAwareUserProviderInterface
     {
         try {
             return $this->hwiOAuthUserProvider->loadUserByOAuthUserResponse($response);
-        } catch (UsernameNotFoundException $e) {
+        } catch (UserNotFoundException $e) {
             /**
              * @var string id in 3rd party system
              * For facebook this is user id
