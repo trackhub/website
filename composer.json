@@ -29,7 +29,7 @@
         "symfony/webpack-encore-bundle": "^2.1.0",
         "symfony/yaml": "*",
         "tekstove/url-video-parser": "^1.0",
-        "twig/twig": "^2.15.5"
+        "twig/twig": "^3.11.2"
     },
     "require-dev": {
         "phpunit/phpunit": "^10.0",
