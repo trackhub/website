@@ -2,6 +2,8 @@
 
 namespace App\Image;
 
+use Imagick;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Filesystem\Filesystem;
 
 class ImageEdit
@@ -9,10 +11,13 @@ class ImageEdit
     private $input;
     private $image;
 
-    public function __construct(string $input)
+    private LoggerInterface $logger;
+
+    public function __construct(string $input, LoggerInterface $logger)
     {
         $this->input = $input;
-        $this->image = new \Imagick($input);
+        $this->logger = $logger;
+        $this->image = new Imagick($input);
 
         $this->image->setImageOrientation($this->image->getImageOrientation());
         $rotateAngle = $this->getRotateAngle();
@@ -29,6 +34,22 @@ class ImageEdit
         if (isset($profiles['icc'])) {
             $this->image->profileImage("icc", $profiles['icc']);
         }
+    }
+
+    public function shouldBeConverted(): bool
+    {
+        $format = $this->image->getImageFormat();
+
+        $convertableFormats = [
+            'HEIC',
+        ];
+
+        return in_array($format, $convertableFormats);
+    }
+
+    public function convertToJpeg()
+    {
+        $this->image->setImageFormat('jpeg');
     }
 
     public function resize(int $maxW, int $maxH)
@@ -54,7 +75,17 @@ class ImageEdit
 
     public function getRotateAngle(): int
     {
-        $exifData = exif_read_data($this->input);
+        $exifData = [];
+        try {
+            $exifData = exif_read_data($this->input);
+        } catch (\Exception $e) {
+            $this->logger->warning(
+                'unable to read exif data',
+                [
+                    'error' => $e->getMessage(),
+                ]
+            );
+        }
 
         if (isset($exifData['Orientation'])) {
             switch ($exifData['Orientation']) {
