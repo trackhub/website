@@ -1,9 +1,11 @@
-FROM debian:11
+FROM debian:12
 
 RUN apt-get update && \
-    apt-get install -y apache2 curl gnupg2 netcat \
+    apt-get install -y apache2 curl gnupg2 \
     # php stuff
-    apt-transport-https lsb-release ca-certificates wget unzip git
+    apt-transport-https lsb-release ca-certificates wget unzip \
+    # used to ping sql container
+    netcat-openbsd
 
 RUN mkdir /home/www-data && \
     chown www-data /home/www-data
@@ -40,8 +42,8 @@ RUN wget https://getcomposer.org/download/2.6.5/composer.phar -O /usr/local/bin/
     chmod +x /usr/local/bin/composer
 
 # js stuff
-ENV NODE_MAJOR=21
-RUN mkdir /etc/apt/keyrings && \
+ENV NODE_MAJOR=22
+RUN mkdir /etc/apt/keyrings -p && \
     curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg && \
     echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_$NODE_MAJOR.x nodistro main" | tee /etc/apt/sources.list.d/nodesource.list
 
