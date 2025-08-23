@@ -13,6 +13,12 @@ docker-compose -p track build
 if [[ "$1" == "-p" ]]; then
     docker-compose -p track -f docker-compose.yml -f docker-compose-prod.yml build
     docker-compose -p track -f docker-compose.yml -f docker-compose-prod.yml up
-else
+    exit
+fi
+
+if [ $# -eq 0 ]
+  then
     docker-compose -p track up
+else
+  docker-compose -p track "$@"
 fi
