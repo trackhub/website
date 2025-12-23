@@ -5,7 +5,7 @@ RUN a2ensite 000-default-ssl
 COPY cert/server.key /etc/ssl/private/apache.key
 COPY cert/server.crt /etc/ssl/certs/apache.crt
 
-ENV PHP_V="8.3"
+ENV PHP_V="8.4"
 
 #RUN apt-get update && \
 #    apt-get install -y php${PHP_V}-xdebug
