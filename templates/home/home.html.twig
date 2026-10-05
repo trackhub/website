@@ -264,7 +264,7 @@
                 const responseAsJson = JSON.parse(this.responseText);
 
                 // tracks
-                (function (data) {
+                const tracksProcessor = function (data) {
                     const responseStatus = data.status;
 
                     if (responseStatus != 0 && responseStatus != 2) {
@@ -273,7 +273,7 @@
                         return;
                     }
 
-                    const tracksData = data.data;
+                    const tracksData = data.tracks;
 
                     for (let i = 0; i < tracksData.length; i++) {
                         let id = tracksData[i].id;
@@ -285,8 +285,8 @@
 
 
                         var polylineCollection = [];
-                        for (let j = 0; j < tracksData[i].points.length; j++) {
-                            let points = tracksData[i].points[j];
+                        for (let j = 0; j < tracksData[i].optimizedPoints.length; j++) {
+                            let points = tracksData[i].optimizedPoints[j];
                             let pointsAsPolyline = [];
                             for (let pointIndex = 0; pointIndex < points.length; pointIndex++) {
                                 pointsAsPolyline.push([
@@ -330,7 +330,7 @@
                     if (responseStatus == 2) {
                         moveEndListener();
                     }
-                })(responseAsJson.tracks);
+                };
 
                 // places
                 (function (data) {
@@ -377,6 +377,33 @@
                         moveEndListener();
                     }
                 })(responseAsJson.places);
+
+                window.graphQL.query(`{
+                listTracks(
+                    skipTracks: [` + fetchedTracksIds.map(id => `"${id}"`).join(",") + `],
+                    neLat: ` + map.getBounds().getNorthEast().lat + `,
+                    swLat: ` + map.getBounds().getSouthWest().lat + `,
+                    neLon: ` + map.getBounds().getNorthEast().lng + `,
+                    swLon: ` + map.getBounds().getSouthWest().lng + `
+                ) {
+                    status
+                    tracks {
+                    id
+                    name
+                    type
+                    slugOrId
+                    optimizedPoints{
+                        lat
+                        lng
+                    }
+                    }
+                }
+            }
+            `).then(r => {
+                    console.log(r.listTracks);
+                    console.log(fetchedTracksIds);
+                    tracksProcessor(r.listTracks);
+                })
             };
 
             let url = '/{{ app.request.locale }}/gps/list';
