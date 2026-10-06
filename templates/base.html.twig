@@ -4,6 +4,7 @@
         {% include "include/head.html.twig" %}
         {{ encore_entry_link_tags('app') }}
         {% block stylesheets %}{% endblock %}
+        <script>window.GRAPHQL_BASE_URL = {{ graphql_base_url|json_encode|raw }};</script>
         {{ encore_entry_script_tags('app') }}
     </head>
     <body>
