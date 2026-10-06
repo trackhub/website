@@ -21,31 +21,6 @@ class TrackRepository extends EntityRepository
     }
 
     /**
-     * Filter tracks by coordinates
-     */
-    public function andWhereInCoordinates(QueryBuilder $qb, array $skipTracks, float $neLat, float $swLat, float $neLon, float $swLon): self
-    {
-        $alias = $qb->getRootAliases()[0];
-
-        $qb->andWhere(
-            $qb->expr()->andX(
-                $qb->expr()->lte($alias . '.pointNorthEastLat', $neLat),
-                $qb->expr()->gte($alias . '.pointSouthWestLat', $swLat),
-                $qb->expr()->lte($alias . '.pointNorthEastLng', $neLon),
-                $qb->expr()->gte($alias . '.pointSouthWestLng', $swLon)
-            )
-        );
-
-        if (!empty($skipTracks)) {
-            $qb->andWhere(
-                $qb->expr()->notIn($alias . '.id', $skipTracks)
-            );
-        }
-
-        return $this;
-    }
-
-    /**
      * Used in the index page
      */
     public function findLatestTrackTypes(): array
