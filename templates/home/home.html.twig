@@ -250,183 +250,184 @@
             chunkedLoading: true
         });
 
-        const moveEndListener = function () {
-            hashData.setFloat("mclat", map.getCenter().lat);
-            hashData.setFloat("mclng", map.getCenter().lng);
-            hashData.setInt("mz", map.getZoom());
+        const fetchTracks = function () {
+            let fetchedTracksIds = [];
+            for (let key in loadedTracks) {
+                fetchedTracksIds.push(key);
+            }
 
-            let ajax = new XMLHttpRequest();
-            ajax.onreadystatechange = function () {
-                if (this.readyState != 4 || this.status != 200) {
-                    return;
+            window.graphQL.query(`{
+                    listTracks(
+                        skipTracks: [` + fetchedTracksIds.map(id => `"${id}"`).join(",") + `],
+                        neLat: ` + map.getBounds().getNorthEast().lat + `,
+                        swLat: ` + map.getBounds().getSouthWest().lat + `,
+                        neLon: ` + map.getBounds().getNorthEast().lng + `,
+                        swLon: ` + map.getBounds().getSouthWest().lng + `
+                    ) {
+                        status
+                        tracks {
+                            id
+                            name
+                            type
+                            slugOrId
+                            optimizedPoints{
+                                lat
+                                lng
+                            }
+                        }
+                    }
+                }`).then(r => {
+                tracksProcessor(r.listTracks);
+            })
+        };
+
+        // tracks
+        const tracksProcessor = function (data) {
+            const responseStatus = data.status;
+
+            if (responseStatus != 0 && responseStatus != 2) {
+                // unknown error
+                // @FIXME show error
+                return;
+            }
+
+            const tracksData = data.tracks;
+
+            for (let i = 0; i < tracksData.length; i++) {
+                let id = tracksData[i].id;
+                let slugOrId = tracksData[i].slugOrId;
+
+                if (loadedTracks[id]) {
+                    continue;
                 }
 
-                const responseAsJson = JSON.parse(this.responseText);
 
-                // tracks
-                const tracksProcessor = function (data) {
-                    const responseStatus = data.status;
-
-                    if (responseStatus != 0 && responseStatus != 2) {
-                        // unknown error
-                        // @FIXME show error
-                        return;
+                var polylineCollection = [];
+                for (let j = 0; j < tracksData[i].optimizedPoints.length; j++) {
+                    let points = tracksData[i].optimizedPoints[j];
+                    let pointsAsPolyline = [];
+                    for (let pointIndex = 0; pointIndex < points.length; pointIndex++) {
+                        pointsAsPolyline.push([
+                            points[pointIndex].lat,
+                            points[pointIndex].lng
+                        ]);
                     }
 
-                    const tracksData = data.tracks;
+                    let polylineColor = gpsColors[Math.floor(Math.random() * gpsColors.length)];
+                    let polyline = L.polyline(pointsAsPolyline, {color: polylineColor});
+                    polylineCollection.push(polyline);
+                    polyline.bindPopup('<a href="/{{ app.request.locale }}/gps/view/' + encodeURIComponent(slugOrId) + '">{{ 'View details'|trans|e('js') }}</a>');
+                }
 
-                    for (let i = 0; i < tracksData.length; i++) {
-                        let id = tracksData[i].id;
-                        let slugOrId = tracksData[i].slugOrId;
+                let track = new AppTrack(map, polylineCollection);
+                track.setType(tracksData[i].type);
 
-                        if (loadedTracks[id]) {
-                            continue;
+                switch (track.getType()) {
+                    case 1:
+                        if (mapOptions.showByBike) {
+                            track.show();
                         }
-
-
-                        var polylineCollection = [];
-                        for (let j = 0; j < tracksData[i].optimizedPoints.length; j++) {
-                            let points = tracksData[i].optimizedPoints[j];
-                            let pointsAsPolyline = [];
-                            for (let pointIndex = 0; pointIndex < points.length; pointIndex++) {
-                                pointsAsPolyline.push([
-                                    points[pointIndex].lat,
-                                    points[pointIndex].lng
-                                ]);
-                            }
-
-                            let polylineColor = gpsColors[Math.floor(Math.random() * gpsColors.length)];
-                            let polyline = L.polyline(pointsAsPolyline, {color: polylineColor});
-                            polylineCollection.push(polyline);
-                            polyline.bindPopup('<a href="/{{ app.request.locale }}/gps/view/' + encodeURIComponent(slugOrId) + '">{{ 'View details'|trans|e('js') }}</a>');
+                        break;
+                    case 2:
+                        if (mapOptions.showByFoot) {
+                            track.show();
                         }
-
-                        let track = new AppTrack(map, polylineCollection);
-                        track.setType(tracksData[i].type);
-
-                        switch (track.getType()) {
-                            case 1:
-                                if (mapOptions.showByBike) {
-                                    track.show();
-                                }
-                                break;
-                            case 2:
-                                if (mapOptions.showByFoot) {
-                                    track.show();
-                                }
-                                break;
-                            case 3:
-                                if (mapOptions.showByMotor) {
-                                    track.show();
-                                }
-                                break;
-                            default:
-                                track.show();
+                        break;
+                    case 3:
+                        if (mapOptions.showByMotor) {
+                            track.show();
                         }
+                        break;
+                    default:
+                        track.show();
+                }
 
-                        loadedTracks[id] = track;
-                    }
+                loadedTracks[id] = track;
+            }
 
-                    if (responseStatus == 2) {
-                        moveEndListener();
-                    }
-                };
+            if (responseStatus == 2) {
+                fetchTracks();
+            }
+        };
 
-                // places
-                (function (data) {
-                    const responseStatus = data.status;
+        // places
+        const placesProcessor = function (data) {
+            const responseStatus = data.status;
 
-                    if (responseStatus != 0 && responseStatus != 2) {
-                        // unknown error
-                        // @FIXME show error
-                        return;
-                    }
+            const placesData = data.places;
 
-                    const placesData = data.data;
+            for (let i = 0; i < placesData.length; i++) {
+                const id = placesData[i].id;
 
-                    for (let i = 0; i < placesData.length; i++) {
-                        const id = placesData[i].id;
+                if (loadedPlaces[id]) {
+                    continue;
+                }
 
-                        if (loadedPlaces[id]) {
-                            continue;
-                        }
+                const place = new AppPlace(placesMarkers, placesData[i].lat, placesData[i].lng);
+                place.setLink('/{{ app.request.locale }}/place/view/' + placesData[i].slugOrId);
+                if (placesData[i].icon) {
+                    place.setIcon(placesData[i].icon);
+                }
 
-                        const place = new AppPlace(placesMarkers, placesData[i].lat, placesData[i].lng);
-                        place.setLink('/{{ app.request.locale }}/place/view/' + placesData[i].slugOrId);
-                        if (placesData[i].icon) {
-                            place.setIcon(placesData[i].icon);
-                        }
+                if (placesData[i].attraction) {
+                    place.makeAttraction();
+                }
 
-                        if (placesData[i].attraction) {
-                            place.makeAttraction();
-                        }
+                // regular places will be shown later in "autoPlacesAttraction"
+                if (place.isAttraction()) {
+                    place.show();
+                }
 
-                        // regular places will be shown later in "autoPlacesAttraction"
-                        if (place.isAttraction()) {
-                            place.show();
-                        }
+                loadedPlaces[id] = place;
+            }
+            map.addLayer(placesMarkers);
+            placesMarkers.refreshClusters();
 
-                        loadedPlaces[id] = place;
-                    }
-                    map.addLayer(placesMarkers);
-                    placesMarkers.refreshClusters();
+            autoPlacesAttraction(map);
 
-                    autoPlacesAttraction(map);
+            if (responseStatus == 2) {
+                fetchPlaces();
+            }
+        };
 
-                    if (responseStatus == 2) {
-                        moveEndListener();
-                    }
-                })(responseAsJson.places);
+        const fetchPlaces = function () {
+            let fetchedPLacesIds = [];
+            for (let key in loadedPlaces) {
+                fetchedPLacesIds.push(key);
+            }
 
-                window.graphQL.query(`{
-                listTracks(
-                    skipTracks: [` + fetchedTracksIds.map(id => `"${id}"`).join(",") + `],
+            window.graphQL.query(`{
+                listPlaces(
+                    skipPlaces: [` + fetchedPLacesIds.map(id => `"${id}"`).join(",") + `],
                     neLat: ` + map.getBounds().getNorthEast().lat + `,
                     swLat: ` + map.getBounds().getSouthWest().lat + `,
                     neLon: ` + map.getBounds().getNorthEast().lng + `,
                     swLon: ` + map.getBounds().getSouthWest().lng + `
                 ) {
                     status
-                    tracks {
-                    id
-                    name
-                    type
-                    slugOrId
-                    optimizedPoints{
-                        lat
-                        lng
-                    }
+                    places {
+                      id
+                      slugOrId
+                      name
+                      attraction
+                      icon
+                      lat
+                      lng
                     }
                 }
-            }
-            `).then(r => {
-                    console.log(r.listTracks);
-                    console.log(fetchedTracksIds);
-                    tracksProcessor(r.listTracks);
-                })
-            };
+            }`).then(r => {
+                console.log(r);
+                placesProcessor(r.listPlaces);
+            })
+        }
 
-            let url = '/{{ app.request.locale }}/gps/list';
-            url += '/' + map.getBounds().getNorthEast().lat;
-            url += '/' + map.getBounds().getNorthEast().lng;
-            url += '/' + map.getBounds().getSouthWest().lat;
-            url += '/' + map.getBounds().getSouthWest().lng;
+        const moveEndListener = function () {
+            hashData.setFloat("mclat", map.getCenter().lat);
+            hashData.setFloat("mclng", map.getCenter().lng);
+            hashData.setInt("mz", map.getZoom());
 
-            let postData = new FormData();
-            let fetchedTracksIds = [];
-            for (let key in loadedTracks) {
-                fetchedTracksIds.push(key);
-            }
-            let fetchedPLacesIds = [];
-            for (let key in loadedPlaces) {
-                fetchedPLacesIds.push(key);
-            }
-
-            postData.append('skipTracks', fetchedTracksIds);
-            postData.append('skipPlaces', fetchedPLacesIds);
-
-            ajax.open('POST', url);
-            ajax.send(postData);
+            fetchTracks();
+            fetchPlaces();
         };
 
         map.on('moveend', moveEndListener);
