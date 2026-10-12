@@ -22,38 +22,55 @@
         <div class="row">
             <div class="col">
                 <div>{{ "Latest tracks by bicycle"|trans }}:</div>
-                <ul>
-                    {% for track in latestTracks %}
-                        <li>
-                            <a href="{{ path('gps-view', { id: track.slugOrId}) }}">
-                                {% if track.name(app.request.locale) is empty %}
-                                    {{ track.id }}
-                                {% else %}
-                                    {{ track.name(app.request.locale) }}
-                                {% endif %}
-                            </a>
-                        </li>
-                    {% endfor %}
+                <ul id="latest_tracks_by_bicycle">
                 </ul>
             </div>
 
             <div class="col">
                 <div>{{ "Latest tracks by foot"|trans }}:</div>
-                <ul>
-                    {% for track in latestTracksHike %}
-                        <li>
-                            <a href="{{ path('gps-view', { id: track.slugOrId}) }}">
-                                {% if track.name(app.request.locale) is empty %}
-                                    {{ track.id }}
-                                {% else %}
-                                    {{ track.name(app.request.locale) }}
-                                {% endif %}
-                            </a>
-                        </li>
-                    {% endfor %}
+                <ul id="latest_track_hiking">
                 </ul>
             </div>
         </div>
+        <script>
+            window.graphQL.query(`
+                query {
+                  cycling: latestTracks(type: 1) {
+                    id
+                    name
+                    slugOrId
+                  }
+
+                   hiking: latestTracks(type: 2) {
+                    id
+                    name
+                    slugOrId
+                  }
+                }`
+            ).then(r => {
+                console.log(r);
+
+                for (let track of r.cycling) {
+                    let el = document.createElement('li');
+                    let link = document.createElement('a');
+                    link.href = '/{{ app.request.locale }}/gps/view/' + track.slugOrId;
+                    link.textContent = track.name;
+                    el.append(link);
+
+                    document.getElementById('latest_tracks_by_bicycle').append(el);
+                }
+
+                for (let track of r.hiking) {
+                    let el = document.createElement('li');
+                    let link = document.createElement('a');
+                    link.href = '/{{ app.request.locale }}/gps/view/' + track.slugOrId;
+                    link.textContent = track.name;
+                    el.append(link);
+
+                    document.getElementById('latest_track_hiking').append(el);
+                }
+            });
+        </script>
 
         {% if latestImages is defined and latestImages is not empty %}
             {{ 'Latest pictures'|trans }}:
@@ -416,7 +433,6 @@
                     }
                 }
             }`).then(r => {
-                console.log(r);
                 placesProcessor(r.listPlaces);
             })
         }

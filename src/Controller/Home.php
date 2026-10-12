@@ -6,7 +6,6 @@ use App\Repository\Track\ImageRepository;
 use App\Repository\Place\ImageRepository as PlaceImageRepo;
 use App\Repository\TrackRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use App\Entity\Track;
 
 class Home extends AbstractController
 {
@@ -17,8 +16,6 @@ class Home extends AbstractController
 
     public function home(TrackRepository $repo, ImageRepository $imageRepository, PlaceImageRepo $placeImageRepo)
     {
-        $trackData = $repo->findLatestTrackTypes();
-
         // average picture width is 300px
         // 1920 / 300 = 6.4
         // 3840 / 300 = 12.8
@@ -28,8 +25,6 @@ class Home extends AbstractController
         return $this->render(
             'home/home.html.twig',
             [
-                'latestTracks' => $trackData[Track::TYPE_CYCLING],
-                'latestTracksHike' => $trackData[Track::TYPE_HIKING],
                 'latestImages' => $images,
                 'latestPlaceImages' => $placeImages,
             ]
