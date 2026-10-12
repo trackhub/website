@@ -123,9 +123,6 @@
     "php-http/discovery": {
         "version": "1.4.0"
     },
-    "php-http/guzzle6-adapter": {
-        "version": "v1.1.1"
-    },
     "php-http/httplug": {
         "version": "v1.1.0"
     },
@@ -368,9 +365,6 @@
     },
     "symfony/polyfill-intl-icu": {
         "version": "v1.9.0"
-    },
-    "symfony/polyfill-intl-idn": {
-        "version": "v1.12.0"
     },
     "symfony/polyfill-intl-normalizer": {
         "version": "v1.18.1"
