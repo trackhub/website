@@ -41,19 +41,6 @@
             "ref": "ae205d5114e719deb64d2110f56ef910787d1e04"
         }
     },
-    "doctrine/doctrine-migrations-bundle": {
-        "version": "2.2",
-        "recipe": {
-            "repo": "github.com/symfony/recipes",
-            "branch": "main",
-            "version": "2.2",
-            "ref": "baaa439e3e3179e69e3da84b671f0a3e4a2f56ad"
-        },
-        "files": [
-            "config/packages/doctrine_migrations.yaml",
-            "migrations/.gitignore"
-        ]
-    },
     "doctrine/event-manager": {
         "version": "v1.0.0"
     },
@@ -371,9 +358,6 @@
     },
     "symfony/polyfill-mbstring": {
         "version": "v1.9.0"
-    },
-    "symfony/polyfill-php72": {
-        "version": "v1.10.0"
     },
     "symfony/polyfill-php73": {
         "version": "v1.12.0"
