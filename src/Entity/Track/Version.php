@@ -9,68 +9,41 @@ use App\EntityTraits\SendByTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity
- */
+#[ORM\Entity]
 class Version
 {
     use SendByTrait;
 
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="UUID")
-     * @ORM\Column(name="id", type="guid")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: 'NONE')]
+    #[ORM\Column(name: 'id', type: 'guid')]
     private $id;
 
-    /**
-     * @ORM\Column(type="string", nullable=true)
-     */
+    #[ORM\Column(type: 'string', nullable: true)]
     private $name;
 
-    /**
-     * @ORM\OneToOne(targetEntity="App\Entity\File\TrackFile", cascade={"persist", "remove"}, orphanRemoval=true)
-     */
+    #[ORM\OneToOne(targetEntity: TrackFile::class, cascade: ['persist', 'remove'], orphanRemoval: true)]
     private $file;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Track", inversedBy="versions")
-     */
+    #[ORM\ManyToOne(targetEntity: Track::class, inversedBy: 'versions')]
     private $track;
 
-    /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Track\Point", mappedBy="version", cascade={"persist", "remove"}, orphanRemoval=true)
-     */
+    #[ORM\OneToMany(targetEntity: Point::class, mappedBy: 'version', cascade: ['persist', 'remove'], orphanRemoval: true)]
     private $points;
 
-    /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Track\WayPoint", mappedBy="version", cascade={"persist", "remove"}, orphanRemoval=true)
-     */
+    #[ORM\OneToMany(targetEntity: WayPoint::class, mappedBy: 'version', cascade: ['persist', 'remove'], orphanRemoval: true)]
     private $wayPoints;
 
-    /**
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Column(type: 'integer')]
     private $positiveElevation = 0;
 
-    /**
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Column(type: 'integer')]
     private $negativeElevation = 0;
 
-    /**
-     * @ORM\OneToMany(
-     *     targetEntity="App\Entity\Track\VersionRating",
-     *     mappedBy="version",
-     *     cascade={"persist", "remove"},
-     *     orphanRemoval=true
-     * )
-     */
+    #[ORM\OneToMany(targetEntity: VersionRating::class, mappedBy: 'version', cascade: ['persist', 'remove'], orphanRemoval: true)]
     private $ratings;
 
-    /**
-     * @ORM\Column(type="enum_difficulty")
-     */
+    #[ORM\Column(type: 'enum_difficulty')]
     private $difficulty;
 
     public function __construct(User $sendBy)

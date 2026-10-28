@@ -5,29 +5,21 @@ namespace App\Entity\Track;
 use App\Entity\Point\ElevationPointTrait;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity
- * @ORM\Table(name="version_waypoint")
- */
+#[ORM\Entity]
+#[ORM\Table(name: 'version_waypoint')]
 class WayPoint
 {
     use ElevationPointTrait;
 
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="UUID")
-     * @ORM\Column(name="id", type="guid")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: 'NONE')]
+    #[ORM\Column(name: 'id', type: 'guid')]
     private $id;
 
-    /**
-     * @ORM\Column(type="string", nullable=true)
-     */
+    #[ORM\Column(type: 'string', nullable: true)]
     private $name;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Track\Version", inversedBy="wayPoints")
-     */
+    #[ORM\ManyToOne(targetEntity: Version::class, inversedBy: 'wayPoints')]
     private $version;
 
     public function __construct(float $lat, float $lng)

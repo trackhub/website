@@ -7,34 +7,24 @@ use App\Entity\User\User;
 use App\EntityTraits\SendByTrait;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity(repositoryClass="App\Repository\Place\ImageRepository")
- * @ORM\Table(name="place_image")
- */
+#[ORM\Entity(repositoryClass: \App\Repository\Place\ImageRepository::class)]
+#[ORM\Table(name: 'place_image')]
 class Image
 {
     use SendByTrait;
 
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="UUID")
-     * @ORM\Column(name="id", type="guid")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: 'NONE')]
+    #[ORM\Column(name: 'id', type: 'guid')]
     private $id;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Place", inversedBy="images")
-     */
+    #[ORM\ManyToOne(targetEntity: Place::class, inversedBy: 'images')]
     private $place;
 
-    /**
-     * @ORM\Column(type="string", nullable=false)
-     */
+    #[ORM\Column(type: 'string', nullable: false)]
     private $filepath;
 
-    /**
-     * @ORM\Column(type="datetime")
-     */
+    #[ORM\Column(type: 'datetime')]
     private $createdAt;
 
     public function __construct(string $file, User $sendBy, Place $place)
