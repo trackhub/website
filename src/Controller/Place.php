@@ -174,7 +174,7 @@ class Place extends AbstractController
     {
         $place = $placeRepo->findOneBy(['id' => $id]);
         if (!$place) {
-            $slug =$slugRepo->findOneBy(['slug' => $id]);
+            $slug = $slugRepo->findOneBy(['slug' => $id]);
             if (!$slug) {
                 throw $this->createNotFoundException();
             }
