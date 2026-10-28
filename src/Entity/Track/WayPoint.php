@@ -48,7 +48,7 @@ class WayPoint
         return $this->name;
     }
 
-    public function setName(string $name = null)
+    public function setName(?string $name = null)
     {
         $this->name = $name;
     }
