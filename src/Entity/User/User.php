@@ -15,7 +15,7 @@ class User implements UserInterface
     #[ORM\GeneratedValue(strategy: 'NONE')]
     private $id;
 
-    #[ORM\Column(type: 'array')]
+    #[ORM\Column(type: 'simple_array')]
     private $roles = [];
 
     #[ORM\Column(type: 'datetime', nullable: true)]

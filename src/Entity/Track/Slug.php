@@ -14,8 +14,8 @@ class Slug
     #[ORM\Column(name: 'id', type: 'guid')]
     private $id;
 
-    #[ORM\ManyToOne(targetEntity: Track::class, inversedBy: 'versions')]
-    private $track;
+    #[ORM\ManyToOne(targetEntity: Track::class)]
+    private Track $track;
 
     #[ORM\Column(type: 'string', nullable: false)]
     private $slug;
