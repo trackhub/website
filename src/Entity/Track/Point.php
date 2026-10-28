@@ -6,35 +6,24 @@ use App\Entity\Point\ElevationPointTrait;
 use App\Entity\Point\PointInterface;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity
- */
+#[ORM\Entity]
 class Point implements PointInterface
 {
     use ElevationPointTrait;
 
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="UUID")
-     * @ORM\Column(name="id", type="guid")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: 'NONE')]
+    #[ORM\Column(name: 'id', type: 'guid')]
     private $id;
 
-    /**
-     * @ORM\Column(type="integer", name="`order`")
-     */
+    #[ORM\Column(type: 'integer', name: '`order`')]
     private $order;
 
-    /**
-     * Distance so far
-     *
-     * @ORM\Column(type="float")
-     */
+    /** Distance so far */
+    #[ORM\Column(type: 'float')]
     private $distance = 0;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Track\Version", inversedBy="points")
-     */
+    #[ORM\ManyToOne(targetEntity: Version::class, inversedBy: 'points')]
     private $version;
 
     /**

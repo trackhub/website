@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace App\Entity\EntitiyTrait;
 
+use Doctrine\ORM\Mapping as ORM;
+
 trait SluggableTrait
 {
-    /**
-     * @ORM\Column(type="string", nullable=true)
-     */
+    #[ORM\Column(type: 'string', nullable: true)]
     private ?string $slug = null;
 
     public function getSlug(): ?string
