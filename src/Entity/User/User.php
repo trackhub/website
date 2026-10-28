@@ -206,7 +206,6 @@ class User implements UserInterface
 
     public function getUserIdentifier(): string
     {
-        // @TODO investigate and refactor
-        return random_bytes(64);
+        return $this->id;
     }
 }
