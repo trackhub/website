@@ -129,6 +129,11 @@ services:
         arguments:
             - '@HTMLPurifier_Config'
 
+    App\Service\TackHubApi\Client:
+        class: App\Service\TackHubApi\Client\HttpClient
+        arguments:
+            - env(GRAPHQL_BASE_URL)
+
     App\Event\Listener\HtmlPurifySubscriber:
         tags:
             - { name: 'doctrine.event_subscriber' }
