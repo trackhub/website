@@ -5,14 +5,14 @@ namespace App\Command;
 use App\Entity\Track;
 use App\Track\Processor;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
+#[AsCommand(name: 'app:gps:reprocess')]
 class ReprocessGpsData extends Command
 {
-    protected static $defaultName = 'app:gps:reprocess';
-
     private $em;
 
     private $processor;
