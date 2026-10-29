@@ -130,9 +130,9 @@ services:
             - '@HTMLPurifier_Config'
 
     App\Service\TackHubApi\Client:
-        class: App\Service\TackHubApi\Client\HttpClient
+        class: App\Service\TackHubApi\HttpClient
         arguments:
-            - env(GRAPHQL_BASE_URL)
+            - '%env(GRAPHQL_BASE_URL)%'
 
     App\Event\Listener\HtmlPurifySubscriber:
         tags:

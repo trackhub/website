@@ -7,9 +7,13 @@ namespace App\Service\TackHubApi\Response;
 class Place
 {
     private string $id;
-    private string $slugOrId;
+    private string $slugOrId {
+        get => $this->slugOrId;
+    }
 
-    private string $name;
+    public string $name {
+        get => $this->name;
+    }
 
     private string $icon;
 
@@ -17,4 +21,22 @@ class Place
     private float $lng;
 
     private bool $attraction;
+
+    public function __construct(
+        string $id,
+        string $slugOrId,
+        string $name,
+        string $icon,
+        float $lat,
+        float $lng,
+        bool $attraction
+    ) {
+        $this->id = $id;
+        $this->slugOrId = $slugOrId;
+        $this->name = $name;
+        $this->icon = $icon;
+        $this->lat = $lat;
+        $this->lng = $lng;
+        $this->attraction = $attraction;
+    }
 }

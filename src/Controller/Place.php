@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Place\Slug;
+use App\Service\TackHubApi\Client;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\QueryBuilder;
 use Knp\Component\Pager\PaginatorInterface;
@@ -170,20 +171,12 @@ class Place extends AbstractController
         );
     }
 
-    public function view(string $id, Request $request)
+    public function view(string $id, Request $request, Client $client)
     {
-        $placeRepo = $this->getDoctrine()->getRepository(\App\Entity\Place::class);
-        $place = $placeRepo->findOneBy(['id' => $id]);
-        if (!$place) {
-            $slug = $this->getDoctrine()->getRepository(Slug::class)->findOneBy(['slug' => $id]);
-            if (!$slug) {
-                throw $this->createNotFoundException();
-            }
-            $place = $slug->getPlace();
-        }
+        $place = $client->getPlace($id);
 
         $canonicalUrl = null;
-        if ($place->getSlug()) {
+        if (false && $place->getSlug()) {
             $canonicalUrl = $this->generateUrl(
                 'app_place_view',
                 ['id' => $place->getSlug()],
@@ -195,7 +188,7 @@ class Place extends AbstractController
             [
                 'place' => $place,
                 'canEdit' => $this->isGranted('edit', $place),
-                'app_title' => $place->getName($request->getLocale()),
+                'app_title' => $place->name,
                 'app_canonical_url' => $canonicalUrl,
             ]
         );

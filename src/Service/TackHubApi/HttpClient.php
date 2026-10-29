@@ -7,6 +7,7 @@ namespace App\Service\TackHubApi;
 use App\Service\TackHubApi\Response\Place;
 use GuzzleHttp\Psr7\Request;
 use Psr\Http\Client\ClientInterface;
+use RuntimeException;
 
 class HttpClient implements Client
 {
@@ -20,28 +21,59 @@ class HttpClient implements Client
     }
 
     public function getPlace(string $id): Place {
+        $body = json_encode([
+            'query' => <<<'GRAPHQL'
+                query GetPlace($idOrSlug: String!) {
+                  place(idOrSlug: $idOrSlug) {
+                    id
+                    slugOrId
+                    name
+                    icon
+                    lat
+                    lng
+                    attraction
+                  }
+                }
+                GRAPHQL,
+            'variables' => ['idOrSlug' => $id],
+        ], JSON_THROW_ON_ERROR);
+
         $response = $this->client->sendRequest(
             new Request(
-                'GET',
-                '/',
-                [],
-                '
-                    {
-                      place(idOrSlug:"' . $id . '") {
-                        id
-                        slugOrId
-                        name
-                        icon
-                        
-                        lat
-                        lng
-                        attraction
-                      }
-                    }
-                '
+                'POST',
+                '/query',
+                [
+                    'Content-Type' => 'application/json',
+                    'Accept' => 'application/json',
+                ],
+                $body
             )
         );
 
-        return new Place();
+        $payload = json_decode(
+            (string) $response->getBody(),
+            true,
+            512,
+            JSON_THROW_ON_ERROR
+        );
+
+        if (!empty($payload['errors'])) {
+            throw new RuntimeException('GraphQL getPlace request failed: ' . json_encode($payload['errors']));
+        }
+
+        $place = $payload['data']['place'] ?? null;
+        if (!is_array($place)) {
+            throw new RuntimeException('GraphQL getPlace response did not contain data.place.');
+        }
+
+        return new Place(
+            $place['id'],
+            $place['slugOrId'],
+            $place['name'],
+            $place['icon'] ?? '',
+            (float) $place['lat'],
+            (float) $place['lng'],
+            $place['attraction']
+        );
     }
 }
