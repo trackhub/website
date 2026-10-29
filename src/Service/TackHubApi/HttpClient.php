@@ -14,14 +14,15 @@ class HttpClient implements Client
 {
     private ClientInterface $client;
 
-    public function __construct(string $url) {
+    public function __construct(string $url)
+    {
         $this->client = new \GuzzleHttp\Client([
             'base_uri' => $url,
         ]);
-
     }
 
-    public function getPlace(string $id): Place {
+    public function getPlace(string $id): Place
+    {
         $body = json_encode([
             'query' => <<<'GRAPHQL'
                 query GetPlace($idOrSlug: String!) {
@@ -77,7 +78,8 @@ class HttpClient implements Client
         $images = [];
         foreach ($place['images'] as $image) {
             $images[] = new PlaceImage(
-                $image['placeId'], $image['filepath']
+                $image['placeId'],
+                $image['filepath'],
             );
         }
 

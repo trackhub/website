@@ -8,5 +8,5 @@ use App\Service\TackHubApi\Response\Place;
 
 interface Client
 {
-    function getPlace(string $id): Place;
+    public function getPlace(string $id): Place;
 }
