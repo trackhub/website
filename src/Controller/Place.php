@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Place\Slug;
+use App\Service\TackHubApi\Client;
 use App\Repository\PlaceRepository;
 use App\Repository\Track\SlugRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -170,22 +171,15 @@ class Place extends AbstractController
         );
     }
 
-    public function view(string $id, Request $request, PlaceRepository $placeRepo, SlugRepository $slugRepo)
+    public function view(string $id, Request $request, Client $client)
     {
-        $place = $placeRepo->findOneBy(['id' => $id]);
-        if (!$place) {
-            $slug = $slugRepo->findOneBy(['slug' => $id]);
-            if (!$slug) {
-                throw $this->createNotFoundException();
-            }
-            $place = $slug->getPlace();
-        }
+        $place = $client->getPlace($id);
 
         $canonicalUrl = null;
-        if ($place->getSlug()) {
+        if ($place->slug) {
             $canonicalUrl = $this->generateUrl(
                 'app_place_view',
-                ['id' => $place->getSlug()],
+                ['id' => $place->slug],
             );
         }
 
@@ -194,7 +188,7 @@ class Place extends AbstractController
             [
                 'place' => $place,
                 'canEdit' => $this->isGranted('edit', $place),
-                'app_title' => $place->getName($request->getLocale()),
+                'app_title' => $place->name,
                 'app_canonical_url' => $canonicalUrl,
             ]
         );

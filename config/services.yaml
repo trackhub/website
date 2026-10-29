@@ -89,6 +89,13 @@ services:
         tags:
             - { name: twig.extension}
 
+    App\Twig\PlaceImageApiExtension:
+        class: App\Twig\PlaceImageApiExtension
+        arguments:
+            - '%place_images_thumbnails_directory_url%'
+        tags:
+            - { name: twig.extension }
+
     App\Twig\AlternateExtension:
         tags:
             - { name: twig.extension }
@@ -121,6 +128,11 @@ services:
         class: HTMLPurifier
         arguments:
             - '@HTMLPurifier_Config'
+
+    App\Service\TackHubApi\Client:
+        class: App\Service\TackHubApi\HttpClient
+        arguments:
+            - '%env(GRAPHQL_BASE_URL)%'
 
     App\Event\Listener\HtmlPurifySubscriber:
         tags:
