@@ -3,12 +3,9 @@
 namespace App\Controller;
 
 use App\Entity\Place\Slug;
-<<<<<<< HEAD
 use App\Service\TackHubApi\Client;
-=======
 use App\Repository\PlaceRepository;
 use App\Repository\Track\SlugRepository;
->>>>>>> origin/api_client
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\QueryBuilder;
 use Knp\Component\Pager\PaginatorInterface;
