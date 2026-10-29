@@ -176,10 +176,10 @@ class Place extends AbstractController
         $place = $client->getPlace($id);
 
         $canonicalUrl = null;
-        if (false && $place->getSlug()) {
+        if ($place->slug) {
             $canonicalUrl = $this->generateUrl(
                 'app_place_view',
-                ['id' => $place->getSlug()],
+                ['id' => $place->slug],
             );
         }
 

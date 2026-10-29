@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Service\TackHubApi;
 
 use App\Service\TackHubApi\Response\Place;
+use App\Service\TackHubApi\Response\PlaceImage;
 use GuzzleHttp\Psr7\Request;
 use Psr\Http\Client\ClientInterface;
 use RuntimeException;
@@ -27,11 +28,18 @@ class HttpClient implements Client
                   place(idOrSlug: $idOrSlug) {
                     id
                     slugOrId
+                    slug
+                    type
                     name
+                    description
                     icon
                     lat
                     lng
                     attraction
+                    images {
+                        placeId
+                        filepath
+                    }
                   }
                 }
                 GRAPHQL,
@@ -66,14 +74,25 @@ class HttpClient implements Client
             throw new RuntimeException('GraphQL getPlace response did not contain data.place.');
         }
 
+        $images = [];
+        foreach ($place['images'] as $image) {
+            $images[] = new PlaceImage(
+                $image['placeId'], $image['filepath']
+            );
+        }
+
         return new Place(
             $place['id'],
             $place['slugOrId'],
+            $place['slug'],
             $place['name'],
             $place['icon'] ?? '',
             (float) $place['lat'],
             (float) $place['lng'],
-            $place['attraction']
+            $place['attraction'],
+            $place['type'],
+            $place['description'],
+            $images
         );
     }
 }

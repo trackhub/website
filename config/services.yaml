@@ -89,6 +89,13 @@ services:
         tags:
             - { name: twig.extension}
 
+    App\Twig\PlaceImageApiExtension:
+        class: App\Twig\PlaceImageApiExtension
+        arguments:
+            - '%place_images_thumbnails_directory_url%'
+        tags:
+            - { name: twig.extension }
+
     App\Twig\AlternateExtension:
         tags:
             - { name: twig.extension }

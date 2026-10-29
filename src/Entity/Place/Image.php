@@ -19,6 +19,7 @@ class Image
     private $id;
 
     #[ORM\ManyToOne(targetEntity: Place::class, inversedBy: 'images')]
+    #[ORM\JoinColumn(name: 'place_id', referencedColumnName: 'id', nullable: false)]
     private $place;
 
     #[ORM\Column(type: 'string', nullable: false)]

@@ -11,6 +11,7 @@ use App\Entity\User\User;
 use App\EntityTraits\DescriptionTrait;
 use App\EntityTraits\NameTrait;
 use App\EntityTraits\SendByTrait;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: \App\Repository\PlaceRepository::class)]
@@ -50,6 +51,7 @@ class Place implements CreatedAtInterface, DescribableInterface
 
     public function __construct(float $lat, float $lng, User $sendBy)
     {
+        $this->images = new ArrayCollection();
         $this->lat = $lat;
         $this->lng = $lng;
         $this->sendBy = $sendBy;
@@ -82,7 +84,9 @@ class Place implements CreatedAtInterface, DescribableInterface
 
     public function addImage(Image $image)
     {
-        $this->images->add($image);
+        if (!$this->images->contains($image)) {
+            $this->images->add($image);
+        }
     }
 
     public function getCreatedAt(): \DateTime

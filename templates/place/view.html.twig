@@ -2,7 +2,7 @@
 
 {% block content %}
     <h1>
-        {{ place.name(app.request.locale) }}
+        {{ place.name }}
     </h1>
 
     {% if app.user %}
@@ -34,9 +34,9 @@
     {% endif %}
     <br>
 
-    {% if place.description(app.request.locale) %}
+    {% if place.description %}
         <hr>
-        {{ place.description(app.request.locale)|raw }}
+        {{ place.description|raw }}
     {% endif %}
 
     <!--- Initialize map --->
@@ -47,12 +47,12 @@
     {% if place.images is not empty %}
         <div class="uploaded_images" >
             {% for image in place.images %}
-                <a href="{{ app_place_image(image, 3840, 2160) }}"
+                <a href="{{ app_place_image_api(image, 3840, 2160) }}"
                    data-toggle="lightbox"
                    data-gallery="track-images"
-                   data-footer="&lt;a target=&quot;_blank&quot; href=&quot;{{ app_place_image(image, 3840, 2160) }}#&quot;&gt;{{ 'View full size'|trans() }}&lt;/a&gt;"
+                   data-footer="&lt;a target=&quot;_blank&quot; href=&quot;{{ app_place_image_api(image, 3840, 2160) }}#&quot;&gt;{{ 'View full size'|trans() }}&lt;/a&gt;"
                 >
-                    <img src="{{ app_place_image(image, 300, 300) }}">
+                    <img src="{{ app_place_image_api(image, 300, 300) }}">
 
                 </a>
             {% endfor %}
