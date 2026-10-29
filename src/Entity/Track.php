@@ -13,13 +13,12 @@ use App\EntityTraits\DescriptionTrait;
 use App\EntityTraits\NameTrait;
 use App\EntityTraits\SendByTrait;
 use App\Entity\User\User;
+use App\Repository\TrackRepository;
 use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity(repositoryClass="App\Repository\TrackRepository")
- */
+#[ORM\Entity(repositoryClass: TrackRepository::class)]
 class Track implements CreatedAtInterface, DescribableInterface
 {
     use NameTrait;
@@ -40,89 +39,60 @@ class Track implements CreatedAtInterface, DescribableInterface
     public const VISIBILITY_PUBLIC = 0;
     public const VISIBILITY_UNLISTED = 1;
 
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="UUID")
-     * @ORM\Column(name="id", type="guid")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: 'NONE')]
+    #[ORM\Column(name: 'id', type: 'guid')]
     private $id;
 
-    /**
-     * @ORM\Column(type="boolean", nullable=false)
-     */
+    #[ORM\Column(type: 'boolean', nullable: false)]
     private $visibility = 0;
 
-    /**
-     * @ORM\Column(type="date")
-     */
+    #[ORM\Column(type: 'date')]
     private $lastCheck;
 
-    /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Track\Version", mappedBy="track", cascade={"persist", "remove"}, orphanRemoval=true)
-     */
+    #[ORM\OneToMany(targetEntity: Version::class, mappedBy: 'track', cascade: ['persist', 'remove'], orphanRemoval: true)]
     private $versions;
 
-    /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Track\OptimizedPoint", mappedBy="track", cascade={"persist", "remove"}, orphanRemoval=true))
-     */
+    #[ORM\OneToMany(targetEntity: OptimizedPoint::class, mappedBy: 'track', cascade: ['persist', 'remove'], orphanRemoval: true)]
     private $optimizedPoints;
 
-    /**
-     * @ORM\Column(type="float")
-     */
+    #[ORM\Column(type: 'float')]
     private $pointNorthEastLat = -999;
 
-    /**
-     * @ORM\Column(type="float")
-     */
+    #[ORM\Column(type: 'float')]
     private $pointNorthEastLng = -999;
 
-    /**
-     * @ORM\Column(type="float")
-     */
+    #[ORM\Column(type: 'float')]
     private $pointSouthWestLat = 999;
 
-    /**
-     * @ORM\Column(type="float")
-     */
+    #[ORM\Column(type: 'float')]
     private $pointSouthWestLng = 999;
 
     /**
      * Read-only property
-     *
-     * @ORM\Column(type="datetime")
      */
+    #[ORM\Column(type: 'datetime')]
     private $createdAt;
 
-    /**
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Column(type: 'integer')]
     private $type = self::TYPE_CYCLING;
 
-    /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\Track")
-     * @ORM\JoinTable(name="track_uphill")
-     */
+    #[ORM\ManyToMany(targetEntity: self::class)]
+    #[ORM\JoinTable(name: 'track_uphill')]
     private $uphills;
 
     private $uphillVersionsCache;
 
-    /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\Track")
-     * @ORM\JoinTable(name="track_downhill")
-     */
+    #[ORM\ManyToMany(targetEntity: self::class)]
+    #[ORM\JoinTable(name: 'track_downhill')]
     private $downhills;
 
     private $downhillVersionsCache;
 
-    /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Video\Youtube", mappedBy="track", cascade={"persist", "remove"}, orphanRemoval=true)
-     */
+    #[ORM\OneToMany(targetEntity: Youtube::class, mappedBy: 'track', cascade: ['persist', 'remove'], orphanRemoval: true)]
     private $videosYoutube;
 
-    /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Track\Image", mappedBy="track", cascade={"persist", "remove"}, orphanRemoval=true)
-     */
+    #[ORM\OneToMany(targetEntity: Image::class, mappedBy: 'track', cascade: ['persist', 'remove'], orphanRemoval: true)]
     private $images;
 
     public function __construct(User $sendBy)

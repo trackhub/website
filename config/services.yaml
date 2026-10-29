@@ -34,13 +34,6 @@ services:
         resource: '../src/Controller'
         tags: ['controller.service_arguments']
 
-    app.oauth.provider:
-        class: App\Security\Core\OAuthUserProvider
-        arguments:
-            - '@doctrine'
-            - App\Entity\User\User
-            - facebook: facebookId
-
     app.user.force.terms:
         class: App\Event\Listener\User\Terms
         arguments: ['@security.token_storage']

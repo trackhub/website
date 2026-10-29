@@ -4,41 +4,27 @@ namespace App\Entity\Track;
 
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity
- */
+#[ORM\Entity]
 class OptimizedPoint
 {
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="UUID")
-     * @ORM\Column(name="id", type="guid")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: 'NONE')]
+    #[ORM\Column(name: 'id', type: 'guid')]
     private $id;
 
-    /**
-     * @ORM\Column(type="integer", name="`order`")
-     */
+    #[ORM\Column(type: 'integer', name: '`order`')]
     private $order;
 
-    /**
-     * @ORM\Column(type="float")
-     */
+    #[ORM\Column(type: 'float')]
     private $lat;
 
-    /**
-     * @ORM\Column(type="float")
-     */
+    #[ORM\Column(type: 'float')]
     private $lng;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Track", inversedBy="optimizedPoints")
-     */
+    #[ORM\ManyToOne(targetEntity: \App\Entity\Track::class, inversedBy: 'optimizedPoints')]
     private $track;
 
-    /**
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Column(type: 'integer')]
     private $versionIndex = 0;
 
     /**

@@ -2,16 +2,16 @@
 
 namespace App\Entity\Point;
 
+use Doctrine\ORM\Mapping as ORM;
+
 trait ElevationPointTrait
 {
     use PointTrait;
 
-    /**
-     * @ORM\Column(type="float", nullable=true)
-     */
+    #[ORM\Column(type: 'float', nullable: true)]
     private $elevation;
 
-    public function setElevation(float $elev = null): self
+    public function setElevation(?float $elev = null): self
     {
         $this->elevation = $elev;
 

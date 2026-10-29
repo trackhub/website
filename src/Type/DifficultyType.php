@@ -29,7 +29,7 @@ class DifficultyType extends Type
         return self::ENUM_DIFFICULTY;
     }
 
-    public function getSQLDeclaration(array $fieldDeclaration, AbstractPlatform $platform)
+    public function getSQLDeclaration(array $fieldDeclaration, AbstractPlatform $platform): string
     {
         return "ENUM('white', 'green', 'blue', 'black', 'double-black')";
     }
@@ -39,7 +39,7 @@ class DifficultyType extends Type
         return true;
     }
 
-    public function convertToDatabaseValue($value, AbstractPlatform $platform)
+    public function convertToDatabaseValue($value, AbstractPlatform $platform): mixed
     {
         if (!in_array($value, self::ENUM_VALUES)) {
             throw new \InvalidArgumentException("Invalid difficulty: " . $value);

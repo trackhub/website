@@ -7,27 +7,19 @@ namespace App\Entity\Place;
 use App\Entity\Place;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity()
- * @ORM\Table(name="place_slug")
- */
+#[ORM\Entity]
+#[ORM\Table(name: 'place_slug')]
 class Slug
 {
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="UUID")
-     * @ORM\Column(name="id", type="guid")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: 'NONE')]
+    #[ORM\Column(name: 'id', type: 'guid')]
     private string $id;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=Place::class)
-     */
+    #[ORM\ManyToOne(targetEntity: Place::class)]
     private Place $place;
 
-    /**
-     * @ORM\Column(type="string", nullable=false)
-     */
+    #[ORM\Column(type: 'string', nullable: false)]
     private string $slug;
 
     public function __construct(Place $place, string $slug)

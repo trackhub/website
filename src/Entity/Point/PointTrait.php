@@ -2,16 +2,14 @@
 
 namespace App\Entity\Point;
 
+use Doctrine\ORM\Mapping as ORM;
+
 trait PointTrait
 {
-    /**
-     * @ORM\Column(type="float")
-     */
+    #[ORM\Column(type: 'float')]
     private $lat;
 
-    /**
-     * @ORM\Column(type="float")
-     */
+    #[ORM\Column(type: 'float')]
     private $lng;
 
     public function getLat(): float

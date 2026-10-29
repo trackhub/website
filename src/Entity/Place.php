@@ -13,10 +13,8 @@ use App\EntityTraits\NameTrait;
 use App\EntityTraits\SendByTrait;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity(repositoryClass="App\Repository\PlaceRepository")
- * @ORM\Table(name="place")
- */
+#[ORM\Entity(repositoryClass: \App\Repository\PlaceRepository::class)]
+#[ORM\Table(name: 'place')]
 class Place implements CreatedAtInterface, DescribableInterface
 {
     use PointTrait;
@@ -33,31 +31,21 @@ class Place implements CreatedAtInterface, DescribableInterface
     public const TYPE_WATERFALL = 5;
     public const TYPE_VIEW = 6;
 
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="UUID")
-     * @ORM\Column(name="id", type="guid")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: 'NONE')]
+    #[ORM\Column(name: 'id', type: 'guid')]
     private $id;
 
-    /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Place\Image", mappedBy="place", cascade={"persist", "remove"}, orphanRemoval=true)
-     */
+    #[ORM\OneToMany(targetEntity: Image::class, mappedBy: 'place', cascade: ['persist', 'remove'], orphanRemoval: true)]
     private $images;
 
-    /**
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Column(type: 'integer')]
     private $type = self::TYPE_GENERIC;
 
-    /**
-     * @ORM\Column(type="datetime")
-     */
+    #[ORM\Column(type: 'datetime')]
     private $createdAt;
 
-    /**
-     * @ORM\Column(type="boolean")
-     */
+    #[ORM\Column(type: 'boolean')]
     private bool $isAttraction = false;
 
     public function __construct(float $lat, float $lng, User $sendBy)

@@ -19,7 +19,7 @@ trait DescriptionTrait
         return $this->descriptionEn;
     }
 
-    public function setDescriptionEn(string $text = null): void
+    public function setDescriptionEn(?string $text = null): void
     {
         $this->descriptionEn = $text;
     }
@@ -29,7 +29,7 @@ trait DescriptionTrait
         return $this->descriptionBg;
     }
 
-    public function setDescriptionBg(string $text = null): void
+    public function setDescriptionBg(?string $text = null): void
     {
         $this->descriptionBg = $text;
     }
