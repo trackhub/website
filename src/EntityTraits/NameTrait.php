@@ -41,12 +41,12 @@ trait NameTrait
         return $this->nameBg;
     }
 
-    public function setNameEn(string $nameEn = null): void
+    public function setNameEn(?string $nameEn = null): void
     {
         $this->nameEn = $nameEn;
     }
 
-    public function setNameBg(string $nameBg = null): void
+    public function setNameBg(?string $nameBg = null): void
     {
         $this->nameBg = $nameBg;
     }

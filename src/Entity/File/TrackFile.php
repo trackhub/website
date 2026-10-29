@@ -5,31 +5,21 @@ namespace App\Entity\File;
 use Doctrine\ORM\Mapping as ORM;
 use App\Entity\Track\Version;
 
-/**
- * @ORM\Entity
- */
+#[ORM\Entity]
 class TrackFile
 {
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="UUID")
-     * @ORM\Column(name="id", type="guid")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: 'NONE')]
+    #[ORM\Column(name: 'id', type: 'guid')]
     private $id;
 
-    /**
-     * @ORM\Column(type="text")
-     */
+    #[ORM\Column(type: 'text')]
     private $fileContent;
 
-    /**
-     * @ORM\OneToOne(targetEntity="App\Entity\Track\Version")
-     */
+    #[ORM\OneToOne(targetEntity: Version::class)]
     private $version;
 
-    /**
-     * @ORM\Column(type="datetime")
-     */
+    #[ORM\Column(type: 'datetime')]
     private $createdAt;
 
     public function __construct(Version $version, string $fileContent)

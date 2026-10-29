@@ -9,7 +9,7 @@ use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
 class PlaceVoter extends Voter
 {
-    protected function supports($attribute, $subject)
+    protected function supports($attribute, $subject): bool
     {
         if (!$subject instanceof Place) {
             return false;
@@ -23,7 +23,7 @@ class PlaceVoter extends Voter
         return false;
     }
 
-    protected function voteOnAttribute($attribute, $subject, TokenInterface $token)
+    protected function voteOnAttribute($attribute, $subject, TokenInterface $token): bool
     {
         /* @var $subject Place */
 

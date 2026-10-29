@@ -7,65 +7,36 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
 
-/**
- * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
- */
+#[ORM\Entity(repositoryClass: \App\Repository\UserRepository::class)]
 class User implements UserInterface
 {
-    /**
-     * @ORM\Id
-     * @ORM\Column(type="integer")
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
+    #[ORM\Id]
+    #[ORM\Column(type: 'integer')]
+    #[ORM\GeneratedValue(strategy: 'NONE')]
     private $id;
 
-    /**
-     * @ORM\Column(type="string", length=180)
-     */
-
-    /**
-     * @ORM\Column(type="array")
-     */
+    #[ORM\Column(type: 'simple_array')]
     private $roles = [];
 
-    /**
-     * @ORM\Column(type="datetime", nullable=true)
-     */
+    #[ORM\Column(type: 'datetime', nullable: true)]
     private $termsAccepted;
 
-    /**
-     * @ORM\Column(type="string", nullable=true)
-     */
+    #[ORM\Column(type: 'string', nullable: true)]
     private $facebookId;
 
-    /**
-     * @ORM\Column(type="string", length=180, nullable=false)
-     */
+    #[ORM\Column(type: 'string', length: 180, nullable: false)]
     private $email;
 
-    /**
-     * @ORM\Column(type="string", length=180, nullable=false)
-     */
+    #[ORM\Column(type: 'string', length: 180, nullable: false)]
     private $nickname;
 
-    /**
-     * @ORM\Column(type="boolean")
-     */
+    #[ORM\Column(type: 'boolean')]
     private $enabled;
 
-    /**
-     * @ORM\Column(type="boolean")
-     */
+    #[ORM\Column(type: 'boolean')]
     private bool $deletion = false;
 
-    /**
-     * @ORM\OneToMany(
-     *     targetEntity="App\Entity\Track\VersionRating",
-     *     mappedBy="user",
-     *     cascade={"persist", "remove"},
-     *     orphanRemoval=true
-     * )
-     */
+    #[ORM\OneToMany(targetEntity: VersionRating::class, mappedBy: 'user', cascade: ['persist', 'remove'], orphanRemoval: true)]
     private $ratings;
 
     public function __construct()
@@ -214,7 +185,7 @@ class User implements UserInterface
     /**
      * @see UserInterface
      */
-    public function eraseCredentials()
+    public function eraseCredentials(): void
     {
         // If you store any temporary, sensitive data on the user, clear it here
         // $this->plainPassword = null;
@@ -231,5 +202,10 @@ class User implements UserInterface
     public function markForDeletion()
     {
         $this->deletion = true;
+    }
+
+    public function getUserIdentifier(): string
+    {
+        return $this->id;
     }
 }

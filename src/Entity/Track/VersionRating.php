@@ -5,48 +5,24 @@ namespace App\Entity\Track;
 use App\Entity\User\User;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity
- * @ORM\Table(name="version_rating")
- */
+#[ORM\Entity]
+#[ORM\Table(name: 'version_rating')]
 class VersionRating
 {
-    /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue(strategy="UUID")
-     * @ORM\Column(name="id", type="guid")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: 'NONE')]
+    #[ORM\Column(name: 'id', type: 'guid')]
     private $id;
 
-    /**
-     * @ORM\ManyToOne(
-     *     targetEntity="App\Entity\Track\Version",
-     *     inversedBy="ratings"
-     * )
-     * @ORM\JoinColumn(
-     *     name="version_id",
-     *     referencedColumnName="id",
-     *     nullable=false
-     * )
-     */
+    #[ORM\ManyToOne(targetEntity: Version::class, inversedBy: 'ratings')]
+    #[ORM\JoinColumn(name: 'version_id', referencedColumnName: 'id', nullable: false)]
     private $version;
 
-    /**
-     * @ORM\ManyToOne(
-     *     targetEntity="App\Entity\User\User",
-     *     inversedBy="ratings"
-     * )
-     * @ORM\JoinColumn(
-     *     name="user_id",
-     *     referencedColumnName="id",
-     *     nullable=false
-     * )
-     */
+    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'ratings')]
+    #[ORM\JoinColumn(name: 'user_id', referencedColumnName: 'id', nullable: false)]
     private $user;
 
-    /**
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Column(type: 'integer')]
     private $rating;
 
     /**

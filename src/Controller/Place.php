@@ -3,7 +3,12 @@
 namespace App\Controller;
 
 use App\Entity\Place\Slug;
+<<<<<<< HEAD
 use App\Service\TackHubApi\Client;
+=======
+use App\Repository\PlaceRepository;
+use App\Repository\Track\SlugRepository;
+>>>>>>> origin/api_client
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\QueryBuilder;
 use Knp\Component\Pager\PaginatorInterface;
@@ -14,10 +19,8 @@ use Symfony\Component\HttpFoundation\Request;
 
 class Place extends AbstractController
 {
-    public function index(Request $request, PaginatorInterface $paginator)
+    public function index(Request $request, PaginatorInterface $paginator, PlaceRepository $repo)
     {
-        $repo = $this->getDoctrine()->getRepository(\App\Entity\Place::class);
-
         /** @var QueryBuilder $qb */
         $qb = $repo->createQueryBuilder('g')->orderBy('g.createdAt', 'DESC');
         $places = $paginator->paginate($qb, $request->query->getInt('page', 1), 10);

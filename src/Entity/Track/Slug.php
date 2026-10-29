@@ -5,27 +5,19 @@ namespace App\Entity\Track;
 use App\Entity\Track;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity(repositoryClass="App\Repository\Track\SlugRepository")
- * @ORM\Table(name="track_slug")
- */
+#[ORM\Entity(repositoryClass: \App\Repository\Track\SlugRepository::class)]
+#[ORM\Table(name: 'track_slug')]
 class Slug
 {
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="UUID")
-     * @ORM\Column(name="id", type="guid")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: 'NONE')]
+    #[ORM\Column(name: 'id', type: 'guid')]
     private $id;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Track", inversedBy="versions")
-     */
-    private $track;
+    #[ORM\ManyToOne(targetEntity: Track::class)]
+    private Track $track;
 
-    /**
-     * @ORM\Column(type="string", nullable=false)
-     */
+    #[ORM\Column(type: 'string', nullable: false)]
     private $slug;
 
     public function __construct(Track $track, string $slug)
